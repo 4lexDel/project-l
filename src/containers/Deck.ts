@@ -1,42 +1,106 @@
 import p5 from "p5";
 import { BaseContainer } from "./BaseContainer";
+import { Piece } from "../objects/Piece";
 
 export class Deck extends BaseContainer {
+    private slotWidth: number = 100;
+    private slotHeight: number = 100;
+    private slotPadding: number = 10;
+    private slotsPerRow: number = 5;
+    private slotsPerCol: number = 2;
+
     constructor(p: p5, x: number, y: number, dx: number, dy: number) {
         super(p, x, y, dx, dy);
+
+        this.pieces = [
+            Piece.create1block(p),
+            Piece.create2block(p),
+            Piece.create3block(p),
+            Piece.create4block(p),
+            Piece.createSquare(p),
+            Piece.createLblock(p),
+            Piece.createZigzag(p),
+            Piece.createCorner(p),
+            Piece.createSmallT(p),
+        ];
+
+        this.resize();
+        this.initPieceEvents();
+    }
+
+    resize() {
+        this.slotWidth = Math.min(this.dx / (2 * this.slotsPerRow), this.dy/2);
+        this.slotHeight = this.slotWidth;
+        this.initPieceEvents();
+    }
+
+    private getSlotPosition(row: number, col: number) {
+        const x = this.x + col * this.slotWidth;
+        const y = this.y + row * this.slotHeight;
+        return { x, y };
+    }
+
+    initPieceEvents() {
+        for (let row = 0; row < this.slotsPerCol; row++) {
+            for (let col = 0; col < this.slotsPerRow; col++) {
+                const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
+                const pieceIndex = row * this.slotsPerRow + col;
+                const piece = this.pieces?.[pieceIndex];
+
+                if (piece) {
+                    piece.x = slotX + this.slotPadding / 2;
+                    piece.y = slotY + this.slotPadding / 2;
+                    piece.setCollider(slotX, slotY, this.slotWidth, this.slotHeight);
+                    piece.initEvent();
+                }
+            }
+        }
     }
 
     drawInventory() {
-        const slotWidth = 100;
-        const slotHeight = 100;
-        const slotPadding = 20;
-        const slotsPerRow = 5;
-        const slotsPerCol = 2;
-        const inventoryX = this.x;
-        const inventoryY = this.y;
-
-        this.p.fill(255);
-        this.p.rect(inventoryX, inventoryY, slotWidth * slotsPerRow, slotHeight * slotsPerCol);
-
-        for (let row = 0; row < slotsPerCol; row++) {
-            for (let col = 0; col < slotsPerRow; col++) {
-                const slotX = inventoryX + col * slotWidth;
-                const slotY = inventoryY + row * slotHeight;
+        // Draw slots
+        for (let row = 0; row < this.slotsPerCol; row++) {
+            for (let col = 0; col < this.slotsPerRow; col++) {
+                const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
                 this.p.fill(200);
-                this.p.rect(slotX, slotY, slotWidth, slotHeight);
+                this.p.rect(slotX, slotY, this.slotWidth, this.slotHeight);
+            }
+        }
+    }
 
-                // Draw piece inside the slot if it exists
-                const pieceIndex = row * slotsPerRow + col;
+    drawPieces() {
+        const maxPieceShapeDim = Math.max(
+            ...(this.pieces ?? []).map(piece => {
+                const { pieceShapeWidth, pieceShapeHeight } = piece.getPieceShapeDimensions();
+                return Math.max(pieceShapeWidth, pieceShapeHeight);
+            })
+        );
+
+        // Draw non-held pieces first
+        for (let row = 0; row < this.slotsPerCol; row++) {
+            for (let col = 0; col < this.slotsPerRow; col++) {
+                const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
+                const pieceIndex = row * this.slotsPerRow + col;
                 const piece = this.pieces?.[pieceIndex];
-                if (piece) {
-                    piece.y = slotY+slotPadding/2;
-                    piece.x = slotX+slotPadding/2;
 
+                if (piece && !piece.isHeld) {
+                    const { pieceShapeWidth, pieceShapeHeight } = piece.getPieceShapeDimensions();
+
+                    // Keep the piece stuck to the slot
+                    piece.x = slotX + this.slotPadding / 2;
+                    piece.y = slotY + this.slotPadding / 2;
                     piece.draw({
-                        maxX: slotWidth-slotPadding,
-                        maxY: slotHeight-slotPadding
+                        maxX: (this.slotWidth - this.slotPadding) * (pieceShapeWidth / maxPieceShapeDim),
+                        maxY: (this.slotHeight - this.slotPadding) * (pieceShapeHeight / maxPieceShapeDim)
                     });
                 }
+            }
+        }
+
+        // Draw held piece(s) last for correct z-index
+        for (const piece of this.pieces ?? []) {
+            if (piece.isHeld) {
+                piece.draw();
             }
         }
     }
@@ -44,5 +108,8 @@ export class Deck extends BaseContainer {
     draw(): void {
         super.draw();
         this.drawInventory();
+        this.drawPieces();
     }
 }
+
+// REFACTOR THE PIECE DRAWING

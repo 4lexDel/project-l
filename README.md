@@ -16,4 +16,8 @@
 
 
 Tech consideration:
-- Move the mouse events
+- Improve the piece manipulation
+
+Feature
+- Add a "notification" near to the piece to indicate the quantity
+- Keep the same piece proportion in the inventory

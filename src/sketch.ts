@@ -7,11 +7,6 @@ import { Score } from "./tools/Score";
 let pieces: Piece[] = [];
 let puzzles: Puzzle[] = [];
 
-let selectedPiece: Piece | null = null;
-let offsetX = 0;
-let offsetY = 0;
-// let score = 0;
-
 let game: Game;
 let score: Score;
 
@@ -24,11 +19,6 @@ const sketch = (p: p5) => {
 
     game = new Game(p);
     score = new Score(p, 10, 30);
-
-    /** ------------------------------------------------------------------------------------- */
-    // pieces.push(new Piece(p, [[0, 0], [1, 0]], p.color(255, 204, 0)));       // 2-block
-    // pieces.push(new Piece(p, [[0, 0], [1, 0], [1, 1]], p.color(100, 200, 255))); // L-shape
-    // pieces.push(new Piece(p, [[0, 0], [1, 0], [2, 0]], p.color(255, 150, 100))); // 3-block
 
     puzzles.push(new Puzzle(p, 600, 100, [
       [1, 1, 0],
@@ -53,7 +43,6 @@ const sketch = (p: p5) => {
 
     /** ------------------------------------------------------------------------------------- */
     puzzles.forEach(puzzle => puzzle.draw());
-    pieces.forEach(piece => piece.draw());
     /** ------------------------------------------------------------------------------------- */
   };
 
@@ -62,37 +51,6 @@ const sketch = (p: p5) => {
     p.background(220);
 
     game.resize();
-  };
-
-  p.mousePressed = () => {
-    for (let i = pieces.length - 1; i >= 0; i--) {
-      if (pieces[i].isMouseInside(p.mouseX, p.mouseY)) {
-        selectedPiece = pieces[i];
-        offsetX = p.mouseX - selectedPiece.x;
-        offsetY = p.mouseY - selectedPiece.y;
-        break;
-      }
-    }
-  };
-
-  p.mouseDragged = () => {
-    if (selectedPiece) {
-      selectedPiece.x = p.mouseX - offsetX;
-      selectedPiece.y = p.mouseY - offsetY;
-    }
-  };
-
-  p.mouseReleased = () => {
-    if (selectedPiece) {
-      for (const puzzle of puzzles) {
-        if (puzzle.tryPlacePiece(selectedPiece)) {
-          pieces = pieces.filter(p => p !== selectedPiece);
-          // score += puzzle.score;
-          break;
-        }
-      }
-      selectedPiece = null;
-    }
   };
 };
 
