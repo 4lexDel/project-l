@@ -1,6 +1,8 @@
 import p5 from "p5";
-import { Piece } from "./Piece";
-import { Puzzle } from "./Puzzle";
+import { Piece } from "./objects/Piece";
+import { Puzzle } from "./objects/Puzzle";
+import { Game } from "./containers/Game";
+import { Score } from "./tools/Score";
 
 let pieces: Piece[] = [];
 let puzzles: Puzzle[] = [];
@@ -10,6 +12,9 @@ let offsetX = 0;
 let offsetY = 0;
 // let score = 0;
 
+let game: Game;
+let score: Score;
+
 const sketch = (p: p5) => {
   p.setup = () => {
     p.frameRate(60);
@@ -17,9 +22,13 @@ const sketch = (p: p5) => {
     p.createCanvas(p.windowWidth, p.windowHeight);
     p.background(220);
 
-    pieces.push(new Piece(p, [[0, 0], [1, 0]], p.color(255, 204, 0)));       // 2-block
-    pieces.push(new Piece(p, [[0, 0], [1, 0], [1, 1]], p.color(100, 200, 255))); // L-shape
-    pieces.push(new Piece(p, [[0, 0], [1, 0], [2, 0]], p.color(255, 150, 100))); // 3-block
+    game = new Game(p);
+    score = new Score(p, 10, 30);
+
+    /** ------------------------------------------------------------------------------------- */
+    // pieces.push(new Piece(p, [[0, 0], [1, 0]], p.color(255, 204, 0)));       // 2-block
+    // pieces.push(new Piece(p, [[0, 0], [1, 0], [1, 1]], p.color(100, 200, 255))); // L-shape
+    // pieces.push(new Piece(p, [[0, 0], [1, 0], [2, 0]], p.color(255, 150, 100))); // 3-block
 
     puzzles.push(new Puzzle(p, 600, 100, [
       [1, 1, 0],
@@ -32,19 +41,27 @@ const sketch = (p: p5) => {
       [0, 1, 0],
       [0, 0, 0]
     ], 4));
+    /** ------------------------------------------------------------------------------------- */
   };
 
   p.draw = () => {
     p.clear();
     p.background(220);
 
-    puzzles.forEach(puzzle => puzzle.display());
-    pieces.forEach(piece => piece.display()); 
+    game.draw();
+    score.draw();
+
+    /** ------------------------------------------------------------------------------------- */
+    puzzles.forEach(puzzle => puzzle.draw());
+    pieces.forEach(piece => piece.draw());
+    /** ------------------------------------------------------------------------------------- */
   };
 
   p.windowResized = () => {
     p.resizeCanvas(p.windowWidth, p.windowHeight);
     p.background(220);
+
+    game.resize();
   };
 
   p.mousePressed = () => {

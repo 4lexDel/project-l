@@ -13,3 +13,7 @@
 
 - Code organization:
     * Use a structural design pattern like "Chain of Responsibility" https://refactoring.guru/fr/design-patterns/chain-of-responsibility/typescript/example
+
+
+Tech consideration:
+- Move the mouse events

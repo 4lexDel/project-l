@@ -17,7 +17,7 @@ export class Puzzle {
     this.score = score;
   }
 
-  display() {
+  draw() {
     this.p.noFill();
     this.p.stroke(100);
     for (let i = 0; i < this.grid.length; i++) {
