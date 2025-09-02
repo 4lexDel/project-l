@@ -1,6 +1,6 @@
 import p5 from "p5";
 import { BaseContainer } from "./BaseContainer";
-import { Piece } from "../objects/Piece";
+import { PieceFactory } from "../objects/PieceFactory";
 
 export class Deck extends BaseContainer {
     private slotWidth: number = 100;
@@ -13,15 +13,15 @@ export class Deck extends BaseContainer {
         super(p, x, y, dx, dy);
 
         this.pieces = [
-            Piece.create1block(p),
-            Piece.create2block(p),
-            Piece.create3block(p),
-            Piece.create4block(p),
-            Piece.createSquare(p),
-            Piece.createLblock(p),
-            Piece.createZigzag(p),
-            Piece.createCorner(p),
-            Piece.createSmallT(p),
+            PieceFactory.create1block(p),
+            PieceFactory.create2block(p),
+            PieceFactory.create3block(p),
+            PieceFactory.create4block(p),
+            PieceFactory.createSquare(p),
+            PieceFactory.createLblock(p),
+            PieceFactory.createZigzag(p),
+            PieceFactory.createCorner(p),
+            PieceFactory.createSmallT(p),
         ];
 
         this.resize();
@@ -40,7 +40,7 @@ export class Deck extends BaseContainer {
         return { x, y };
     }
 
-    initPieceEvents() {
+    private initPieceEvents() {
         for (let row = 0; row < this.slotsPerCol; row++) {
             for (let col = 0; col < this.slotsPerRow; col++) {
                 const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
@@ -57,25 +57,19 @@ export class Deck extends BaseContainer {
         }
     }
 
-    drawInventory() {
+    private drawInventory() {
         // Draw slots
         for (let row = 0; row < this.slotsPerCol; row++) {
             for (let col = 0; col < this.slotsPerRow; col++) {
                 const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
-                this.p.fill(200);
+                this.p.fill(20);
+                this.p.stroke(50);
                 this.p.rect(slotX, slotY, this.slotWidth, this.slotHeight);
             }
         }
     }
 
-    drawPieces() {
-        const maxPieceShapeDim = Math.max(
-            ...(this.pieces ?? []).map(piece => {
-                const { pieceShapeWidth, pieceShapeHeight } = piece.getPieceShapeDimensions();
-                return Math.max(pieceShapeWidth, pieceShapeHeight);
-            })
-        );
-
+    private drawPieces() {
         // Draw non-held pieces first
         for (let row = 0; row < this.slotsPerCol; row++) {
             for (let col = 0; col < this.slotsPerRow; col++) {
@@ -84,15 +78,11 @@ export class Deck extends BaseContainer {
                 const piece = this.pieces?.[pieceIndex];
 
                 if (piece && !piece.isHeld) {
-                    const { pieceShapeWidth, pieceShapeHeight } = piece.getPieceShapeDimensions();
-
                     // Keep the piece stuck to the slot         <---------------------------------------- (anti pattern)
                     piece.x = slotX + this.slotPadding / 2;
                     piece.y = slotY + this.slotPadding / 2;
 
-                    let ratio = Math.max(pieceShapeWidth, pieceShapeHeight) / maxPieceShapeDim;
-
-                    piece.draw(ratio, {
+                    piece.draw({
                         maxX: (this.slotWidth - this.slotPadding),
                         maxY: (this.slotHeight - this.slotPadding)
                     });
@@ -108,7 +98,7 @@ export class Deck extends BaseContainer {
         }
     }
 
-    draw(): void {
+    public draw(): void {
         super.draw();
         this.drawInventory();
         this.drawPieces();

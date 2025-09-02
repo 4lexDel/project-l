@@ -21,6 +21,7 @@ export class BaseContainer extends BaseObject {
     draw() {
         // draw a simple rect without background (border only small one 2 weight black)
         this.p.strokeWeight(2);
+        this.p.stroke(50);
         this.p.noFill();
         this.p.rect(this.x, this.y, this.dx, this.dy);
     }

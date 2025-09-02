@@ -3,24 +3,31 @@ import { BaseObject } from './BaseObject';
 import { EventHandler } from '../EventHandler';
 
 export class Piece extends BaseObject {
+  // Usefull for the piece proportion calculation
+  private static maxPieceShapeDim: number = 4;
+
   private shape: number[][];
-  private blockSize = 30;
   private col: p5.Color;
-  // private tier: number;
+  private tier: number;
   public isHeld: boolean = false;
+
+  private pieceRatio: number = 1;
 
   // Collider for the piece (override the shape & blocksize)
   private collider!: { x: number; y: number; width: number; height: number };
 
-  identifier: symbol;
+  private identifier: symbol;
 
-  constructor(p: p5, shape: number[][], col: p5.Color) {
+  constructor(p: p5, shape: number[][], col: p5.Color, tier: number) {
     super(p, p.random(100, p.windowWidth - 100), p.random(100, p.windowHeight - 100));
     this.shape = shape;
     this.col = col;
-    // this.tier = tier;
+    this.tier = tier;
 
     this.identifier = Symbol("piece");
+
+    const shapeDims = this.getPieceShapeDimensions();
+    this.pieceRatio = Math.max(shapeDims.pieceShapeWidth, shapeDims.pieceShapeHeight) / Piece.maxPieceShapeDim;
   }
 
   setCollider(x: number, y: number, width: number, height: number) {
@@ -70,6 +77,10 @@ export class Piece extends BaseObject {
     this.shape = this.shape.map(([x, y]) => [y, -x]);
   }
 
+  getShape() {
+    return this.shape;
+  }
+
   getPieceShapeDimensions() {
     const dxs = this.shape.map(([dx]) => dx);
     const dys = this.shape.map(([, dy]) => dy);
@@ -85,67 +96,34 @@ export class Piece extends BaseObject {
     return { pieceWidth, pieceHeight };
   }
 
-  draw(pieceRatio: number = 1, boundDisplay?: { maxX: number; maxY: number }) {
+  draw(boundDisplay?: { maxX: number; maxY: number }) {
     let scaleX = 1, scaleY = 1;
     let offsetX = 0, offsetY = 0;
 
+    let pieceRatioApplied = 1;
+
     if (boundDisplay) {
+      pieceRatioApplied = this.pieceRatio;
       const { pieceWidth, pieceHeight } = this.getPieceDimensions();
       const scale = Math.min(boundDisplay.maxX / pieceWidth, boundDisplay.maxY / pieceHeight);
       scaleX = scale;
       scaleY = scale;
   
       // Centering offsets
-      const scaledWidth = pieceWidth * scaleX * pieceRatio;
-      const scaledHeight = pieceHeight * scaleY * pieceRatio;
-  
+      const scaledWidth = pieceWidth * scaleX * this.pieceRatio;
+      const scaledHeight = pieceHeight * scaleY * this.pieceRatio;
+
       offsetX = (boundDisplay.maxX - scaledWidth) / 2;
       offsetY = (boundDisplay.maxY - scaledHeight) / 2;
     }
   
     this.p.fill(this.col);
     this.p.strokeWeight(2);
-    this.p.stroke(50);
+    this.p.stroke(150);
     for (let [dx, dy] of this.shape) {
-      const x = this.x + dx * this.blockSize * scaleX * pieceRatio + offsetX;
-      const y = this.y + dy * this.blockSize * scaleY * pieceRatio + offsetY;
-      this.p.rect(x, y, this.blockSize * scaleX * pieceRatio, this.blockSize * scaleY * pieceRatio);
+      const x = this.x + dx * this.blockSize * scaleX * pieceRatioApplied + offsetX;
+      const y = this.y + dy * this.blockSize * scaleY * pieceRatioApplied + offsetY;
+      this.p.rect(x, y, this.blockSize * scaleX * pieceRatioApplied, this.blockSize * scaleY * pieceRatioApplied);
     }
-  }
-
-  static create1block(p: p5): Piece {
-    return new Piece(p, [[0, 0]], p.color(255, 210, 100));
-  }
-
-  static create2block(p: p5): Piece {
-    return new Piece(p, [[0, 0], [1, 0]], p.color(128, 0, 128));
-  }
-
-  static create3block(p: p5): Piece {
-    return new Piece(p, [[0, 0], [1, 0], [2, 0]], p.color(0, 0, 255));
-  }
-
-  static create4block(p: p5): Piece {
-    return new Piece(p, [[0, 0], [1, 0], [2, 0], [3, 0]], p.color(255, 0, 0));
-  }
-
-  static createSquare(p: p5): Piece {
-    return new Piece(p, [[0, 0], [0, 1], [1, 1], [1, 0]], p.color(255, 165, 0));
-  }
-
-  static createLblock(p: p5): Piece {
-    return new Piece(p, [[0, 0], [0, 1], [0, 2], [1, 2]], p.color(0, 255, 0));
-  }
-
-  static createZigzag(p: p5): Piece {
-    return new Piece(p, [[0, 0], [1, 0], [1, 1], [2, 1]], p.color(0, 255, 255));
-  }
-
-  static createCorner(p: p5): Piece {
-    return new Piece(p, [[0, 0], [0, 1], [1, 0]], p.color(255, 255, 0));
-  }
-
-  static createSmallT(p: p5): Piece {
-    return new Piece(p, [[0, 0], [1, 0], [2, 0], [1, 1]], p.color(247, 139, 240));
   }
 }

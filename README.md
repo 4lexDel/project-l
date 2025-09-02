@@ -15,7 +15,12 @@
 
 Tech consideration:
 - Improve the piece manipulation
+- Limit the draw repetition to improve the performance
+- Centralise the piece aspect ratio into a static variable
 
 Feature
 - Add a "notification" near to the piece to indicate the quantity
-- Keep the same piece proportion in the inventory
+- Keep the same piece proportion in the puzzle reward (like the inventory does)
+
+
+- Add a Card object and Slot object to parse the piece and puzzle object to manage the inventory easily

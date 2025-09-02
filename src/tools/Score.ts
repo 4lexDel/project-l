@@ -10,7 +10,7 @@ export class Score extends BaseObject {
     }
 
     draw() {
-        this.p.fill(0);
+        this.p.fill(200);
         this.p.textSize(32);
         this.p.text(`Score: ${this.value}`, this.x, this.y);
     }

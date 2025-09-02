@@ -25,10 +25,11 @@ export class Game {
         this.board.dy = this.p.height - this.deck.dy;
 
         this.deck.resize();
+        this.board.resize();
     }
 
     public draw(): void {
-        this.deck.draw();
         this.board.draw();
+        this.deck.draw();
     }
 }
