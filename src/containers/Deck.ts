@@ -86,12 +86,15 @@ export class Deck extends BaseContainer {
                 if (piece && !piece.isHeld) {
                     const { pieceShapeWidth, pieceShapeHeight } = piece.getPieceShapeDimensions();
 
-                    // Keep the piece stuck to the slot
+                    // Keep the piece stuck to the slot         <---------------------------------------- (anti pattern)
                     piece.x = slotX + this.slotPadding / 2;
                     piece.y = slotY + this.slotPadding / 2;
-                    piece.draw({
-                        maxX: (this.slotWidth - this.slotPadding) * (pieceShapeWidth / maxPieceShapeDim),
-                        maxY: (this.slotHeight - this.slotPadding) * (pieceShapeHeight / maxPieceShapeDim)
+
+                    let ratio = Math.max(pieceShapeWidth, pieceShapeHeight) / maxPieceShapeDim;
+
+                    piece.draw(ratio, {
+                        maxX: (this.slotWidth - this.slotPadding),
+                        maxY: (this.slotHeight - this.slotPadding)
                     });
                 }
             }

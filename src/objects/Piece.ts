@@ -85,23 +85,31 @@ export class Piece extends BaseObject {
     return { pieceWidth, pieceHeight };
   }
 
-  draw(boundDisplay?: { maxX: number; maxY: number }) {
+  draw(pieceRatio: number = 1, boundDisplay?: { maxX: number; maxY: number }) {
     let scaleX = 1, scaleY = 1;
+    let offsetX = 0, offsetY = 0;
+
     if (boundDisplay) {
-      // Find min/max dx/dy in shape
       const { pieceWidth, pieceHeight } = this.getPieceDimensions();
       const scale = Math.min(boundDisplay.maxX / pieceWidth, boundDisplay.maxY / pieceHeight);
       scaleX = scale;
       scaleY = scale;
+  
+      // Centering offsets
+      const scaledWidth = pieceWidth * scaleX * pieceRatio;
+      const scaledHeight = pieceHeight * scaleY * pieceRatio;
+  
+      offsetX = (boundDisplay.maxX - scaledWidth) / 2;
+      offsetY = (boundDisplay.maxY - scaledHeight) / 2;
     }
-
+  
     this.p.fill(this.col);
     this.p.strokeWeight(2);
     this.p.stroke(50);
     for (let [dx, dy] of this.shape) {
-      const x = this.x + dx * this.blockSize * scaleX;
-      const y = this.y + dy * this.blockSize * scaleY;
-      this.p.rect(x, y, this.blockSize * scaleX, this.blockSize * scaleY);
+      const x = this.x + dx * this.blockSize * scaleX * pieceRatio + offsetX;
+      const y = this.y + dy * this.blockSize * scaleY * pieceRatio + offsetY;
+      this.p.rect(x, y, this.blockSize * scaleX * pieceRatio, this.blockSize * scaleY * pieceRatio);
     }
   }
 

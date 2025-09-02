@@ -1,5 +1,4 @@
 # TODO
-
 - Tutorial (modal with steps GIF)
 - Create a deck area
     * Contains the choosen puzzles
@@ -13,7 +12,6 @@
 
 - Code organization:
     * Use a structural design pattern like "Chain of Responsibility" https://refactoring.guru/fr/design-patterns/chain-of-responsibility/typescript/example
-
 
 Tech consideration:
 - Improve the piece manipulation
