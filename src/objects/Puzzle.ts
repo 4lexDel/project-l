@@ -37,7 +37,7 @@ export class Puzzle extends BaseObject {
     this.p.fill(200);
     this.p.textSize(20);
     this.p.textAlign(this.p.LEFT, this.p.TOP);
-    this.p.text(`+${this.pointsReward}`, this.x + this.padding, this.y + this.padding);
+    this.p.text(`${this.pointsReward != 0 ? this.pointsReward : ''}`, this.x + this.padding, this.y + this.padding);
 
     // Draw piece reward (top right)
     this.pieceReward.x = this.x + puzzleWidth - this.pieceRewardSize - this.padding/2;

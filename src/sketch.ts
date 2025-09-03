@@ -24,7 +24,7 @@ const sketch = (p: p5) => {
     score.draw();
   };
 
-  p.windowResized = () => {
+  p.windowResized = () => {    
     p.resizeCanvas(p.windowWidth, p.windowHeight);
     p.background(220);
 

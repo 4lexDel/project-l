@@ -3,69 +3,16 @@ import { PieceFactory } from "./PieceFactory";
 import { Puzzle } from "./Puzzle";
 
 export class PuzzleFactory {
-    static createPuzzleStack(p: p5): Puzzle[] {
-        return [
-            new Puzzle(p, -1, -1,
-                [
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 1, 1, 0, 0],
-                    [0, 0, 1, 1, 0],
-                    [0, 0, 0, 0, 0],
-                ],
-                3,
-                PieceFactory.create1block(p)
-            ),
-            new Puzzle(p, -1, -1,
-                [
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 1, 1, 1, 0],
-                    [0, 0, 1, 1, 0],
-                    [0, 0, 0, 0, 0],
-                ],
-                2,
-                PieceFactory.create2block(p)
-            ),
-            new Puzzle(p, -1, -1,
-                [
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 1, 0, 0, 0],
-                    [0, 1, 1, 0, 0],
-                    [0, 1, 1, 1, 0],
-                    [0, 1, 1, 1, 0],
-                ],
-                2,
-                PieceFactory.create3block(p)
-            ),
-            new Puzzle(p, -1, -1,
-                [
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0],
-                    [0, 0, 1, 0, 0],
-                    [0, 1, 1, 1, 0],
-                    [0, 1, 1, 1, 0],
-                    [0, 0, 1, 0, 0],
-                ],
-                2,
-                PieceFactory.createLblock(p)
-            )
-        ];
-    }
-
     static createBasicWhitePuzzleStack(p: p5): Puzzle[] {
         return [
             new Puzzle(p, -1, -1,
                 [
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [0, 1, 1, 1, 0],
                     [0, 0, 1, 0, 0],
                     [0, 0, 1, 0, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 2,
                 PieceFactory.create2block(p)
@@ -86,10 +33,10 @@ export class PuzzleFactory {
                 [
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [0, 1, 1, 0, 0],
                     [0, 1, 1, 0, 0],
                     [0, 1, 1, 1, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 2,
                 PieceFactory.create3block(p)
@@ -135,9 +82,9 @@ export class PuzzleFactory {
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [1, 1, 1, 1, 0],
                     [0, 1, 1, 1, 1],
-                    [0, 0, 0, 0, 0],
                 ],
                 2,
                 PieceFactory.create1block(p)
@@ -146,10 +93,10 @@ export class PuzzleFactory {
                 [
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [1, 1, 0, 0, 0],
                     [1, 1, 1, 1, 0],
                     [0, 0, 1, 1, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 2,
                 PieceFactory.createSmallT(p)
@@ -159,9 +106,9 @@ export class PuzzleFactory {
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
-                    [0, 0, 1, 0, 0],
-                    [0, 0, 1, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0],
                 ],
                 2,
                 PieceFactory.create1block(p)
@@ -170,34 +117,34 @@ export class PuzzleFactory {
                 [
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
-                    [0, 0, 1, 0, 0],
-                    [0, 0, 1, 0, 0],
-                    [0, 0, 1, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0],
                 ],
                 1,
                 PieceFactory.create2block(p)
             ),
             new Puzzle(p, -1, -1,
                 [
+                    [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 1, 0],
                     [0, 0, 1, 1, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 1,
                 PieceFactory.create2block(p)
             ),
             new Puzzle(p, -1, -1,
                 [
+                    [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 1, 1, 1, 0],
                     [0, 0, 1, 0, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 1,
                 PieceFactory.create2block(p)
@@ -206,10 +153,10 @@ export class PuzzleFactory {
                 [
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [0, 1, 1, 0, 0],
                     [0, 0, 1, 1, 0],
                     [0, 0, 0, 1, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 1,
                 PieceFactory.createCorner(p)
@@ -219,9 +166,9 @@ export class PuzzleFactory {
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [0, 1, 0, 1, 0],
                     [0, 1, 1, 1, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 1,
                 PieceFactory.createCorner(p)
@@ -266,10 +213,10 @@ export class PuzzleFactory {
                 [
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [0, 1, 0, 0, 0],
                     [0, 1, 0, 1, 0],
                     [0, 1, 1, 1, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 1,
                 PieceFactory.create4block(p)
@@ -278,10 +225,10 @@ export class PuzzleFactory {
                 [
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [0, 1, 0, 0, 0],
                     [0, 1, 1, 0, 0],
                     [0, 1, 1, 1, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 1,
                 PieceFactory.createLblock(p)
@@ -302,10 +249,10 @@ export class PuzzleFactory {
                 [
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [0, 0, 0, 1, 0],
                     [0, 1, 1, 1, 0],
                     [0, 1, 1, 0, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 1,
                 PieceFactory.createSmallT(p)
@@ -350,10 +297,10 @@ export class PuzzleFactory {
                 [
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
-                    [0, 0, 1, 0, 0],
-                    [0, 0, 1, 0, 0],
-                    [0, 0, 1, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0],
                 ],
                 0,
                 PieceFactory.createCorner(p)
@@ -363,9 +310,9 @@ export class PuzzleFactory {
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
                     [0, 1, 1, 0, 0],
                     [0, 0, 1, 0, 0],
-                    [0, 0, 0, 0, 0],
                 ],
                 0,
                 PieceFactory.create3block(p)
