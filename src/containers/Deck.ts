@@ -1,19 +1,19 @@
 import p5 from "p5";
 import { BaseContainer } from "./BaseContainer";
 import { PieceFactory } from "../objects/PieceFactory";
+import { Piece } from "../objects/Piece";
+import { PieceInventory } from "./PieceInventory";
+import { PuzzleFactory } from "../objects/PuzzleFactory";
+import { Puzzle } from "../objects/Puzzle";
 
 export class Deck extends BaseContainer {
-    private slotWidth: number = 100;
-    private slotHeight: number = 100;
-    private slotPadding: number = 10;
-    private slotsPerRow: number = 5;
-    private slotsPerCol: number = 2;
+    private pieceInventory: PieceInventory;
 
-    private heightRatio: number;
+    public pieces: Piece[];
+    public puzzles: Puzzle[];
 
     constructor(p: p5, heightRatio: number) {
-        super(p, -1, -1, -1, -1);
-        this.heightRatio = heightRatio;
+        super(p, 1, heightRatio, "LEFT", "BOTTOM");
 
         this.pieces = [
             PieceFactory.create1block(p),
@@ -26,89 +26,42 @@ export class Deck extends BaseContainer {
             PieceFactory.createCorner(p),
             PieceFactory.createSmallT(p),
         ];
+ 
+        this.pieceInventory = new PieceInventory(
+            p, 
+            this.pieces, 
+            0.5,
+            heightRatio,
+            "LEFT",
+            "BOTTOM"
+        );
+
+        this.puzzles = PuzzleFactory.createBasicWhitePuzzleStack(p, 4);
 
         this.resize();
     }
 
     public resize() {
-        this.x = 0;
-        this.y = this.p.height - this.p.height * this.heightRatio;
+        super.resize();
 
-        this.dx = this.p.width;
-        this.dy = this.p.height * this.heightRatio;
-
-        this.slotWidth = Math.min(this.dx / (2 * this.slotsPerRow), this.dy / 2);
-        this.slotHeight = this.slotWidth;
-        this.initPieceEvents();
-    }
-
-    private getSlotPosition(row: number, col: number) {
-        const x = this.x + col * this.slotWidth;
-        const y = this.y + row * this.slotHeight;
-        return { x, y };
-    }
-
-    private initPieceEvents() {
-        for (let row = 0; row < this.slotsPerCol; row++) {
-            for (let col = 0; col < this.slotsPerRow; col++) {
-                const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
-                const pieceIndex = row * this.slotsPerRow + col;
-                const piece = this.pieces?.[pieceIndex];
-
-                if (piece) {
-                    piece.x = slotX + this.slotPadding / 2;
-                    piece.y = slotY + this.slotPadding / 2;
-                    piece.setCollider(slotX, slotY, this.slotWidth, this.slotHeight);
-                    piece.initEvent();
-                }
-            }
-        }
-    }
-
-    private drawInventory() {
-        // Draw slots
-        for (let row = 0; row < this.slotsPerCol; row++) {
-            for (let col = 0; col < this.slotsPerRow; col++) {
-                const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
-                this.p.fill(20);
-                this.p.stroke(50);
-                this.p.rect(slotX, slotY, this.slotWidth, this.slotHeight);
-            }
-        }
-    }
-
-    private drawPieces() {
-        // Draw non-held pieces first
-        for (let row = 0; row < this.slotsPerCol; row++) {
-            for (let col = 0; col < this.slotsPerRow; col++) {
-                const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
-                const pieceIndex = row * this.slotsPerRow + col;
-                const piece = this.pieces?.[pieceIndex];
-
-                if (piece && !piece.isHeld) {
-                    // Keep the piece stuck to the slot         <---------------------------------------- (anti pattern)
-                    piece.x = slotX + this.slotPadding / 2;
-                    piece.y = slotY + this.slotPadding / 2;
-
-                    piece.draw({
-                        maxX: (this.slotWidth - this.slotPadding),
-                        maxY: (this.slotHeight - this.slotPadding)
-                    });
-                }
-            }
-        }
-
-        // Draw held piece(s) last for correct z-index
-        for (const piece of this.pieces ?? []) {
-            if (piece.isHeld) {
-                piece.draw();
-            }
-        }
+        this.pieceInventory.resize();
     }
 
     public draw(): void {
         super.draw();
-        this.drawInventory();
-        this.drawPieces();
+
+        // Puzzles
+        // ...
+
+        // Pieces
+        this.pieceInventory.draw();
     }
 }
+
+// private drawPuzzleInventory() {
+//         // COMING SOON
+//     }
+
+//     private drawPuzzles() {
+//         // COMING SOON
+//     }

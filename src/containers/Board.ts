@@ -1,9 +1,10 @@
 import p5 from "p5";
 import { BaseContainer } from "./BaseContainer";
 import { PuzzleFactory } from "../objects/PuzzleFactory";
+import { Puzzle } from "../objects/Puzzle";
 
 export class Board extends BaseContainer {
-    private heightRatio: number;
+    private puzzles: Puzzle[];
 
     numRows: number = 3;
     numCols: number = 3;
@@ -14,7 +15,7 @@ export class Board extends BaseContainer {
     totalPaddingY: number = this.padding * (this.numRows - 1);
 
     constructor(p: p5, heightRatio: number) {
-        super(p, -1, -1, -1, -1);
+        super(p, 1, heightRatio, "LEFT", "TOP");
         this.heightRatio = heightRatio;
 
         // create an array that contain first 15 random createBasicWhitePuzzleStack puzzles then 10 random createBasicBlackPuzzleStack puzzles
@@ -46,11 +47,7 @@ export class Board extends BaseContainer {
     }
 
     public resize(): void {
-        this.x = 0;
-        this.y = 0;
-
-        this.dx = this.p.width;
-        this.dy = this.p.height * this.heightRatio;
+        super.resize();
 
         this.initPuzzles();
     }

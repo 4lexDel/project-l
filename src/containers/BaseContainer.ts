@@ -1,21 +1,30 @@
 import p5 from "p5";
 import { BaseObject } from "../objects/BaseObject";
-import type { Piece } from "../objects/Piece";
-import type { Puzzle } from "../objects/Puzzle";
 
 export class BaseContainer extends BaseObject {
-    public pieces: Piece[];
-    public puzzles: Puzzle[];
+    protected widthRatio: number;
+    protected heightRatio: number;
 
-    public dx: number;
-    public dy: number;
+    public dx!: number;
+    public dy!: number;
 
-    constructor(p: p5, x: number, y: number, dx: number, dy: number) {
-        super(p, x, y);
-        this.pieces = [];
-        this.puzzles = [];
-        this.dx = dx;
-        this.dy = dy;
+    public verticalAlign: "TOP" | "BOTTOM";
+    public horizontalAlign: "LEFT" | "RIGHT";
+
+    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: "LEFT" | "RIGHT" = "LEFT", verticalAlign: "TOP" | "BOTTOM" = "TOP") {
+        super(p, -1, -1);
+        this.widthRatio = widthRatio;
+        this.heightRatio = heightRatio;
+        this.horizontalAlign = horizontalAlign;
+        this.verticalAlign = verticalAlign;
+    }
+
+    public resize() {
+        this.x = this.horizontalAlign === "LEFT" ? 0 : this.p.width * (1 - this.widthRatio);
+        this.y = this.verticalAlign === "TOP" ? 0 : this.p.height * (1 - this.heightRatio);
+
+        this.dx = this.p.width * this.widthRatio;
+        this.dy = this.p.height * this.heightRatio;
     }
 
     draw() {
