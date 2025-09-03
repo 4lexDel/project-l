@@ -44,21 +44,27 @@ export class Piece extends BaseObject {
     eventHandler.addEventMousePressed(this.identifier, () => {
       if (this.isMouseInside(this.p.mouseX, this.p.mouseY)) {
         this.isHeld = true;
+
+        this.attachPieceToMouseCoords();
       }
     });
 
     eventHandler.addEventMouseDragged(this.identifier, () => {
       if (this.isHeld) {
-        const { pieceWidth, pieceHeight } = this.getPieceDimensions();
-
-        this.x = this.p.mouseX - pieceWidth / 2;
-        this.y = this.p.mouseY - pieceHeight / 2;
+        this.attachPieceToMouseCoords();
       }
     });
 
     eventHandler.addEventMouseReleased(this.identifier, () => {
       this.isHeld = false;
     });
+  }
+
+  attachPieceToMouseCoords() {
+    const { pieceWidth, pieceHeight } = this.getPieceDimensions();
+
+    this.x = this.p.mouseX - pieceWidth / 2;
+    this.y = this.p.mouseY - pieceHeight / 2;
   }
   
   isMouseInside(mx: number, my: number): boolean {
