@@ -23,7 +23,7 @@ export class PieceFactory {
     }
 
     static createLblock(p: p5): Piece {
-        return new Piece(p, [[0, 0], [0, 1], [0, 2], [1, 2]], p.color(0, 255, 255), 4);
+        return new Piece(p, [[0, 0],[1, 0], [2, 0], [2, 1]], p.color(0, 255, 255), 4);
     }
 
     static createZigzag(p: p5): Piece {

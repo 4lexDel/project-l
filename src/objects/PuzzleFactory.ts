@@ -3,8 +3,8 @@ import { PieceFactory } from "./PieceFactory";
 import { Puzzle } from "./Puzzle";
 
 export class PuzzleFactory {
-    static createBasicWhitePuzzleStack(p: p5): Puzzle[] {
-        return [
+    static createBasicWhitePuzzleStack(p: p5, nbRandomPuzzles: number): Puzzle[] {
+        const source = [
             new Puzzle(p, -1, -1,
                 [
                     [0, 0, 0, 0, 0],
@@ -358,10 +358,15 @@ export class PuzzleFactory {
                 PieceFactory.createSmallT(p)
             )
         ];
+
+        // Shuffle it
+        source.sort(() => Math.random() - 0.5);
+
+        return source.slice(0, nbRandomPuzzles);
     }
 
-    static createBasicBlackPuzzleStack(p: p5): Puzzle[] {
-        return [
+    static createBasicBlackPuzzleStack(p: p5, nbRandomPuzzles: number): Puzzle[] {
+        const source = [
             new Puzzle(p, -1, -1,
                 [
                     [0, 0, 1, 1, 0],
@@ -583,5 +588,10 @@ export class PuzzleFactory {
                 PieceFactory.createSmallT(p)
             )
         ];
+
+        // Shuffle it
+        source.sort(() => Math.random() - 0.5);
+
+        return source.slice(0, nbRandomPuzzles);
     }
 }

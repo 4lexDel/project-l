@@ -5,12 +5,23 @@ import { PuzzleFactory } from "../objects/PuzzleFactory";
 export class Board extends BaseContainer {
     private heightRatio: number;
 
+    numRows: number = 3;
+    numCols: number = 3;
+
+    padding: number = 10;
+
+    totalPaddingX: number = this.padding * (this.numCols - 1);
+    totalPaddingY: number = this.padding * (this.numRows - 1);
+
     constructor(p: p5, heightRatio: number) {
         super(p, -1, -1, -1, -1);
         this.heightRatio = heightRatio;
 
-        // this.puzzles = PuzzleFactory.createBasicWhitePuzzleStack(p);
-        this.puzzles = PuzzleFactory.createBasicBlackPuzzleStack(p);
+        // create an array that contain first 15 random createBasicWhitePuzzleStack puzzles then 10 random createBasicBlackPuzzleStack puzzles
+        this.puzzles = [
+            ...PuzzleFactory.createBasicWhitePuzzleStack(p, 15),
+            ...PuzzleFactory.createBasicBlackPuzzleStack(p, 10)
+        ];
 
         this.resize();
     }
@@ -18,25 +29,19 @@ export class Board extends BaseContainer {
     private initPuzzles(): void {
         // Layout parameters
         const puzzleDimension = this.puzzles[0].getDimensions();
-        const padding = 10; // gap between puzzles
-        const numRows = 3;
-        const numCols = Math.ceil(this.puzzles.length / numRows);
 
-        const totalPaddingX = padding * (numCols - 1);
-        const totalPaddingY = padding * (numRows - 1);
-
-        const puzzleTotalWidth = puzzleDimension.width * numCols + totalPaddingX;
-        const puzzleTotalHeight = puzzleDimension.height * numRows + totalPaddingY;
+        const puzzleTotalWidth = puzzleDimension.width * this.numCols + this.totalPaddingX;
+        const puzzleTotalHeight = puzzleDimension.height * this.numRows + this.totalPaddingY;
 
         // Center the grid in the container
         const startX = this.x + (this.dx - puzzleTotalWidth) / 2;
         const startY = this.y + (this.dy - puzzleTotalHeight) / 2;
 
-        for (let i = 0; i < this.puzzles.length; i++) {
-            const row = Math.floor(i / numCols);
-            const col = i % numCols;
-            this.puzzles[i].x = startX + col * (puzzleDimension.width + padding);
-            this.puzzles[i].y = startY + row * (puzzleDimension.height + padding);
+        for (let i = 0; i < this.numRows * this.numCols; i++) {
+            const row = Math.floor(i / this.numCols);
+            const col = i % this.numCols;
+            this.puzzles[i].x = startX + col * (puzzleDimension.width + this.padding);
+            this.puzzles[i].y = startY + row * (puzzleDimension.height + this.padding);
         }
     }
 
@@ -56,8 +61,8 @@ export class Board extends BaseContainer {
     }
 
     private drawPuzzles(): void {
-        for (const puzzle of this.puzzles) {
-            puzzle.draw();
+        for (let i = 0; i < this.numRows * this.numCols; i++) {
+            this.puzzles[i].draw();
         }
     }
 }

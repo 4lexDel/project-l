@@ -7,7 +7,7 @@ export class Puzzle extends BaseObject {
   private pointsReward: number;
   private pieceReward: Piece;
 
-  private padding: number = 6;
+  private padding: number = 8;
   private pieceRewardSize: number = 20;
   private textSize: number = 15;
 

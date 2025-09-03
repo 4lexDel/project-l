@@ -112,5 +112,3 @@ export class Deck extends BaseContainer {
         this.drawPieces();
     }
 }
-
-// REFACTOR THE PIECE DRAWING
