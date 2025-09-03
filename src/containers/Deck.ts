@@ -5,9 +5,11 @@ import { Piece } from "../objects/Piece";
 import { PieceInventory } from "./PieceInventory";
 import { PuzzleFactory } from "../objects/PuzzleFactory";
 import { Puzzle } from "../objects/Puzzle";
+import { PuzzleInventory } from "./PuzzleInventory";
 
 export class Deck extends BaseContainer {
     private pieceInventory: PieceInventory;
+    private puzzleInventory: PuzzleInventory;
 
     public pieces: Piece[];
     public puzzles: Puzzle[];
@@ -37,6 +39,14 @@ export class Deck extends BaseContainer {
         );
 
         this.puzzles = PuzzleFactory.createBasicWhitePuzzleStack(p, 4);
+        this.puzzleInventory = new PuzzleInventory(
+            p,
+            this.puzzles,
+            0.5,
+            heightRatio,
+            "RIGHT",
+            "BOTTOM"
+        );
 
         this.resize();
     }
@@ -45,23 +55,16 @@ export class Deck extends BaseContainer {
         super.resize();
 
         this.pieceInventory.resize();
+        this.puzzleInventory.resize();
     }
 
     public draw(): void {
         super.draw();
 
         // Puzzles
-        // ...
+        this.puzzleInventory.draw();
 
         // Pieces
         this.pieceInventory.draw();
     }
 }
-
-// private drawPuzzleInventory() {
-//         // COMING SOON
-//     }
-
-//     private drawPuzzles() {
-//         // COMING SOON
-//     }
