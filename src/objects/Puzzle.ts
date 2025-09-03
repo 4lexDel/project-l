@@ -6,16 +6,18 @@ export class Puzzle extends BaseObject {
   private grid: number[][];
   private pointsReward: number;
   private pieceReward: Piece;
+  public isBlack: boolean;
 
   private padding: number = 8;
   private pieceRewardSize: number = 20;
   private textSize: number = 15;
 
-  constructor(p: p5, x: number, y: number, grid: number[][], pointsReward: number, pieceReward: Piece) {
+  constructor(p: p5, x: number, y: number, grid: number[][], pointsReward: number, pieceReward: Piece, isBlack: boolean) {
     super(p, x, y);
     this.grid = grid;
     this.pointsReward = pointsReward;
     this.pieceReward = pieceReward;
+    this.isBlack = isBlack;
 
     this.blockSize = 15;
   }

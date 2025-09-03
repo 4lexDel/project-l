@@ -57,7 +57,45 @@ export class Board extends BaseContainer {
 
     public draw(): void {
         super.draw();
+        this.drawPuzzleStack();
         this.drawPuzzles();
+    }
+
+    private drawPuzzleStack(): void {
+        const puzzleDimension = this.puzzles[0].getDimensions();
+
+        // Stack rect
+        this.p.fill(this.puzzles[9].isBlack ? 50 : 200);
+        this.p.rect(this.x + this.dx - puzzleDimension.height * 2,
+            this.y + this.dy / 2 - puzzleDimension.width / 2,
+            puzzleDimension.height,
+            puzzleDimension.width,
+            5
+        );
+
+        // Stack text
+        this.p.fill(this.puzzles[9].isBlack ? 200 : 50);
+        this.p.strokeWeight(0.8);
+        this.p.textSize(15);
+        this.p.textAlign(this.p.CENTER, this.p.CENTER);
+        this.p.text("Puzzle stack", this.x + this.dx - puzzleDimension.height * 2 + puzzleDimension.height / 2,
+            this.y + this.dy / 2 - puzzleDimension.width / 2 + puzzleDimension.width / 2
+        );
+
+        // Number of remaining puzzles
+        this.p.fill(255, 0, 0);
+        this.p.ellipse(this.x + this.dx - puzzleDimension.height * 2 + puzzleDimension.height - 10,
+            this.y + this.dy / 2 - puzzleDimension.width / 2 + 10,
+            35,
+            35
+        );
+        this.p.fill(255);
+        this.p.strokeWeight(0.8);
+        this.p.textSize(20);
+        this.p.textAlign(this.p.CENTER, this.p.CENTER);
+        this.p.text(this.puzzles.length - 9, this.x + this.dx - puzzleDimension.height * 2 + puzzleDimension.height - 10,
+            this.y + this.dy / 2 - puzzleDimension.width / 2 + 10
+        );
     }
 
     private drawPuzzles(): void {
