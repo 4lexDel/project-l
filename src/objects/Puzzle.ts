@@ -20,7 +20,7 @@ export class Puzzle extends BaseObject {
   getDimensions() {
     const rows = this.grid.length;
     const cols = this.grid[0].length;
-    return { width: cols * this.blockSize + this.padding, height: rows * this.blockSize + this.padding };
+    return { width: cols * this.blockSize + this.padding, height: rows * this.blockSize + this.padding + this.pieceRewardSize };
   }
 
   draw() {
@@ -48,7 +48,7 @@ export class Puzzle extends BaseObject {
     for (let row = 0; row < this.grid.length; row++) {
       for (let col = 0; col < this.grid[row].length; col++) {
         const cellX = this.x + col * this.blockSize + this.padding/2;
-        const cellY = this.y + row * this.blockSize;
+        const cellY = this.y + row * this.blockSize + this.pieceRewardSize;
         // Cell background
         this.p.strokeWeight(1);
         if (this.grid[row][col] === 1) {
