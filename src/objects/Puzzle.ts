@@ -7,14 +7,17 @@ export class Puzzle extends BaseObject {
   private pointsReward: number;
   private pieceReward: Piece;
 
-  private padding: number = 15;
-  private pieceRewardSize: number = 50;
+  private padding: number = 6;
+  private pieceRewardSize: number = 20;
+  private textSize: number = 15;
 
   constructor(p: p5, x: number, y: number, grid: number[][], pointsReward: number, pieceReward: Piece) {
     super(p, x, y);
     this.grid = grid;
     this.pointsReward = pointsReward;
     this.pieceReward = pieceReward;
+
+    this.blockSize = 15;
   }
 
   getDimensions() {
@@ -27,7 +30,7 @@ export class Puzzle extends BaseObject {
     const { width: puzzleWidth, height: puzzleHeight } = this.getDimensions();
 
     // Draw border
-    this.p.strokeWeight(2);
+    this.p.strokeWeight(1);
     this.p.stroke(150);
     this.p.fill(20);
     this.p.rect(this.x, this.y, puzzleWidth, puzzleHeight, 5);
@@ -35,14 +38,14 @@ export class Puzzle extends BaseObject {
     // Draw reward points (top left)
     this.p.noStroke();
     this.p.fill(200);
-    this.p.textSize(20);
+    this.p.textSize(this.textSize);
     this.p.textAlign(this.p.LEFT, this.p.TOP);
     this.p.text(`${this.pointsReward != 0 ? this.pointsReward : ''}`, this.x + this.padding, this.y + this.padding);
 
     // Draw piece reward (top right)
     this.pieceReward.x = this.x + puzzleWidth - this.pieceRewardSize - this.padding/2;
     this.pieceReward.y = this.y;
-    this.pieceReward.draw({ maxX: this.pieceRewardSize, maxY: this.pieceRewardSize });
+    this.pieceReward.draw({ maxX: this.pieceRewardSize, maxY: this.pieceRewardSize }, 0);
 
     // Draw grid (centered)
     for (let row = 0; row < this.grid.length; row++) {
@@ -54,11 +57,14 @@ export class Puzzle extends BaseObject {
         if (this.grid[row][col] === 1) {
           this.p.stroke(100);
           this.p.fill(230);
+          this.p.rect(cellX, cellY, this.blockSize, this.blockSize, 4);
         } else {
           this.p.noStroke();
-          this.p.noFill();
+          
+          // draw a small ellipse at the middle
+          this.p.fill(150);
+          this.p.ellipse(cellX + this.blockSize / 2, cellY + this.blockSize / 2, 2, 2);
         }
-        this.p.rect(cellX, cellY, this.blockSize, this.blockSize, 4);
       }
     }
   }

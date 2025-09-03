@@ -102,7 +102,7 @@ export class Piece extends BaseObject {
     return { pieceWidth, pieceHeight };
   }
 
-  draw(boundDisplay?: { maxX: number; maxY: number }) {
+  draw(boundDisplay?: { maxX: number; maxY: number }, strokeWeight: number = 2) {
     let scaleX = 1, scaleY = 1;
     let offsetX = 0, offsetY = 0;
 
@@ -124,7 +124,7 @@ export class Piece extends BaseObject {
     }
   
     this.p.fill(this.col);
-    this.p.strokeWeight(2);
+    this.p.strokeWeight(strokeWeight);
     this.p.stroke(150);
     for (let [dx, dy] of this.shape) {
       const x = this.x + dx * this.blockSize * scaleX * pieceRatioApplied + offsetX;

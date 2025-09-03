@@ -9,8 +9,11 @@ export class Deck extends BaseContainer {
     private slotsPerRow: number = 5;
     private slotsPerCol: number = 2;
 
-    constructor(p: p5) {
+    private heightRatio: number;
+
+    constructor(p: p5, heightRatio: number) {
         super(p, -1, -1, -1, -1);
+        this.heightRatio = heightRatio;
 
         this.pieces = [
             PieceFactory.create1block(p),
@@ -29,12 +32,12 @@ export class Deck extends BaseContainer {
 
     public resize() {
         this.x = 0;
-        this.y = 2*this.p.height/3;
+        this.y = this.p.height - this.p.height * this.heightRatio;
 
         this.dx = this.p.width;
-        this.dy = this.p.height/3;        
-        
-        this.slotWidth = Math.min(this.dx / (2 * this.slotsPerRow), this.dy/2);
+        this.dy = this.p.height * this.heightRatio;
+
+        this.slotWidth = Math.min(this.dx / (2 * this.slotsPerRow), this.dy / 2);
         this.slotHeight = this.slotWidth;
         this.initPieceEvents();
     }

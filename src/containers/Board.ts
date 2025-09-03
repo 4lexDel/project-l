@@ -3,10 +3,14 @@ import { BaseContainer } from "./BaseContainer";
 import { PuzzleFactory } from "../objects/PuzzleFactory";
 
 export class Board extends BaseContainer {
-    constructor(p: p5) {
-        super(p, -1, -1, -1, -1);
+    private heightRatio: number;
 
-        this.puzzles = PuzzleFactory.createBasicWhitePuzzleStack(p);
+    constructor(p: p5, heightRatio: number) {
+        super(p, -1, -1, -1, -1);
+        this.heightRatio = heightRatio;
+
+        // this.puzzles = PuzzleFactory.createBasicWhitePuzzleStack(p);
+        this.puzzles = PuzzleFactory.createBasicBlackPuzzleStack(p);
 
         this.resize();
     }
@@ -41,7 +45,7 @@ export class Board extends BaseContainer {
         this.y = 0;
 
         this.dx = this.p.width;
-        this.dy = 2*this.p.height/3;
+        this.dy = this.p.height * this.heightRatio;
 
         this.initPuzzles();
     }

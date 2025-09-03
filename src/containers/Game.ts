@@ -11,8 +11,8 @@ export class Game {
     constructor(p: p5) {
         this.p = p;
 
-        this.deck = new Deck(p);
-        this.board = new Board(p);
+        this.board = new Board(p, 0.75);
+        this.deck = new Deck(p, 0.25);
     }
 
     public resize(): void {
