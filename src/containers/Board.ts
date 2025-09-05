@@ -11,11 +11,18 @@ export class Board extends BaseContainer {
     private numCols: number = 3;
 
     private padding: number = 10;
-    private totalPaddingX: number = (this.numRows + 1) * this.padding
-    private totalPaddingY: number = (this.numCols + 1) * this.padding
+    private totalPaddingX: number = (this.numRows + 2) * this.padding
+    private totalPaddingY: number = (this.numCols + 2) * this.padding
 
     private puzzleWidth!: number;
     private puzzleHeight!: number;
+
+    private puzzleTotalWidth!: number;
+    private puzzleTotalHeight!: number;
+
+    // Locks
+    private locks: number[] = [1, 2, 1]; 
+    private lockAreaHeight: number = 20;
 
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
@@ -35,20 +42,20 @@ export class Board extends BaseContainer {
 
         this.puzzleWidth = Math.min(
             ((this.dx / 2) - this.totalPaddingX) / this.numRows,
-            ((this.dy - this.totalPaddingY) / this.numCols) / Puzzle.puzzleDimRatio
+            ((this.dy - this.totalPaddingY - this.lockAreaHeight) / this.numCols) / Puzzle.puzzleDimRatio
         );
         this.puzzleHeight = this.puzzleWidth * Puzzle.puzzleDimRatio;
+
+        this.puzzleTotalWidth = this.puzzleWidth * this.numCols + this.totalPaddingX;
+        this.puzzleTotalHeight = this.puzzleHeight * this.numRows + this.totalPaddingY + this.lockAreaHeight;
 
         this.initPuzzles();
     }
     
     private initPuzzles(): void {
-        const puzzleTotalWidth = this.puzzleWidth * this.numCols + this.totalPaddingX;
-        const puzzleTotalHeight = this.puzzleHeight * this.numRows + this.totalPaddingY;
-
         // Center the grid in the container
-        const startX = this.x + this.padding + (this.dx - puzzleTotalWidth) / 2;
-        const startY = this.y + this.padding + (this.dy - puzzleTotalHeight) / 2;
+        const startX = this.x + 2 * this.padding + (this.dx - this.puzzleTotalWidth) / 2;
+        const startY = this.y + 2 * this.padding + this.lockAreaHeight + (this.dy - this.puzzleTotalHeight) / 2;
 
         for (let i = 0; i < this.numRows * this.numCols; i++) {
             const row = Math.floor(i / this.numCols);
@@ -62,6 +69,7 @@ export class Board extends BaseContainer {
         super.draw();
         this.drawPuzzleStack();
         this.drawPuzzles();
+        this.drawLocks();
     }
 
     private drawPuzzleStack(): void {
@@ -77,9 +85,9 @@ export class Board extends BaseContainer {
         // Stack text
         this.p.fill(this.puzzles[9].isBlack ? 200 : 50);
         this.p.strokeWeight(0.8);
-        this.p.textSize(this.puzzleWidth/7);
+        this.p.textSize(this.puzzleWidth/6);
         this.p.textAlign(this.p.CENTER, this.p.CENTER);
-        this.p.text("Puzzle stack", this.x + this.dx - this.puzzleHeight - this.padding + this.puzzleHeight / 2,
+        this.p.text("Puzzles stack", this.x + this.dx - this.puzzleHeight - this.padding + this.puzzleHeight / 2,
             this.y + this.dy / 2 - this.puzzleWidth / 2 + this.puzzleWidth / 2
         );
 
@@ -87,12 +95,12 @@ export class Board extends BaseContainer {
         this.p.fill(255, 0, 0);
         this.p.ellipse(this.x + this.dx - this.puzzleHeight - 10,
             this.y + this.dy / 2 - this.puzzleWidth / 2 + 10,
-            this.puzzleWidth/5,
-            this.puzzleWidth/5
+            this.puzzleWidth/4,
+            this.puzzleWidth/4
         );
         this.p.fill(255);
         this.p.strokeWeight(0.8);
-        this.p.textSize(this.puzzleWidth/8);
+        this.p.textSize(this.puzzleWidth/6);
         this.p.textAlign(this.p.CENTER, this.p.CENTER);
         this.p.text(this.puzzles.length - 9, this.x + this.dx - this.puzzleHeight - 10,
             this.y + this.dy / 2 - this.puzzleWidth / 2 + 10
@@ -103,6 +111,32 @@ export class Board extends BaseContainer {
         for (let i = 0; i < this.numRows * this.numCols; i++) {
             // The ratio maxY / maxX must be equal to 1.241
             this.puzzles[i].draw({ maxX: this.puzzleWidth, maxY: this.puzzleHeight });
+        }
+    }
+
+    private drawLocks(): void {
+        // Center the grid in the container
+        const startX = this.x + 2 * this.padding + (this.dx - this.puzzleTotalWidth + this.puzzleWidth) / 2;
+        const startY = this.y + this.padding + this.lockAreaHeight/2 + (this.dy - this.puzzleTotalHeight) / 2;
+
+        const lockSize = this.puzzleWidth/8;
+        const lockDistFromCenter = this.puzzleWidth/8;
+        const lockBorder = this.puzzleWidth/200;
+
+        this.p.strokeWeight(lockBorder);
+        this.p.stroke(100);
+        this.p.fill(255, 210, 100);
+
+        for (let i = 0; i < this.locks.length; i++) {
+            const cx = startX + i * (this.puzzleWidth + this.padding);
+            const quantity = this.locks[i];
+
+            for (let j = 0; j < quantity; j++) {
+                let angle = 2*Math.PI * j / quantity;
+                let ex = cx + (quantity < 2 ? 0 : 1) * Math.cos(angle) * lockDistFromCenter;
+                let ey = startY + (quantity < 2 ? 0 : 1) * Math.sin(angle) * lockDistFromCenter;
+                this.p.rect(ex - lockSize/2, ey - lockSize/2, lockSize, lockSize);
+            }
         }
     }
 }

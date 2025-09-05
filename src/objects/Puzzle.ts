@@ -64,7 +64,7 @@ export class Puzzle extends BaseObject {
         const cellX = this.x + col * this.blockSize * scaleX + this.padding/2;
         const cellY = this.y + row * this.blockSize * scaleY + this.pieceRewardSize * scaleY;
         // Cell background
-        this.p.strokeWeight(1.5);
+        this.p.strokeWeight(this.blockSize * scaleX / 10);
         if (this.grid[row][col] === 1) {
           this.p.stroke(100);
           this.p.fill(230);

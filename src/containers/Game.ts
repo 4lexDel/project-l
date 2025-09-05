@@ -2,19 +2,18 @@ import p5 from "p5";
 import { Deck } from "./Deck";
 import { Board } from "./Board";
 import { BaseContainer } from "./BaseContainer";
+import { OpponentArea } from "./OpponentArea";
 
 export class Game {
-    private p: p5;
+    private layoutContainer: BaseContainer;
+    private opponentArea: OpponentArea;
+    private board: Board;
+    private deck: Deck;
 
-    public deck: Deck;
-    public board: Board;
-
-    private layoutContainer!: BaseContainer;
 
     constructor(p: p5) {
-        this.p = p;
-
         this.layoutContainer = new BaseContainer(p, 1, 0.75, "CENTER", "TOP");
+        this.opponentArea = new OpponentArea(p, 1, 0.25, "CENTER", "TOP", this.layoutContainer);
         this.board = new Board(p, 1, 0.75, "CENTER", "BOTTOM", this.layoutContainer);
         
         this.deck = new Deck(p, 1, 0.25, "CENTER", "BOTTOM");
@@ -23,14 +22,16 @@ export class Game {
     }
 
     public resize(): void {
-        this.deck.resize();
         this.layoutContainer.resize();
+        this.opponentArea.resize();
         this.board.resize();
+        this.deck.resize();
     }
 
     public draw(): void {
-        this.layoutContainer.draw();
         this.board.draw();
+        this.layoutContainer.draw();
+        this.opponentArea.draw();
         this.deck.draw();
     }
 }
