@@ -56,7 +56,7 @@ export class Puzzle extends BaseObject {
     // Draw piece reward (top right)
     this.pieceReward.x = this.x + puzzleWidth * scaleX - this.pieceRewardSize * scaleX - this.padding/2;
     this.pieceReward.y = this.y;
-    this.pieceReward.draw({ maxX: this.pieceRewardSize * scaleX, maxY: this.pieceRewardSize * scaleY }, 0);
+    this.pieceReward.draw({ maxX: this.pieceRewardSize * scaleX, maxY: this.pieceRewardSize * scaleY });
 
     // Draw grid (centered)
     for (let row = 0; row < this.grid.length; row++) {

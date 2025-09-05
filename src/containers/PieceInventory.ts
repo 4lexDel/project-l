@@ -9,20 +9,20 @@ export class PieceInventory extends BaseInventory {
 
     constructor(p: p5, pieces: Piece[], widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
-        this.pieces = pieces;
+        this.pieces = pieces;//[...pieces, ...pieces];
 
-        this.slotsPerRow = 5;
-        this.slotsPerCol = 2;
+        this.slotsPerRow = 10;
+        this.slotsPerCol = 3;
 
         this.resize();
     }
 
     public resize() {
         super.resize();
-        this.initPieceEvents();
+        this.initPieceSetup();
     }
 
-    private initPieceEvents() {
+    private initPieceSetup() {
         for (let row = 0; row < this.slotsPerCol; row++) {
             for (let col = 0; col < this.slotsPerRow; col++) {
                 const { x: slotX, y: slotY } = this.getSlotPosition(row, col);

@@ -19,10 +19,28 @@ export class PuzzleInventory extends BaseInventory {
 
     public resize(): void {
         super.resize();
+        this.initPuzzlesSetup();
+    }
+
+    public initPuzzlesSetup(): void {
+        for (let row = 0; row < this.slotsPerCol; row++) {
+            for (let col = 0; col < this.slotsPerRow; col++) {
+                const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
+                const puzzleIndex = row * this.slotsPerRow + col;
+                const puzzle = this.puzzles?.[puzzleIndex];
+
+                if (puzzle) {
+                    puzzle.x = slotX + this.slotPadding / 2;
+                    puzzle.y = slotY + this.slotPadding / 2;
+                }
+            }
+        }
     }
 
     public drawPuzzles(): void {
-        // COMING SOON
+        this.puzzles.forEach(puzzle => {
+            puzzle.draw({ maxX: this.slotWidth - this.slotPadding, maxY: this.slotHeight - this.slotPadding });
+        });
     }
 
     public draw(): void {

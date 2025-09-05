@@ -50,7 +50,7 @@ export class BaseInventory extends BaseContainer {
     }
 
     public draw(): void {
-        super.draw();
+        // super.draw();
         this.drawSlots();
     }
 }
