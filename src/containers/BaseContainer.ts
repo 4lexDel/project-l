@@ -1,6 +1,9 @@
 import p5 from "p5";
 import { BaseObject } from "../objects/BaseObject";
 
+export type VerticalAlign = "TOP" | "BOTTOM" | "CENTER";
+export type HorizontalAlign = "LEFT" | "RIGHT" | "CENTER";
+
 export class BaseContainer extends BaseObject {
     protected widthRatio: number;
     protected heightRatio: number;
@@ -8,23 +11,57 @@ export class BaseContainer extends BaseObject {
     public dx!: number;
     public dy!: number;
 
-    public verticalAlign: "TOP" | "BOTTOM";
-    public horizontalAlign: "LEFT" | "RIGHT";
+    public verticalAlign: VerticalAlign;
+    public horizontalAlign: HorizontalAlign;
 
-    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: "LEFT" | "RIGHT" = "LEFT", verticalAlign: "TOP" | "BOTTOM" = "TOP") {
+    private parentContainer?: BaseContainer;
+
+    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, -1, -1);
         this.widthRatio = widthRatio;
         this.heightRatio = heightRatio;
         this.horizontalAlign = horizontalAlign;
         this.verticalAlign = verticalAlign;
+
+        this.parentContainer = parentContainer;
     }
 
     public resize() {
-        this.x = this.horizontalAlign === "LEFT" ? 0 : this.p.width * (1 - this.widthRatio);
-        this.y = this.verticalAlign === "TOP" ? 0 : this.p.height * (1 - this.heightRatio);
+        // const parentX = this.parentContainer ? this.parentContainer.x : 0; 
+        // const parentY = this.parentContainer ? this.parentContainer.y : 0; 
+        // const parentWidth = this.parentContainer ? this.parentContainer.dx : this.p.width; 
+        // const parentHeight = this.parentContainer ? this.parentContainer.dx : this.p.height;
+        const parentX = this.parentContainer?.x ?? 0; 
+        const parentY = this.parentContainer?.y ?? 0; 
+        const parentWidth = this.parentContainer?.dx ?? this.p.width; 
+        const parentHeight = this.parentContainer?.dy ?? this.p.height;
 
-        this.dx = this.p.width * this.widthRatio;
-        this.dy = this.p.height * this.heightRatio;
+        this.dx = parentWidth * this.widthRatio;
+        this.dy = parentHeight * this.heightRatio;
+
+        switch (this.horizontalAlign) {
+            case "CENTER":
+                this.x = parentX + (parentWidth - this.dx) / 2;
+                break;
+            case "LEFT":
+                this.x = parentX;
+                break;
+            case "RIGHT":
+                this.x = parentX + parentWidth * (1 - this.widthRatio);
+                break;
+        }
+
+        switch (this.verticalAlign) {
+            case "CENTER":
+                this.y = parentY + (parentHeight - this.dy) / 2;
+                break;
+            case "TOP":
+                this.y = parentY
+                break;
+            case "BOTTOM":
+                this.y = parentY + parentHeight * (1 - this.heightRatio);
+                break;
+        }     
     }
 
     draw() {

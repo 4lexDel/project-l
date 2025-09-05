@@ -1,5 +1,6 @@
 import p5 from "p5";
 import { BaseContainer } from "./BaseContainer";
+import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
 
 export class BaseInventory extends BaseContainer {
     protected slotWidth!: number;
@@ -11,8 +12,8 @@ export class BaseInventory extends BaseContainer {
     protected offsetX: number = 0;
     protected offsetY: number = 0;
 
-    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: "LEFT" | "RIGHT" = "LEFT", verticalAlign: "TOP" | "BOTTOM" = "TOP") {
-        super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign);
+    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer) {
+        super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
     }
 
     public resize() {

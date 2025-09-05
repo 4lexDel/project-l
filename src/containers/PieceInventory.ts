@@ -1,12 +1,14 @@
 import p5 from "p5";
 import { Piece } from "../objects/Piece";
+import { BaseContainer } from "./BaseContainer";
+import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
 import { BaseInventory } from "./BaseInventory";
 
 export class PieceInventory extends BaseInventory {
     private pieces: Piece[];
 
-    constructor(p: p5, pieces: Piece[], widthRatio: number, heightRatio: number, horizontalAlign: "LEFT" | "RIGHT" = "LEFT", verticalAlign: "TOP" | "BOTTOM" = "TOP") {
-        super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign);
+    constructor(p: p5, pieces: Piece[], widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer) {
+        super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
         this.pieces = pieces;
 
         this.slotsPerRow = 5;

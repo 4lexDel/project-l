@@ -106,10 +106,10 @@ export class Piece extends BaseObject {
     let scaleX = 1, scaleY = 1;
     let offsetX = 0, offsetY = 0;
 
-    let pieceRatioApplied = 1;
+    let pieceRatio = 1;
 
     if (boundDisplay) {
-      pieceRatioApplied = this.pieceRatio;
+      pieceRatio = this.pieceRatio;
       const { pieceWidth, pieceHeight } = this.getPieceDimensions();
       const scale = Math.min(boundDisplay.maxX / pieceWidth, boundDisplay.maxY / pieceHeight);
       scaleX = scale;
@@ -127,9 +127,9 @@ export class Piece extends BaseObject {
     this.p.strokeWeight(strokeWeight);
     this.p.stroke(150);
     for (let [dx, dy] of this.shape) {
-      const x = this.x + dx * this.blockSize * scaleX * pieceRatioApplied + offsetX;
-      const y = this.y + dy * this.blockSize * scaleY * pieceRatioApplied + offsetY;
-      this.p.rect(x, y, this.blockSize * scaleX * pieceRatioApplied, this.blockSize * scaleY * pieceRatioApplied);
+      const x = this.x + dx * this.blockSize * scaleX * pieceRatio + offsetX;
+      const y = this.y + dy * this.blockSize * scaleY * pieceRatio + offsetY;
+      this.p.rect(x, y, this.blockSize * scaleX * pieceRatio, this.blockSize * scaleY * pieceRatio);
     }
   }
 }

@@ -11,16 +11,11 @@ export class Game {
     constructor(p: p5) {
         this.p = p;
 
-        this.board = new Board(p, 0.75);
-        this.deck = new Deck(p, 0.25);
+        this.board = new Board(p, 1, 0.75, "CENTER", "TOP");
+        this.deck = new Deck(p, 1, 0.25, "CENTER", "BOTTOM");
     }
 
     public resize(): void {
-        this.deck.dx = this.p.width;
-        this.deck.dy = this.p.height / 3;
-        this.board.dx = this.p.width;
-        this.board.dy = this.p.height - this.deck.dy;
-
         this.deck.resize();
         this.board.resize();
     }

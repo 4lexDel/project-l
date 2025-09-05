@@ -6,6 +6,7 @@ import { PieceInventory } from "./PieceInventory";
 import { PuzzleFactory } from "../objects/PuzzleFactory";
 import { Puzzle } from "../objects/Puzzle";
 import { PuzzleInventory } from "./PuzzleInventory";
+import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
 
 export class Deck extends BaseContainer {
     private pieceInventory: PieceInventory;
@@ -14,8 +15,8 @@ export class Deck extends BaseContainer {
     public pieces: Piece[];
     public puzzles: Puzzle[];
 
-    constructor(p: p5, heightRatio: number) {
-        super(p, 1, heightRatio, "LEFT", "BOTTOM");
+    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
+        super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
 
         this.pieces = [
             PieceFactory.create1block(p),
@@ -33,9 +34,10 @@ export class Deck extends BaseContainer {
             p, 
             this.pieces, 
             0.5,
-            heightRatio,
+            1,
             "LEFT",
-            "BOTTOM"
+            "CENTER",
+            this
         );
 
         this.puzzles = PuzzleFactory.createBasicWhitePuzzleStack(p, 4);
@@ -43,9 +45,10 @@ export class Deck extends BaseContainer {
             p,
             this.puzzles,
             0.5,
-            heightRatio,
+            1,
             "RIGHT",
-            "BOTTOM"
+            "CENTER",
+            this
         );
 
         this.resize();
