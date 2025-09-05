@@ -2,6 +2,20 @@ import p5 from "p5";
 import { Piece } from "./Piece";
 
 export class PieceFactory {
+    static createAllPieces(p: p5): Piece[] {
+        return [
+            this.create1block(p),
+            this.create2block(p),
+            this.create3block(p),
+            this.create4block(p),
+            this.createSquare(p),
+            this.createLblock(p),
+            this.createZigzag(p),
+            this.createCorner(p),
+            this.createSmallT(p)
+        ];
+    }
+
     static create1block(p: p5): Piece {
         return new Piece(p, [[0, 0]], p.color(255, 210, 100), 1);
     }

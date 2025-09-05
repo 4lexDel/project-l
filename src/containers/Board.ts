@@ -3,16 +3,21 @@ import { BaseContainer } from "./BaseContainer";
 import { PuzzleFactory } from "../objects/PuzzleFactory";
 import { Puzzle } from "../objects/Puzzle";
 import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
+import { Piece } from "../objects/Piece";
+import { PieceFactory } from "../objects/PieceFactory";
 
 export class Board extends BaseContainer {
-    private puzzles: Puzzle[];
+    private padding: number = 10;
 
+    private puzzles: Puzzle[];
+    private pieceStacks: { piece: Piece, quantity: number }[] = [];
+
+    // Puzzle configuration
     private numRows: number = 3;
     private numCols: number = 3;
 
-    private padding: number = 10;
-    private totalPaddingX: number = (this.numRows + 2) * this.padding
-    private totalPaddingY: number = (this.numCols + 2) * this.padding
+    private totalPaddingX: number = (this.numRows + 2) * this.padding;
+    private totalPaddingY: number = (this.numCols + 2) * this.padding;
 
     private puzzleWidth!: number;
     private puzzleHeight!: number;
@@ -34,6 +39,8 @@ export class Board extends BaseContainer {
             ...PuzzleFactory.createBasicBlackPuzzleStack(p, 10)
         ];
 
+        this.pieceStacks = PieceFactory.createAllPieces(p).map(piece => ({ piece, quantity: 10 }));
+
         this.resize();
     }
 
@@ -41,7 +48,7 @@ export class Board extends BaseContainer {
         super.resize();
 
         this.puzzleWidth = Math.min(
-            ((this.dx / 2) - this.totalPaddingX) / this.numRows,
+            ((this.dx / 3) - this.totalPaddingX) / this.numRows,
             ((this.dy - this.totalPaddingY - this.lockAreaHeight) / this.numCols) / Puzzle.puzzleDimRatio
         );
         this.puzzleHeight = this.puzzleWidth * Puzzle.puzzleDimRatio;
@@ -70,6 +77,17 @@ export class Board extends BaseContainer {
         this.drawPuzzleStack();
         this.drawPuzzles();
         this.drawLocks();
+        this.drawPiececeStacks();
+    }
+
+    private drawCounter(x: number, y: number, count: number): void {
+        this.p.fill(255, 0, 0);
+        this.p.ellipse(x, y, this.puzzleWidth / 4, this.puzzleWidth / 4);
+        this.p.fill(255);
+        this.p.strokeWeight(0.8);
+        this.p.textSize(this.puzzleWidth / 6);
+        this.p.textAlign(this.p.CENTER, this.p.CENTER);
+        this.p.text(count, x, y);
     }
 
     private drawPuzzleStack(): void {
@@ -92,18 +110,10 @@ export class Board extends BaseContainer {
         );
 
         // Number of remaining puzzles
-        this.p.fill(255, 0, 0);
-        this.p.ellipse(this.x + this.dx - this.puzzleHeight - 10,
+        this.drawCounter(
+            this.x + this.dx - this.puzzleHeight - 10,
             this.y + this.dy / 2 - this.puzzleWidth / 2 + 10,
-            this.puzzleWidth/4,
-            this.puzzleWidth/4
-        );
-        this.p.fill(255);
-        this.p.strokeWeight(0.8);
-        this.p.textSize(this.puzzleWidth/6);
-        this.p.textAlign(this.p.CENTER, this.p.CENTER);
-        this.p.text(this.puzzles.length - 9, this.x + this.dx - this.puzzleHeight - 10,
-            this.y + this.dy / 2 - this.puzzleWidth / 2 + 10
+            this.puzzles.length - 9
         );
     }
 
@@ -136,6 +146,35 @@ export class Board extends BaseContainer {
                 let ex = cx + (quantity < 2 ? 0 : 1) * Math.cos(angle) * lockDistFromCenter;
                 let ey = startY + (quantity < 2 ? 0 : 1) * Math.sin(angle) * lockDistFromCenter;
                 this.p.rect(ex - lockSize/2, ey - lockSize/2, lockSize, lockSize);
+            }
+        }
+    }
+
+    private drawPiececeStacks(): void {
+        // Draw 3x3 grid of piece stacks, centered vertically
+        const gridRows = 3;
+        const gridCols = 3;
+        const pieceW = this.puzzleWidth / 1.5;
+        const pieceH = this.puzzleHeight / 1.5;
+
+        const totalGridHeight = gridRows * pieceH + (gridRows - 1) * this.padding;
+        const startY = this.y + (this.dy - totalGridHeight) / 2;
+        const startX = this.x + this.padding;
+
+        let pieceIndex = 0;
+        for (let row = 0; row < gridRows; row++) {
+            for (let col = 0; col < gridCols; col++) {
+            if (pieceIndex >= this.pieceStacks.length) break;
+            const { piece, quantity } = this.pieceStacks[pieceIndex++];
+            piece.x = startX + col * (pieceW + this.padding);
+            piece.y = startY + row * (pieceH + this.padding);
+            piece.draw({ maxX: pieceW, maxY: pieceH });
+            // Draw the counter at the top-right corner of the piece
+            this.drawCounter(
+                piece.x + pieceW - pieceW / 6,
+                piece.y + pieceH / 6,
+                quantity
+            );
             }
         }
     }
