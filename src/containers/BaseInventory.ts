@@ -12,15 +12,21 @@ export class BaseInventory extends BaseContainer {
     protected offsetX: number = 0;
     protected offsetY: number = 0;
 
-    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer) {
+    protected slotRatio: number;
+
+    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, slotRatio: number = 1) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
+        this.slotRatio = slotRatio;
     }
 
     public resize() {
         super.resize();
 
-        this.slotWidth = Math.min(this.dx / this.slotsPerRow, this.dy / this.slotsPerCol);
-        this.slotHeight = this.slotWidth;
+        this.slotWidth = Math.min(
+            this.dx / this.slotsPerRow, 
+            (this.dy / this.slotsPerCol) / this.slotRatio
+        );
+        this.slotHeight = this.slotWidth * this.slotRatio;
 
         this.offsetX = (this.dx - this.slotWidth * this.slotsPerRow) / 2;
         this.offsetY = (this.dy - this.slotHeight * this.slotsPerCol) / 2;

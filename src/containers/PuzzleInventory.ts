@@ -8,7 +8,7 @@ export class PuzzleInventory extends BaseInventory {
     private puzzles: Puzzle[];
 
     constructor(p: p5, puzzles: Puzzle[], widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer) {
-        super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
+        super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent, Puzzle.puzzleDimRatio);
         this.puzzles = puzzles;
 
         this.slotsPerRow = 4;
