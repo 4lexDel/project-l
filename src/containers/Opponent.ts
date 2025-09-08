@@ -2,10 +2,10 @@ import p5 from "p5";
 import { BaseContainer } from "./BaseContainer";
 import { PieceFactory } from "../objects/PieceFactory";
 import { Piece } from "../objects/Piece";
-import { PieceInventory } from "./PieceInventory";
 import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
+import { PieceInventory } from "./inventory/PieceInventory";
 
-export class OpponentArea extends BaseContainer {
+export class Opponent extends BaseContainer {
     private pieceInventory: PieceInventory;
 
     public pieces: Piece[];

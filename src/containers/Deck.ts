@@ -2,11 +2,11 @@ import p5 from "p5";
 import { BaseContainer } from "./BaseContainer";
 import { PieceFactory } from "../objects/PieceFactory";
 import { Piece } from "../objects/Piece";
-import { PieceInventory } from "./PieceInventory";
 import { PuzzleFactory } from "../objects/PuzzleFactory";
 import { Puzzle } from "../objects/Puzzle";
-import { PuzzleInventory } from "./PuzzleInventory";
 import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
+import { PieceInventory } from "./inventory/PieceInventory";
+import { PuzzleInventory } from "./inventory/PuzzleInventory";
 
 export class Deck extends BaseContainer {
     private pieceInventory: PieceInventory;

@@ -1,6 +1,6 @@
 import p5 from "p5";
-import { BaseContainer } from "./BaseContainer";
-import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
+import { BaseContainer } from "../BaseContainer";
+import type { HorizontalAlign, VerticalAlign } from "../BaseContainer";
 
 export class BaseInventory extends BaseContainer {
     protected slotWidth!: number;

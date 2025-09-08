@@ -1,8 +1,8 @@
 import p5 from "p5";
 import { BaseInventory } from "./BaseInventory";
-import { Puzzle } from "../objects/Puzzle";
-import { BaseContainer } from "./BaseContainer";
-import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
+import { Puzzle } from "../../objects/Puzzle";
+import { BaseContainer } from "./../BaseContainer";
+import type { HorizontalAlign, VerticalAlign } from "./../BaseContainer";
 
 export class PuzzleInventory extends BaseInventory {
     private puzzles: Puzzle[];

@@ -1,7 +1,7 @@
 import p5 from "p5";
-import { Piece } from "../objects/Piece";
-import { BaseContainer } from "./BaseContainer";
-import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
+import { Piece } from "../../objects/Piece";
+import { BaseContainer } from "./../BaseContainer";
+import type { HorizontalAlign, VerticalAlign } from "./../BaseContainer";
 import { BaseInventory } from "./BaseInventory";
 
 export class PieceInventory extends BaseInventory {
