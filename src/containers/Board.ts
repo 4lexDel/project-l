@@ -48,7 +48,7 @@ export class Board extends BaseContainer {
         super.resize();
 
         this.puzzleWidth = Math.min(
-            ((this.dx / 3) - this.totalPaddingX) / this.numRows,
+            ((this.dx / 2) - this.totalPaddingX) / this.numRows,
             ((this.dy - this.totalPaddingY - this.lockAreaHeight) / this.numCols) / Puzzle.puzzleDimRatio
         );
         this.puzzleHeight = this.puzzleWidth * Puzzle.puzzleDimRatio;
@@ -61,7 +61,7 @@ export class Board extends BaseContainer {
     
     private initPuzzles(): void {
         // Center the grid in the container
-        const startX = this.x + 2 * this.padding + (this.dx - this.puzzleTotalWidth) / 2;
+        const startX = this.x + 2 * this.padding + (this.dx - this.puzzleTotalWidth) / 4;
         const startY = this.y + 2 * this.padding + this.lockAreaHeight + (this.dy - this.puzzleTotalHeight) / 2;
 
         for (let i = 0; i < this.numRows * this.numCols; i++) {
@@ -74,27 +74,26 @@ export class Board extends BaseContainer {
 
     public draw(): void {
         super.draw();
-        this.drawPuzzleStack();
         this.drawPuzzles();
         this.drawLocks();
-        this.drawPiececeStacks();
+        this.drawStacks();
     }
 
-    private drawCounter(x: number, y: number, count: number): void {
+    private drawCounter(x: number, y: number, count: number, ratio: number = 1): void {
         this.p.fill(255, 0, 0);
-        this.p.ellipse(x, y, this.puzzleWidth / 4, this.puzzleWidth / 4);
+        this.p.ellipse(x, y, ratio * this.puzzleWidth / 4, ratio * this.puzzleWidth / 4);
         this.p.fill(255);
         this.p.strokeWeight(0.8);
-        this.p.textSize(this.puzzleWidth / 6);
+        this.p.textSize(ratio * this.puzzleWidth / 6);
         this.p.textAlign(this.p.CENTER, this.p.CENTER);
         this.p.text(count, x, y);
     }
 
-    private drawPuzzleStack(): void {
+    private drawPuzzleStack(startY: number): void {
         // Stack rect
         this.p.fill(this.puzzles[9].isBlack ? 50 : 200);
         this.p.rect(this.x + this.dx - this.puzzleHeight - this.padding,
-            this.y + this.dy / 2 - this.puzzleWidth / 2,
+            startY,
             this.puzzleHeight,
             this.puzzleWidth,
             5
@@ -106,13 +105,13 @@ export class Board extends BaseContainer {
         this.p.textSize(this.puzzleWidth/6);
         this.p.textAlign(this.p.CENTER, this.p.CENTER);
         this.p.text("Puzzles stack", this.x + this.dx - this.puzzleHeight - this.padding + this.puzzleHeight / 2,
-            this.y + this.dy / 2 - this.puzzleWidth / 2 + this.puzzleWidth / 2
+            startY + this.puzzleWidth / 2
         );
 
         // Number of remaining puzzles
         this.drawCounter(
             this.x + this.dx - this.puzzleHeight - 10,
-            this.y + this.dy / 2 - this.puzzleWidth / 2 + 10,
+            startY + 5,
             this.puzzles.length - 9
         );
     }
@@ -126,7 +125,7 @@ export class Board extends BaseContainer {
 
     private drawLocks(): void {
         // Center the grid in the container
-        const startX = this.x + 2 * this.padding + (this.dx - this.puzzleTotalWidth + this.puzzleWidth) / 2;
+        const startX = this.x + 2 * this.padding + (this.dx - this.puzzleTotalWidth + 2 * this.puzzleWidth) / 4;
         const startY = this.y + this.padding + this.lockAreaHeight/2 + (this.dy - this.puzzleTotalHeight) / 2;
 
         const lockSize = this.puzzleWidth/8;
@@ -150,16 +149,19 @@ export class Board extends BaseContainer {
         }
     }
 
-    private drawPiececeStacks(): void {
+    private drawStacks(): void {
         // Draw 3x3 grid of piece stacks, centered vertically
         const gridRows = 3;
         const gridCols = 3;
-        const pieceW = this.puzzleWidth / 1.5;
-        const pieceH = this.puzzleHeight / 1.5;
+        const pieceW = this.puzzleWidth / 2;
+        const pieceH = this.puzzleHeight / 2;
 
+        const totalGridWidth = gridCols * pieceW + (gridCols - 1) * this.padding;
         const totalGridHeight = gridRows * pieceH + (gridRows - 1) * this.padding;
-        const startY = this.y + (this.dy - totalGridHeight) / 2;
-        const startX = this.x + this.padding;
+        const startX = this.x + this.dx - totalGridWidth - 2 * this.padding;
+        const startY = this.y + (this.dy - totalGridHeight + this.puzzleWidth) / 2 + 2 * this.padding;
+
+        this.drawPuzzleStack(startY - this.puzzleWidth - 2 * this.padding);
 
         let pieceIndex = 0;
         for (let row = 0; row < gridRows; row++) {
@@ -173,7 +175,8 @@ export class Board extends BaseContainer {
             this.drawCounter(
                 piece.x + pieceW - pieceW / 6,
                 piece.y + pieceH / 6,
-                quantity
+                quantity,
+                0.8
             );
             }
         }

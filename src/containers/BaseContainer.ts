@@ -27,10 +27,6 @@ export class BaseContainer extends BaseObject {
     }
 
     public resize() {
-        // const parentX = this.parentContainer ? this.parentContainer.x : 0; 
-        // const parentY = this.parentContainer ? this.parentContainer.y : 0; 
-        // const parentWidth = this.parentContainer ? this.parentContainer.dx : this.p.width; 
-        // const parentHeight = this.parentContainer ? this.parentContainer.dx : this.p.height;
         const parentX = this.parentContainer?.x ?? 0; 
         const parentY = this.parentContainer?.y ?? 0; 
         const parentWidth = this.parentContainer?.dx ?? this.p.width; 
@@ -65,7 +61,6 @@ export class BaseContainer extends BaseObject {
     }
 
     public draw() {
-        // draw a simple rect without background (border only small one 2 weight black)
         this.p.strokeWeight(2);
         this.p.stroke(50);
         this.p.noFill();

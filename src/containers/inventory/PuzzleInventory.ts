@@ -7,12 +7,12 @@ import type { HorizontalAlign, VerticalAlign } from "./../BaseContainer";
 export class PuzzleInventory extends BaseInventory {
     private puzzles: Puzzle[];
 
-    constructor(p: p5, puzzles: Puzzle[], widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer) {
+    constructor(p: p5, puzzles: Puzzle[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent, Puzzle.puzzleDimRatio);
         this.puzzles = puzzles;
 
-        this.slotsPerRow = 4;
-        this.slotsPerCol = 1;
+        this.slotsPerRow = slotsPerRow;
+        this.slotsPerCol = slotsPerCol;
 
         this.resize();
     }
@@ -39,7 +39,8 @@ export class PuzzleInventory extends BaseInventory {
 
     public drawPuzzles(): void {
         this.puzzles.forEach(puzzle => {
-            puzzle.draw({ maxX: this.slotWidth - this.slotPadding, maxY: this.slotHeight - this.slotPadding });
+            if(puzzle.x !== -1 && puzzle.y !== -1) 
+                puzzle.draw({ maxX: this.slotWidth - this.slotPadding, maxY: this.slotHeight - this.slotPadding });
         });
     }
 

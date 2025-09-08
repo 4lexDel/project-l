@@ -3,20 +3,25 @@ import { BaseContainer } from "./BaseContainer";
 import { PieceFactory } from "../objects/PieceFactory";
 import { Piece } from "../objects/Piece";
 import { PuzzleFactory } from "../objects/PuzzleFactory";
-import { Puzzle } from "../objects/Puzzle";
 import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
 import { PieceInventory } from "./inventory/PieceInventory";
 import { PuzzleInventory } from "./inventory/PuzzleInventory";
 
 export class Deck extends BaseContainer {
+    private puzzleInventoryAchieved: PuzzleInventory;
+
+    private rightContainer: BaseContainer;
     private pieceInventory: PieceInventory;
     private puzzleInventory: PuzzleInventory;
 
     public pieces: Piece[];
-    public puzzles: Puzzle[];
 
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
+
+        let puzzles = PuzzleFactory.createBasicWhitePuzzleStack(p, 1);
+        this.puzzleInventoryAchieved  = new PuzzleInventory(p, puzzles, 1, 1, 0.1, 1, "LEFT", "CENTER", this);
+        this.rightContainer = new BaseContainer(p, 0.9, 1, "RIGHT", "CENTER", this);
 
         this.pieces = [
             PieceFactory.create1block(p),
@@ -29,26 +34,10 @@ export class Deck extends BaseContainer {
             PieceFactory.createCorner(p),
             PieceFactory.createSmallT(p),
         ];
-        this.pieceInventory = new PieceInventory(
-            p, 
-            this.pieces, 
-            0.5,
-            1,
-            "LEFT",
-            "CENTER",
-            this
-        );
+        this.pieceInventory = new PieceInventory(p, this.pieces, 0.5, 1, "LEFT", "CENTER", this.rightContainer);
 
-        this.puzzles = PuzzleFactory.createBasicWhitePuzzleStack(p, 3);
-        this.puzzleInventory = new PuzzleInventory(
-            p,
-            this.puzzles,
-            0.5,
-            1,
-            "RIGHT",
-            "CENTER",
-            this
-        );
+        puzzles = PuzzleFactory.createBasicWhitePuzzleStack(p, 4);
+        this.puzzleInventory = new PuzzleInventory(p, puzzles, 4, 1, 0.5, 1, "RIGHT", "CENTER", this.rightContainer);
 
         this.resize();
     }
@@ -56,12 +45,20 @@ export class Deck extends BaseContainer {
     public resize() {
         super.resize();
 
+        this.rightContainer.resize();
+        this.puzzleInventoryAchieved.resize();
         this.pieceInventory.resize();
         this.puzzleInventory.resize();
     }
 
     public draw(): void {
         super.draw();
+
+        // Container
+        this.rightContainer.draw();
+
+        // Puzzle achieved
+        this.puzzleInventoryAchieved.draw();
 
         // Puzzles
         this.puzzleInventory.draw();
