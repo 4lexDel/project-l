@@ -7,8 +7,8 @@ import type { HorizontalAlign, VerticalAlign } from "./../BaseContainer";
 export class PuzzleInventory extends BaseInventory {
     private puzzles: Puzzle[];
 
-    constructor(p: p5, puzzles: Puzzle[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer) {
-        super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent, Puzzle.puzzleDimRatio);
+    constructor(p: p5, puzzles: Puzzle[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, readonly: boolean = true) {
+        super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent, readonly, Puzzle.puzzleDimRatio);
         this.puzzles = puzzles;
 
         this.slotsPerRow = slotsPerRow;

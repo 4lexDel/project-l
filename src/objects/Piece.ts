@@ -9,7 +9,6 @@ export class Piece extends BaseObject {
   private shape: number[][];
   private col: p5.Color;
   private tier: number;
-  public isHeld: boolean = false;
 
   private pieceRatio: number = 1;
 
@@ -17,6 +16,8 @@ export class Piece extends BaseObject {
   private collider!: { x: number; y: number; width: number; height: number };
 
   private identifier: symbol;
+
+  public onPieceRelease?: (x: number, y: number) => void;
 
   constructor(p: p5, shape: number[][], col: p5.Color, tier: number) {
     super(p, p.random(100, p.windowWidth - 100), p.random(100, p.windowHeight - 100));
@@ -42,29 +43,31 @@ export class Piece extends BaseObject {
     eventHandler.removeEventMouseReleased(this.identifier);
 
     eventHandler.addEventMousePressed(this.identifier, () => {
-      if (this.isMouseInside(this.p.mouseX, this.p.mouseY)) {
-        this.isHeld = true;
-
-        this.attachPieceToMouseCoords();
-      }
+      if (!this.isMouseInside(this.p.mouseX, this.p.mouseY)) return;
+      this.isHeld = true;
+      this.attachPieceToMouseCoords();
     });
 
-    eventHandler.addEventMouseDragged(this.identifier, () => {
-      if (this.isHeld) {
-        this.attachPieceToMouseCoords();
-      }
+    eventHandler.addEventMouseDragged(this.identifier, () => { 
+      if (!this.isHeld) return;
+      this.attachPieceToMouseCoords();
     });
 
     eventHandler.addEventMouseReleased(this.identifier, () => {
-      this.isHeld = false;
+      if (!this.isHeld) return;
+
+        this.onPieceRelease?.(this.mouseX, this.mouseY);
+        this.isHeld = false;
+        this.mouseX = -1;
+        this.mouseY = -1;
     });
   }
 
   attachPieceToMouseCoords() {
     const { pieceWidth, pieceHeight } = this.getPieceDimensions();
 
-    this.x = this.p.mouseX - pieceWidth / 2;
-    this.y = this.p.mouseY - pieceHeight / 2;
+    this.mouseX = this.p.mouseX - pieceWidth / 2;
+    this.mouseY = this.p.mouseY - pieceHeight / 2;
   }
   
   isMouseInside(mx: number, my: number): boolean {
@@ -122,13 +125,16 @@ export class Piece extends BaseObject {
       offsetX = (boundDisplay.maxX - scaledWidth) / 2;
       offsetY = (boundDisplay.maxY - scaledHeight) / 2;
     }
+
+    const cx = this.isHeld && this.mouseX !== -1 ? this.mouseX : this.x;
+    const cy = this.isHeld && this.mouseY !== -1 ? this.mouseY : this.y;
   
     this.p.fill(this.col);
     this.p.strokeWeight(this.blockSize * scaleX * pieceRatio/10);
     this.p.stroke(150);
     for (let [dx, dy] of this.shape) {
-      const x = this.x + dx * this.blockSize * scaleX * pieceRatio + offsetX;
-      const y = this.y + dy * this.blockSize * scaleY * pieceRatio + offsetY;
+      const x = cx + dx * this.blockSize * scaleX * pieceRatio + offsetX;
+      const y = cy + dy * this.blockSize * scaleY * pieceRatio + offsetY;
       this.p.rect(x, y, this.blockSize * scaleX * pieceRatio, this.blockSize * scaleY * pieceRatio);
     }
   }

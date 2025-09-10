@@ -14,9 +14,12 @@ export class BaseInventory extends BaseContainer {
 
     protected slotRatio: number;
 
-    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, slotRatio: number = 1) {
+    protected readonly: boolean = false;
+
+    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, readonly: boolean = true, slotRatio: number = 1) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
         this.slotRatio = slotRatio;
+        this.readonly = readonly;
     }
 
     public resize() {
