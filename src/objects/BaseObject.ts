@@ -80,4 +80,9 @@ export class BaseObject {
         const { objectWidth, objectHeight } = this.getObjectDimensions();
         return mx > this.x && mx < this.x + objectWidth && my > this.y && my < this.y + objectHeight;
     }
+
+    public draw(_?: { maxX: number; maxY: number }) {
+        // Must be overridden
+        throw new Error("Method not implemented.");
+    }
 }

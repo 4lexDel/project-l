@@ -40,29 +40,32 @@ export class Puzzle extends BaseObject {
       scaleY = boundDisplay.maxY / puzzleHeight;
     }
 
+    const cx = this.isHeld && this.mouseX !== -1 ? this.mouseX : this.x;
+    const cy = this.isHeld && this.mouseY !== -1 ? this.mouseY : this.y;
+
     // Draw border
     this.p.strokeWeight(1);
     this.p.stroke(150);
     this.p.fill(20);
-    this.p.rect(this.x, this.y, puzzleWidth * scaleX, puzzleHeight * scaleY, 5);
+    this.p.rect(cx, cy, puzzleWidth * scaleX, puzzleHeight * scaleY, 5);
 
     // Draw reward points (top left)
     this.p.noStroke();
     this.p.fill(200);
     this.p.textSize(puzzleWidth * scaleX / 8);
     this.p.textAlign(this.p.LEFT, this.p.TOP);
-    this.p.text(`${this.pointsReward != 0 ? this.pointsReward : ''}`, this.x + this.padding * scaleX, this.y + this.padding * scaleX);
+    this.p.text(`${this.pointsReward != 0 ? this.pointsReward : ''}`, cx + this.padding * scaleX, cy + this.padding * scaleX);
 
     // Draw piece reward (top right)
-    this.pieceReward.x = this.x + puzzleWidth * scaleX - this.pieceRewardSize * scaleX - this.padding/2;
-    this.pieceReward.y = this.y;
+    this.pieceReward.x = cx + puzzleWidth * scaleX - this.pieceRewardSize * scaleX - this.padding/2;
+    this.pieceReward.y = cy;
     this.pieceReward.draw({ maxX: this.pieceRewardSize * scaleX, maxY: this.pieceRewardSize * scaleY });
 
     // Draw grid (centered)
     for (let row = 0; row < this.grid.length; row++) {
       for (let col = 0; col < this.grid[row].length; col++) {
-        const cellX = this.x + col * this.blockSize * scaleX + this.padding/2;
-        const cellY = this.y + row * this.blockSize * scaleY + this.pieceRewardSize * scaleY;
+        const cellX = cx + col * this.blockSize * scaleX + this.padding/2;
+        const cellY = cy + row * this.blockSize * scaleY + this.pieceRewardSize * scaleY;
         // Cell background
         this.p.strokeWeight(this.blockSize * scaleX / 10);
         if (this.grid[row][col] === 1) {

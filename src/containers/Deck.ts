@@ -27,7 +27,7 @@ export class Deck extends BaseContainer {
         this.pieceInventory = new PieceInventory(p, this.pieces, 0.5, 1, "LEFT", "CENTER", this.rightContainer, false);
 
         puzzles = PuzzleFactory.createBasicWhitePuzzleStack(p, 2);
-        this.puzzleInventory = new PuzzleInventory(p, puzzles, 4, 1, 0.5, 1, "RIGHT", "CENTER", this.rightContainer);
+        this.puzzleInventory = new PuzzleInventory(p, puzzles, 4, 1, 0.5, 1, "RIGHT", "CENTER", this.rightContainer, false);
 
         this.resize();
     }
