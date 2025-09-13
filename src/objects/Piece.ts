@@ -11,8 +11,8 @@ export class Piece extends BaseObject {
 
   private pieceRatio: number = 1;
 
-  constructor(p: p5, shape: number[][], col: p5.Color, tier: number) {
-    super(p, p.random(100, p.windowWidth - 100), p.random(100, p.windowHeight - 100));
+  constructor(p: p5, shape: number[][], col: p5.Color, tier: number, quantity = 1) {
+    super(p, -1, -1, quantity);
     this.shape = shape;
     this.col = col;
     this.tier = tier;

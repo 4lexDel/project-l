@@ -22,10 +22,10 @@ export class ActionHelper extends BaseContainer {
     }
 
     public drawActionHelper(): void {
-        this.p.fill(200);
+        this.p.fill(50);
         this.p.rect(this.x + this.padding, this.y + this.padding, this.dx - this.padding * 2, this.dy - this.padding * 2, 5);
         this.p.noStroke();
-        this.p.fill(50);
+        this.p.fill(200);
         this.p.textSize(this.dx/10);
         this.p.textAlign(this.p.CENTER, this.p.CENTER);
         this.p.text("Actions helper", this.x + this.dx/2, this.y + 4 * this.padding);

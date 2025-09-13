@@ -38,6 +38,10 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 - Limit the draw repetition to improve the performance
 - Refactor the objects files ? | Container = OK
 - Handle the little gap between the layouts
+- Create a Z-INDEX system
+- Manage the piece quantity (stacks)
+- Manage the piece stack (storage vs display)
+- Keep a unique size for the item dragged?
 
 <br>
 

@@ -9,9 +9,10 @@ export class Score extends BaseObject {
         this.value = 0;
     }
 
-    draw() {
+    public draw() {
         this.p.fill(200);
         this.p.textSize(32);
+        this.p.textAlign(this.p.LEFT, this.p.TOP);
         this.p.text(`Score: ${this.value}`, this.x, this.y);
     }
 }

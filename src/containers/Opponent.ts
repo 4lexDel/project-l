@@ -23,6 +23,8 @@ export class Opponent extends BaseContainer {
         this.pieceInventory = new PieceInventory(
             p, 
             this.pieces, 
+            20,
+            1,
             0.5,
             1,
             "CENTER",

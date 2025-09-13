@@ -35,7 +35,6 @@ export class Puzzle extends BaseObject {
     const { objectWidth: puzzleWidth, objectHeight: puzzleHeight } = this.getObjectDimensions();
 
     if (boundDisplay) {
-      // const scale = Math.min(boundDisplay.maxX / puzzleWidth, boundDisplay.maxY / puzzleHeight);
       scaleX = boundDisplay.maxX / puzzleWidth;
       scaleY = boundDisplay.maxY / puzzleHeight;
     }

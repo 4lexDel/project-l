@@ -13,6 +13,8 @@ export class BaseObject {
     public mouseX: number = -1;
     public mouseY: number = -1;
 
+    public quantity: number;
+
     // Collider for the piece (override the shape & blocksize)
     protected collider!: { x: number; y: number; width: number; height: number };
 
@@ -20,10 +22,11 @@ export class BaseObject {
 
     public onObjectRelease?: (x: number, y: number) => void;
 
-    constructor(p: p5, x: number, y: number) {
+    constructor(p: p5, x: number, y: number, quantity: number = 1) {
         this.p = p;
         this.x = x;
         this.y = y;
+        this.quantity = quantity;
 
         this.identifier = Symbol("object");
     }

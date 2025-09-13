@@ -1,6 +1,6 @@
 import p5 from "p5";
 import { Deck } from "./Deck";
-import { Board } from "./Board";
+import { Board } from "./Board.ts";
 import { BaseContainer } from "./BaseContainer";
 import { Opponent } from "./Opponent";
 import { ActionHelper } from "./ActionHelper";
@@ -37,18 +37,18 @@ export class Game {
         this.middleContainer.resize();
         this.bottomContainer.resize();
         this.opponent.resize();
+        this.deck.resize();
         this.board.resize();
         this.actionHelper.resize();
-        this.deck.resize();
     }
 
     public draw(): void {
         this.topContainer.draw();
         this.middleContainer.draw();
         this.bottomContainer.draw();
-        this.board.draw();
-        this.actionHelper.draw();
         this.opponent.draw();
         this.deck.draw();
+        this.board.draw();
+        this.actionHelper.draw();
     }
 }
