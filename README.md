@@ -53,7 +53,7 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 
 | **Category** | **Purpose** | **User action** | **External consequences** | **Advancement** |
 |:---:|:---:|:---|:---|:---:|
-| Piece | Organize the inventory | Drag and drop from and to the piece inventory | - Update the piece inventory | ❌ |
+| Piece | Organize the inventory | Drag and drop from and to the piece inventory | - Update the piece inventory | ✅ |
 | Piece | Complete a puzzle | Drag and drop from the piece inventory to the puzzle inventory | - Update the puzzle completed display<br>- Remove the piece moved from the piece inventory | ❌ |
 | Piece | Get a tier 1 piece | Take a tier 1 piece from the piece stacks to the piece inventory | - Update the piece stacks<br>- Update the piece inventory | ❌ |
 | Piece | Upgrade a piece | Upgrade a piece from the inventory | - Update the piece inventory<br>- Update the piece stacks | ❌ |
