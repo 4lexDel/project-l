@@ -23,16 +23,16 @@ export class Puzzle extends BaseObject {
     this.blockSize = 15;
   }
 
-  getDimensions() {
+  public getObjectDimensions() {
     const rows = this.grid.length;
     const cols = this.grid[0].length;
-    return { width: cols * this.blockSize + this.padding, height: rows * this.blockSize + this.padding + this.pieceRewardSize };
+    return { objectWidth: cols * this.blockSize + this.padding, objectHeight: rows * this.blockSize + this.padding + this.pieceRewardSize };
   }
 
-  draw(boundDisplay?: { maxX: number; maxY: number }) {
+  public draw(boundDisplay?: { maxX: number; maxY: number }) {
     let scaleX = 1, scaleY = 1;
-    
-    const { width: puzzleWidth, height: puzzleHeight } = this.getDimensions();
+
+    const { objectWidth: puzzleWidth, objectHeight: puzzleHeight } = this.getObjectDimensions();
 
     if (boundDisplay) {
       // const scale = Math.min(boundDisplay.maxX / puzzleWidth, boundDisplay.maxY / puzzleHeight);
@@ -80,7 +80,7 @@ export class Puzzle extends BaseObject {
     }
   }
 
-  tryPlacePiece(piece: Piece): boolean {
+  public tryPlacePiece(piece: Piece): boolean {
     const px = Math.round((piece.x - this.x) / this.blockSize);
     const py = Math.round((piece.y - this.y) / this.blockSize);
 

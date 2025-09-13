@@ -1,6 +1,5 @@
 import p5 from 'p5';
 import { BaseObject } from './BaseObject';
-import { EventHandler } from '../EventHandler';
 
 export class Piece extends BaseObject {
   // Usefull for the piece proportion calculation
@@ -12,85 +11,25 @@ export class Piece extends BaseObject {
 
   private pieceRatio: number = 1;
 
-  // Collider for the piece (override the shape & blocksize)
-  private collider!: { x: number; y: number; width: number; height: number };
-
-  private identifier: symbol;
-
-  public onPieceRelease?: (x: number, y: number) => void;
-
   constructor(p: p5, shape: number[][], col: p5.Color, tier: number) {
     super(p, p.random(100, p.windowWidth - 100), p.random(100, p.windowHeight - 100));
     this.shape = shape;
     this.col = col;
     this.tier = tier;
 
-    this.identifier = Symbol("piece");
-
     const shapeDims = this.getPieceShapeDimensions();
     this.pieceRatio = Math.max(shapeDims.pieceShapeWidth, shapeDims.pieceShapeHeight) / Piece.maxPieceShapeDim;
   }
 
-  setCollider(x: number, y: number, width: number, height: number) {
-    this.collider = { x, y, width, height };
-  }
-
-  initEvent() {
-    let eventHandler = EventHandler.getInstance(this.p);
-
-    eventHandler.removeEventMousePressed(this.identifier);
-    eventHandler.removeEventMouseDragged(this.identifier);
-    eventHandler.removeEventMouseReleased(this.identifier);
-
-    eventHandler.addEventMousePressed(this.identifier, () => {
-      if (!this.isMouseInside(this.p.mouseX, this.p.mouseY)) return;
-      this.isHeld = true;
-      this.attachPieceToMouseCoords();
-    });
-
-    eventHandler.addEventMouseDragged(this.identifier, () => { 
-      if (!this.isHeld) return;
-      this.attachPieceToMouseCoords();
-    });
-
-    eventHandler.addEventMouseReleased(this.identifier, () => {
-      if (!this.isHeld) return;
-
-        this.onPieceRelease?.(this.mouseX, this.mouseY);
-        this.isHeld = false;
-        this.mouseX = -1;
-        this.mouseY = -1;
-    });
-  }
-
-  attachPieceToMouseCoords() {
-    const { pieceWidth, pieceHeight } = this.getPieceDimensions();
-
-    this.mouseX = this.p.mouseX - pieceWidth / 2;
-    this.mouseY = this.p.mouseY - pieceHeight / 2;
-  }
-  
-  isMouseInside(mx: number, my: number): boolean {
-    if (this.collider) {
-      const { x, y, width, height } = this.collider;
-      return mx > x && mx < x + width && my > y && my < y + height;
-    }
-    return this.shape.some(([dx, dy]) => {
-      const bx = this.x + dx * this.blockSize;
-      const by = this.y + dy * this.blockSize;
-      return mx > bx && mx < bx + this.blockSize && my > by && my < by + this.blockSize;
-    });
-  }
-
-  rotate() {
+  public rotate() {
     this.shape = this.shape.map(([x, y]) => [y, -x]);
   }
 
-  getShape() {
+  public getShape() {
     return this.shape;
   }
 
-  getPieceShapeDimensions() {
+  public getPieceShapeDimensions() {
     const dxs = this.shape.map(([dx]) => dx);
     const dys = this.shape.map(([, dy]) => dy);
     const minDx = Math.min(...dxs), maxDx = Math.max(...dxs);
@@ -98,14 +37,15 @@ export class Piece extends BaseObject {
     return { pieceShapeWidth: (maxDx - minDx + 1), pieceShapeHeight: (maxDy - minDy + 1) };
   }
 
-  getPieceDimensions() {
+  // Override BaseObject
+  public getObjectDimensions() {
     const { pieceShapeWidth, pieceShapeHeight } = this.getPieceShapeDimensions();
-    const pieceWidth = pieceShapeWidth * this.blockSize;
-    const pieceHeight = pieceShapeHeight * this.blockSize;
-    return { pieceWidth, pieceHeight };
+    const objectWidth = pieceShapeWidth * this.blockSize;
+    const objectHeight = pieceShapeHeight * this.blockSize;
+    return { objectWidth, objectHeight };
   }
 
-  draw(boundDisplay?: { maxX: number; maxY: number }) {
+  public draw(boundDisplay?: { maxX: number; maxY: number }) {
     let scaleX = 1, scaleY = 1;
     let offsetX = 0, offsetY = 0;
 
@@ -113,14 +53,14 @@ export class Piece extends BaseObject {
 
     if (boundDisplay) {
       pieceRatio = this.pieceRatio;
-      const { pieceWidth, pieceHeight } = this.getPieceDimensions();
-      const scale = Math.min(boundDisplay.maxX / pieceWidth, boundDisplay.maxY / pieceHeight);
+      const { objectWidth, objectHeight } = this.getObjectDimensions();
+      const scale = Math.min(boundDisplay.maxX / objectWidth, boundDisplay.maxY / objectHeight);
       scaleX = scale;
       scaleY = scale;
   
       // Centering offsets
-      const scaledWidth = pieceWidth * scaleX * this.pieceRatio;
-      const scaledHeight = pieceHeight * scaleY * this.pieceRatio;
+      const scaledWidth = objectWidth * scaleX * this.pieceRatio;
+      const scaledHeight = objectHeight * scaleY * this.pieceRatio;
 
       offsetX = (boundDisplay.maxX - scaledWidth) / 2;
       offsetY = (boundDisplay.maxY - scaledHeight) / 2;

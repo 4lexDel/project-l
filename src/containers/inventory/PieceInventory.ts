@@ -44,7 +44,7 @@ export class PieceInventory extends BaseInventory {
 
     private initPieceMovement(piece: Piece) {
         piece.initEvent();
-        piece.onPieceRelease = (mouseX: number, mouseY: number) => {
+        piece.onObjectRelease = (mouseX: number, mouseY: number) => {
             const ix = Math.floor((mouseX - this.x - this.offsetX + this.slotWidth / 2) / this.slotWidth);
             const iy = Math.floor((mouseY - this.y - this.offsetY + this.slotHeight / 2) / this.slotHeight);
 
