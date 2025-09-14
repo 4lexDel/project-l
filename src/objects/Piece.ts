@@ -66,16 +66,25 @@ export class Piece extends BaseObject {
       offsetY = (boundDisplay.maxY - scaledHeight) / 2;
     }
 
-    const cx = this.isHeld && this.mouseX !== -1 ? this.mouseX : this.x;
-    const cy = this.isHeld && this.mouseY !== -1 ? this.mouseY : this.y;
-  
-    this.p.fill(this.col);
-    this.p.strokeWeight(this.blockSize * scaleX * pieceRatio/10);
-    this.p.stroke(150);
-    for (let [dx, dy] of this.shape) {
-      const x = cx + dx * this.blockSize * scaleX * pieceRatio + offsetX;
-      const y = cy + dy * this.blockSize * scaleY * pieceRatio + offsetY;
-      this.p.rect(x, y, this.blockSize * scaleX * pieceRatio, this.blockSize * scaleY * pieceRatio);
-    }
+    // Use two coords if there are more than 1 item
+    const coords = [
+      ...(!boundDisplay && this.isHeld && this.mouseX !== -1 && this.mouseY !== -1
+        ? [{ cx: this.mouseX, cy: this.mouseY }]
+        : []),
+      ...(boundDisplay && (this.quantity > 1 || !this.isHeld)
+        ? [{ cx: this.x, cy: this.y }]
+        : []),
+    ];
+
+    coords.forEach(({cx, cy}) => {
+      this.p.fill(this.col);
+      this.p.strokeWeight(this.blockSize * scaleX * pieceRatio/10);
+      this.p.stroke(150);
+      for (let [dx, dy] of this.shape) {
+        const x = cx + dx * this.blockSize * scaleX * pieceRatio + offsetX;
+        const y = cy + dy * this.blockSize * scaleY * pieceRatio + offsetY;
+        this.p.rect(x, y, this.blockSize * scaleX * pieceRatio, this.blockSize * scaleY * pieceRatio);
+      }
+    });
   }
 }

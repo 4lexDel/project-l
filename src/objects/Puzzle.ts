@@ -39,47 +39,56 @@ export class Puzzle extends BaseObject {
       scaleY = boundDisplay.maxY / puzzleHeight;
     }
 
-    const cx = this.isHeld && this.mouseX !== -1 ? this.mouseX : this.x;
-    const cy = this.isHeld && this.mouseY !== -1 ? this.mouseY : this.y;
+    // Use two coords if there are more than 1 item
+    const coords = [
+      ...(!boundDisplay && this.isHeld && this.mouseX !== -1 && this.mouseY !== -1
+        ? [{ cx: this.mouseX, cy: this.mouseY }]
+        : []),
+      ...(boundDisplay && (this.quantity > 1 || !this.isHeld)
+        ? [{ cx: this.x, cy: this.y }]
+        : []),
+    ];
 
-    // Draw border
-    this.p.strokeWeight(1);
-    this.p.stroke(150);
-    this.p.fill(20);
-    this.p.rect(cx, cy, puzzleWidth * scaleX, puzzleHeight * scaleY, 5);
+    coords.forEach(({cx, cy}) => {
+      // Draw border
+      this.p.strokeWeight(1);
+      this.p.stroke(150);
+      this.p.fill(20);
+      this.p.rect(cx, cy, puzzleWidth * scaleX, puzzleHeight * scaleY, 5);
 
-    // Draw reward points (top left)
-    this.p.noStroke();
-    this.p.fill(200);
-    this.p.textSize(puzzleWidth * scaleX / 8);
-    this.p.textAlign(this.p.LEFT, this.p.TOP);
-    this.p.text(`${this.pointsReward != 0 ? this.pointsReward : ''}`, cx + this.padding * scaleX, cy + this.padding * scaleX);
+      // Draw reward points (top left)
+      this.p.noStroke();
+      this.p.fill(200);
+      this.p.textSize(puzzleWidth * scaleX / 8);
+      this.p.textAlign(this.p.LEFT, this.p.TOP);
+      this.p.text(`${this.pointsReward != 0 ? this.pointsReward : ''}`, cx + this.padding * scaleX, cy + this.padding * scaleX);
 
-    // Draw piece reward (top right)
-    this.pieceReward.x = cx + puzzleWidth * scaleX - this.pieceRewardSize * scaleX - this.padding/2;
-    this.pieceReward.y = cy;
-    this.pieceReward.draw({ maxX: this.pieceRewardSize * scaleX, maxY: this.pieceRewardSize * scaleY });
+      // Draw piece reward (top right)
+      this.pieceReward.x = cx + puzzleWidth * scaleX - this.pieceRewardSize * scaleX - this.padding/2;
+      this.pieceReward.y = cy;
+      this.pieceReward.draw({ maxX: this.pieceRewardSize * scaleX, maxY: this.pieceRewardSize * scaleY });
 
-    // Draw grid (centered)
-    for (let row = 0; row < this.grid.length; row++) {
-      for (let col = 0; col < this.grid[row].length; col++) {
-        const cellX = cx + col * this.blockSize * scaleX + this.padding/2;
-        const cellY = cy + row * this.blockSize * scaleY + this.pieceRewardSize * scaleY;
-        // Cell background
-        this.p.strokeWeight(this.blockSize * scaleX / 10);
-        if (this.grid[row][col] === 1) {
-          this.p.stroke(100);
-          this.p.fill(230);
-          this.p.rect(cellX, cellY, this.blockSize * scaleX, this.blockSize * scaleY, 2);
-        } else {
-          this.p.noStroke();
-          
-          // draw a small ellipse at the middle
-          this.p.fill(150);
-          this.p.ellipse(cellX + (this.blockSize * scaleX / 2), cellY + (this.blockSize * scaleY / 2), 2, 2);
+      // Draw grid (centered)
+      for (let row = 0; row < this.grid.length; row++) {
+        for (let col = 0; col < this.grid[row].length; col++) {
+          const cellX = cx + col * this.blockSize * scaleX + this.padding/2;
+          const cellY = cy + row * this.blockSize * scaleY + this.pieceRewardSize * scaleY;
+          // Cell background
+          this.p.strokeWeight(this.blockSize * scaleX / 10);
+          if (this.grid[row][col] === 1) {
+            this.p.stroke(100);
+            this.p.fill(230);
+            this.p.rect(cellX, cellY, this.blockSize * scaleX, this.blockSize * scaleY, 2);
+          } else {
+            this.p.noStroke();
+            
+            // draw a small ellipse at the middle
+            this.p.fill(150);
+            this.p.ellipse(cellX + (this.blockSize * scaleX / 2), cellY + (this.blockSize * scaleY / 2), 2, 2);
+          }
         }
       }
-    }
+    });
   }
 
   public tryPlacePiece(piece: Piece): boolean {

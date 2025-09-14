@@ -8,7 +8,7 @@ import { Piece } from "../objects/Piece";
 import { PieceInventory } from "./inventory/PieceInventory";
 import { PieceFactory } from "../objects/PieceFactory";
 import { Lock } from "../objects/Lock";
-import type { BaseInventory } from "./inventory/BaseInventory";
+import { BaseInventory } from "./inventory/BaseInventory";
 
 export class Board extends BaseContainer {
     private stackPuzzles: Puzzle[];
@@ -24,6 +24,7 @@ export class Board extends BaseContainer {
     private puzzleStack: PuzzleInventory;
 
     public onPuzzleDropped?: (origin: BaseInventory<Puzzle>, puzzle: Puzzle, mouseX: number, mouseY: number) => void;
+    public onPieceDropped?: (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => void;
 
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
@@ -57,9 +58,13 @@ export class Board extends BaseContainer {
     }
 
     private initCallbacks() {
+        // Inspire from the component programming style
         this.puzzleGrid.onItemDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle, mouseX: number, mouseY: number) => {
-            // Inspire from the component programming style
             this.onPuzzleDropped && this.onPuzzleDropped(origin, puzzle, mouseX, mouseY);
+        }
+
+        this.pieceStacks.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => {
+            this.onPieceDropped && this.onPieceDropped(origin, piece, mouseX, mouseY);
         }
     }
 
@@ -67,6 +72,7 @@ export class Board extends BaseContainer {
         // Purpose keep 9 puzzles on puzzleGrid, take them from the puzzleStack
         
         const nbPuzzleToTake = 9 - this.puzzleGrid.items.filter((i) => i).length;
+        
         const newPuzzleForTheGrid = this.puzzleStack.items.splice(0, nbPuzzleToTake);
         this.puzzleGrid.items.unshift(...newPuzzleForTheGrid);
         this.puzzleGrid.items = this.puzzleGrid.items.filter((i) => i);

@@ -18,7 +18,7 @@ export class BaseObject {
     // Collider for the piece (override the shape & blocksize)
     protected collider!: { x: number; y: number; width: number; height: number };
 
-    protected identifier: symbol;
+    protected identifier!: symbol;
 
     public onObjectRelease?: (x: number, y: number) => void;
 
@@ -28,7 +28,7 @@ export class BaseObject {
         this.y = y;
         this.quantity = quantity;
 
-        this.identifier = Symbol("object");
+        this.createNewIdentifier();
     }
 
     public initEvent() {
@@ -87,5 +87,20 @@ export class BaseObject {
     public draw(_?: { maxX: number; maxY: number }) {
         // Must be overridden
         throw new Error("Method not implemented.");
+    }
+
+    public createNewIdentifier() {
+        this.identifier = Symbol("object");
+    }
+
+    public clone() {
+        const instanceCloned = Object.assign(
+            Object.create(Object.getPrototypeOf(this)),
+            this
+        );
+
+        instanceCloned.createNewIdentifier();
+
+        return instanceCloned;
     }
 }

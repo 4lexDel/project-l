@@ -83,7 +83,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
             if (
                 ix < 0 || ix >= this.slotsPerRow ||
                 iy < 0 || iy >= this.slotsPerCol
-            ) {
+            ) {                
                 // External movement handled
                 this.onItemDropped && this.onItemDropped(this, item, mouseX, mouseY);
                 return;
@@ -130,22 +130,25 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         // Can't overwrite a piece
         if (this.items[targetIndex]) return;
 
+        item.quantity -= 1;
         // Remove it from the first inventory
         const currentIndex = origin.items.indexOf(item);
-        origin.items[currentIndex] = undefined;
+        if (item.quantity <= 0) origin.items[currentIndex] = undefined;
+
+        const itemCloned = item.clone();
 
         // Add the piece to the list
-        this.items[targetIndex] = item;
+        this.items[targetIndex] = itemCloned;
 
         const pos = this.getSlotPosition(
           Math.floor(targetIndex / this.slotsPerRow),
           targetIndex % this.slotsPerRow
         );
-        item.x = pos.x + this.slotPadding / 2;
-        item.y = pos.y + this.slotPadding / 2;
-        item.setCollider(pos.x, pos.y, this.slotWidth, this.slotHeight);
+        itemCloned.x = pos.x + this.slotPadding / 2;
+        itemCloned.y = pos.y + this.slotPadding / 2;
+        itemCloned.setCollider(pos.x, pos.y, this.slotWidth, this.slotHeight);
 
-        this.initItemMovement(item);
+        this.initItemMovement(itemCloned);
     }
 
     protected getSlotPosition(row: number, col: number) {
@@ -173,12 +176,12 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
                 const itemIndex = row * this.slotsPerRow + col;
                 const item = this.items?.[itemIndex];
                 
-                if (item && !item.isHeld) {
+                if (item && (!item.isHeld || item.quantity > 1)) {
                     item.draw({
                         maxX: (this.slotWidth - this.slotPadding),
                         maxY: (this.slotHeight - this.slotPadding)
                     });
-                    this.counterMode !== "HIDDEN" && this.drawCounter(item.x, item.y, item.quantity);
+                    this.counterMode !== "HIDDEN" && this.drawCounter(item.x, item.y, item.quantity - (item.isHeld ? 1 : 0));
                 }
             }
         }
