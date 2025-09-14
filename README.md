@@ -50,6 +50,7 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 - Start the game process
 - Remove 4 tier 1 pieces
 - Add a resize option
+- Check game over
 
 <br>
 

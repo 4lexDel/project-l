@@ -4,6 +4,8 @@ import { Board } from "./Board.ts";
 import { BaseContainer } from "./BaseContainer";
 import { Opponent } from "./Opponent";
 import { ActionHelper } from "./ActionHelper";
+import type { Puzzle } from "../objects/Puzzle.ts";
+import type { BaseInventory } from "./inventory/BaseInventory.ts";
 
 export class Game {
     private topContainer: BaseContainer;
@@ -30,6 +32,15 @@ export class Game {
         this.deck = new Deck(p, 1, 1, "CENTER", "BOTTOM", this.bottomContainer);
 
         this.resize();
+
+        this.initCallbacks();
+    }
+
+    private initCallbacks() {
+        this.board.onPuzzleDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle, mouseX: number, mouseY: number) => {
+            this.deck.puzzleInventory.pickUpItem(origin, puzzle, mouseX, mouseY);
+            this.board.refreshPuzzleDistribution();
+        }
     }
 
     public resize(): void {

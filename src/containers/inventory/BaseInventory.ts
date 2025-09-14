@@ -5,8 +5,8 @@ import type { BaseObject } from "../../objects/BaseObject";
 
 export type CounterMode = "HIDDEN" | "ITEMS_QUANTITY" | "ITEMS_LENGTH"
 
-export class BaseInventory extends BaseContainer {
-    protected items: BaseObject[];
+export class BaseInventory<T extends BaseObject> extends BaseContainer {
+    public items: (T | null | undefined)[];
 
     protected slotWidth!: number;
     protected slotHeight!: number;
@@ -22,9 +22,12 @@ export class BaseInventory extends BaseContainer {
     protected readonly: boolean = false;
     protected showBorder: boolean = true;
     public allowInternalMovement: boolean;
+
     protected counterMode: CounterMode;
 
-    constructor(p: p5, items: BaseObject[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, readonly: boolean = true, slotRatio: number = 1, showBorder: boolean = true, allowInternalMovement: boolean = true, counterMode: CounterMode = "HIDDEN") {
+    public onItemDropped?: (origin: BaseInventory<T>, item: T, mouseX: number, mouseY: number) => void;
+
+    constructor(p: p5, items: T[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, readonly: boolean = true, slotRatio: number = 1, showBorder: boolean = true, allowInternalMovement: boolean = true, counterMode: CounterMode = "HIDDEN") {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
         this.items = items;
         this.slotsPerRow = slotsPerRow;
@@ -51,7 +54,7 @@ export class BaseInventory extends BaseContainer {
         this.initItemSetup();
     }
 
-    private initItemSetup() {
+    public initItemSetup() {
         for (let row = 0; row < this.slotsPerCol; row++) {
             for (let col = 0; col < this.slotsPerRow; col++) {
                 const itemIndex = row * this.slotsPerRow + col;
@@ -71,7 +74,7 @@ export class BaseInventory extends BaseContainer {
         }
     }
 
-    private initItemMovement(item: BaseObject) {
+    private initItemMovement(item: T) {
         item.initEvent();
         item.onObjectRelease = (mouseX: number, mouseY: number) => {
             const ix = Math.floor((mouseX - this.x - this.offsetX + this.slotWidth / 2) / this.slotWidth);
@@ -80,19 +83,23 @@ export class BaseInventory extends BaseContainer {
             if (
                 ix < 0 || ix >= this.slotsPerRow ||
                 iy < 0 || iy >= this.slotsPerCol
-            ) return;
+            ) {
+                // External movement handled
+                this.onItemDropped && this.onItemDropped(this, item, mouseX, mouseY);
+                return;
+            }
 
-            // HANDLE THE EXTERNAL MOVEMENT HERE (BEFORE RETURNING)
             if (!this.allowInternalMovement) return;
 
             const targetIndex = iy * this.slotsPerRow + ix;
             const currentIndex = this.items.indexOf(item);
 
+            // INTERNAL PIECE ACTION ??
             if (targetIndex === currentIndex) return;
 
             const targetItem = this.items[targetIndex];
             this.items[targetIndex] = item;
-            this.items[currentIndex] = targetItem as BaseObject;
+            this.items[currentIndex] = targetItem;
 
             // Update positions and colliders for both items
             [item, targetItem].forEach((p, idx) => {
@@ -107,6 +114,38 @@ export class BaseInventory extends BaseContainer {
                 p.initEvent();
             });
         };
+    }
+
+    public pickUpItem(origin: BaseInventory<T>, item: T, mouseX: number, mouseY: number) {
+        const ix = Math.floor((mouseX - this.x - this.offsetX + this.slotWidth / 2) / this.slotWidth);
+        const iy = Math.floor((mouseY - this.y - this.offsetY + this.slotHeight / 2) / this.slotHeight);
+
+        if (
+            ix < 0 || ix >= this.slotsPerRow ||
+            iy < 0 || iy >= this.slotsPerCol
+        ) return;
+
+        const targetIndex = iy * this.slotsPerRow + ix;
+        
+        // Can't overwrite a piece
+        if (this.items[targetIndex]) return;
+
+        // Remove it from the first inventory
+        const currentIndex = origin.items.indexOf(item);
+        origin.items[currentIndex] = undefined;
+
+        // Add the piece to the list
+        this.items[targetIndex] = item;
+
+        const pos = this.getSlotPosition(
+          Math.floor(targetIndex / this.slotsPerRow),
+          targetIndex % this.slotsPerRow
+        );
+        item.x = pos.x + this.slotPadding / 2;
+        item.y = pos.y + this.slotPadding / 2;
+        item.setCollider(pos.x, pos.y, this.slotWidth, this.slotHeight);
+
+        this.initItemMovement(item);
     }
 
     protected getSlotPosition(row: number, col: number) {

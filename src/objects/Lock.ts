@@ -1,14 +1,14 @@
 import p5 from "p5";
-import { BaseObject } from "./BaseObject";
+import { Piece } from "./Piece";
 
-export class Lock extends BaseObject {
+export class Lock extends Piece {
     private padding: number = 10;
 
     private lockDistFromCenter: number = 15;
     private lockSize: number = 10;
 
-    constructor(p: p5, x: number, y: number, quantity: number) {
-        super(p, x, y);
+    constructor(p: p5, quantity: number) {
+        super(p, [], p.color(255, 210, 100), 1, quantity);
         this.quantity = quantity;
     }
 
