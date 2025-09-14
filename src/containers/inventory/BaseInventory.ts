@@ -75,7 +75,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
     }
 
     private initItemMovement(item: T) {
-        item.initEvent();
+        item.initEvents();
         item.onObjectRelease = (mouseX: number, mouseY: number) => {
             const ix = Math.floor((mouseX - this.x - this.offsetX + this.slotWidth / 2) / this.slotWidth);
             const iy = Math.floor((mouseY - this.y - this.offsetY + this.slotHeight / 2) / this.slotHeight);
@@ -111,7 +111,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
                 p.x = pos.x + this.slotPadding / 2;
                 p.y = pos.y + this.slotPadding / 2;
                 p.setCollider(pos.x, pos.y, this.slotWidth, this.slotHeight);
-                p.initEvent();
+                p.initEvents();
             });
         };
     }
@@ -133,7 +133,10 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         item.quantity -= 1;
         // Remove it from the first inventory
         const currentIndex = origin.items.indexOf(item);
-        if (item.quantity <= 0) origin.items[currentIndex] = undefined;
+        if (item.quantity <= 0) {
+            origin.items[currentIndex] = undefined;
+            item.clearEvents();
+        }
 
         const itemCloned = item.clone();
 

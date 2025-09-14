@@ -41,7 +41,7 @@ export class Board extends BaseContainer {
         ];
 
         this.stackPieces = PieceFactory.createAllPieces(p);
-        [10, 10, 10, 10, 10, 10, 10, 10, 10].forEach((quantity: number, i) => this.stackPieces[i%this.stackPieces.length].quantity = quantity);
+        [1, 2, 10, 10, 10, 10, 10, 10, 10].forEach((quantity: number, i) => this.stackPieces[i%this.stackPieces.length].quantity = quantity);
 
         this.leftContainer = new BaseContainer(p, 0.75, 0.95, "LEFT", "TOP", this);
         this.rightContainer = new BaseContainer(p, 0.25, 0.95, "RIGHT", "CENTER", this);
@@ -52,9 +52,9 @@ export class Board extends BaseContainer {
         this.puzzleStack = new PuzzleInventory(p, this.stackPuzzles, 1, 1, 1, 0.3, "CENTER", "TOP", this.rightContainer, true, false, false, "ITEMS_LENGTH");
         this.pieceStacks = new PieceInventory(p, this.stackPieces, 3, 3, 1, 0.65, "CENTER", "BOTTOM", this.rightContainer, false, false, false, "ITEMS_QUANTITY");
 
-        this.resize();
         this.initCallbacks();
         this.refreshPuzzleDistribution();
+        this.resize();
     }
 
     private initCallbacks() {
@@ -70,7 +70,6 @@ export class Board extends BaseContainer {
 
     public refreshPuzzleDistribution() {
         // Purpose keep 9 puzzles on puzzleGrid, take them from the puzzleStack
-        
         const nbPuzzleToTake = 9 - this.puzzleGrid.items.filter((i) => i).length;
         
         const newPuzzleForTheGrid = this.puzzleStack.items.splice(0, nbPuzzleToTake);

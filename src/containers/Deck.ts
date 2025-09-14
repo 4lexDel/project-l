@@ -5,6 +5,7 @@ import { Piece } from "../objects/Piece";
 import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
 import { PieceInventory } from "./inventory/PieceInventory";
 import { PuzzleInventory } from "./inventory/PuzzleInventory";
+import type { BaseInventory } from "./inventory/BaseInventory";
 
 export class Deck extends BaseContainer {
     private puzzleInventoryAchieved: PuzzleInventory;
@@ -14,6 +15,8 @@ export class Deck extends BaseContainer {
     public puzzleInventory: PuzzleInventory;
 
     public pieces: Piece[];
+
+    public onPieceDropped?: (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => void;
 
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
@@ -27,6 +30,13 @@ export class Deck extends BaseContainer {
         this.puzzleInventory = new PuzzleInventory(p, [], 4, 1, 0.5, 1, "RIGHT", "CENTER", this.rightContainer, false);
 
         this.resize();
+        this.initCallbacks();
+    }
+
+    public initCallbacks() {
+        this.pieceInventory.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => {
+            this.onPieceDropped && this.onPieceDropped(origin, piece, mouseX, mouseY);
+        }
     }
 
     public resize() {

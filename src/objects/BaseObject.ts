@@ -31,12 +31,18 @@ export class BaseObject {
         this.createNewIdentifier();
     }
 
-    public initEvent() {
-        let eventHandler = EventHandler.getInstance(this.p);
+    public clearEvents() {        
+        const eventHandler = EventHandler.getInstance(this.p);
 
         eventHandler.removeEventMousePressed(this.identifier);
         eventHandler.removeEventMouseDragged(this.identifier);
         eventHandler.removeEventMouseReleased(this.identifier);
+    }
+
+    public initEvents() {
+        const eventHandler = EventHandler.getInstance(this.p);
+
+        this.clearEvents();
 
         eventHandler.addEventMousePressed(this.identifier, () => {
             if (!this.isMouseInside(this.p.mouseX, this.p.mouseY)) return;

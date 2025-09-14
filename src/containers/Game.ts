@@ -48,6 +48,11 @@ export class Game {
         this.board.onPieceDropped = (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => {
             this.deck.pieceInventory.pickUpItem(origin, piece, mouseX, mouseY);
         }
+
+        // Use piece
+        this.deck.onPieceDropped = (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => {
+            this.deck.puzzleInventory.usePiece(origin, piece, mouseX, mouseY);
+        }
     }
 
     public resize(): void {
