@@ -49,7 +49,7 @@ export class Board extends BaseContainer {
         this.puzzleGrid = new PuzzleInventory(p, [...this.gridPuzzles], 3, 3, 1, 0.8, "CENTER", "BOTTOM", this.leftContainer, false, false, false);
 
         this.puzzleStack = new PuzzleInventory(p, [...this.stackPuzzles], 1, 1, 1, 0.3, "CENTER", "TOP", this.rightContainer, true, false, false, "ITEMS_LENGTH");
-        this.pieceStacks = new PieceInventory(p, this.stackPieces, 3, 3, 1, 0.7, "CENTER", "BOTTOM", this.rightContainer, false, false, false, "ITEMS_QUANTITY");
+        this.pieceStacks = new PieceInventory(p, this.stackPieces, 3, 3, 1, 0.65, "CENTER", "BOTTOM", this.rightContainer, false, false, false, "ITEMS_QUANTITY");
 
         this.resize();
     }

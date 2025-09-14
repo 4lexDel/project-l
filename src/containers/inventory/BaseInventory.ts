@@ -2,7 +2,6 @@ import p5 from "p5";
 import { BaseContainer } from "../BaseContainer";
 import type { HorizontalAlign, VerticalAlign } from "../BaseContainer";
 import type { BaseObject } from "../../objects/BaseObject";
-import { Piece } from "../../objects/Piece";
 
 export type CounterMode = "HIDDEN" | "ITEMS_QUANTITY" | "ITEMS_LENGTH"
 
@@ -148,15 +147,7 @@ export class BaseInventory extends BaseContainer {
         // Draw held item(s) last for correct z-index
         for (const item of this.items ?? []) {
             if (item && item.isHeld) {
-                if (item instanceof Piece) {
-                    item.draw();
-                }
-                else {
-                    item.draw({
-                        maxX: (this.slotWidth - this.slotPadding),
-                        maxY: (this.slotHeight - this.slotPadding)
-                    });
-                }
+                item.draw();
             }
         }
     }

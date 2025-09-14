@@ -44,15 +44,10 @@ export class Deck extends BaseContainer {
     public draw(): void {
         super.draw();
 
-        // Container
-        this.rightContainer.draw();
-
         // Puzzle achieved
         this.puzzleInventoryAchieved.draw();
-
         // Puzzles
         this.puzzleInventory.draw();
-
         // Pieces
         this.pieceInventory.draw();
     }

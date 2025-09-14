@@ -11,7 +11,7 @@ export class Puzzle extends BaseObject {
   public isBlack: boolean;
 
   private padding: number = 8;
-  private pieceRewardSize: number = 20;
+  private pieceRewardSize: number = 25;
 
   constructor(p: p5, x: number, y: number, grid: number[][], pointsReward: number, pieceReward: Piece, isBlack: boolean) {
     super(p, x, y);
@@ -20,7 +20,7 @@ export class Puzzle extends BaseObject {
     this.pieceReward = pieceReward;
     this.isBlack = isBlack;
 
-    this.blockSize = 15;
+    this.blockSize = 17;
   }
 
   public getObjectDimensions() {
