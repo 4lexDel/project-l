@@ -6,7 +6,7 @@ export class BaseObject {
     public x: number;
     public y: number;
 
-    public blockSize = 20;
+    public blockSize: number;
 
     public isHeld: boolean = false;
 
@@ -27,6 +27,8 @@ export class BaseObject {
         this.x = x;
         this.y = y;
         this.quantity = quantity;
+
+        this.blockSize = this.p.windowWidth / 60;
 
         this.createNewIdentifier();
     }

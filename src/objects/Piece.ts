@@ -1,20 +1,21 @@
 import p5 from 'p5';
 import { BaseObject } from './BaseObject';
+import type { ColorOption } from '../colors';
 
 export class Piece extends BaseObject {
   // Usefull for the piece proportion calculation
   private static maxPieceShapeDim: number = 4;
 
   private shape: number[][];
-  private col: p5.Color;
+  public colorOption: ColorOption;
   private tier: number;
 
   private pieceRatio: number = 1;
 
-  constructor(p: p5, shape: number[][], col: p5.Color, tier: number, quantity = 1) {
+  constructor(p: p5, shape: number[][], colorOption: ColorOption, tier: number, quantity = 1) {
     super(p, -1, -1, quantity);
     this.shape = shape;
-    this.col = col;
+    this.colorOption = colorOption;
     this.tier = tier;
 
     const shapeDims = this.getPieceShapeDimensions();
@@ -77,7 +78,7 @@ export class Piece extends BaseObject {
     ];
 
     coords.forEach(({cx, cy}) => {
-      this.p.fill(this.col);
+      this.p.fill(this.colorOption.value);
       this.p.strokeWeight(this.blockSize * scaleX * pieceRatio/10);
       this.p.stroke(150);
       for (let [dx, dy] of this.shape) {

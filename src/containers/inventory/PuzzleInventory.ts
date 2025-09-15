@@ -16,11 +16,29 @@ export class PuzzleInventory extends BaseInventory<Puzzle> {
         super.resize();
     }
 
-    public usePiece(origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) {
-        console.log("use piece");
-        console.log(origin);
-        console.log(`x = ${mouseX} y = ${mouseY}`);
-        console.log(piece);
+    public usePiece(origin: BaseInventory<Piece>, piece: Piece) {
+        this.items.forEach((puzzle: Puzzle | null | undefined) => {
+            if (puzzle && puzzle.tryPlacePiece(
+                piece, 
+                { 
+                    maxX: (this.slotWidth - this.slotPadding),
+                    maxY: (this.slotHeight - this.slotPadding)
+                }
+            )) {
+                // Place placed!
+                console.log("Piece placed!");
+
+                // Clear it from the inventory
+                const currentIndex = origin.items.indexOf(piece);
+                origin.items[currentIndex] = undefined;
+                
+                // Hide the piece and store it in the puzzle instance
+                puzzle.piecesUsed.push(piece);
+                piece.clearEvents();
+
+                return;
+            }
+        });
     }
 
     public draw(): void {

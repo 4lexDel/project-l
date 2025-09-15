@@ -33,6 +33,11 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 
 <br>
 
+## Bugs
+- Piece dropping not perfect!!!
+- Piece doest have the same size than the puzzle of the inventory!!
+- Hard to place the piece correctly
+
 ## Technical considerations
 - Improve the piece manipulation
 - Limit the draw repetition to improve the performance

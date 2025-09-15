@@ -1,6 +1,7 @@
 import p5 from "p5";
 import { Game } from "./containers/Game";
 import { Score } from "./tools/Score";
+import { initColors } from "./colors";
 
 let game: Game;
 let score: Score;
@@ -11,6 +12,9 @@ const sketch = (p: p5) => {
 
     p.createCanvas(p.windowWidth, p.windowHeight);
     p.background(220);
+
+    // Set color variables
+    initColors(p);
 
     game = new Game(p);
     score = new Score(p, 10, 30);

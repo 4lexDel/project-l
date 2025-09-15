@@ -1,6 +1,7 @@
 import p5 from 'p5';
 import { Piece } from './Piece';
 import { BaseObject } from './BaseObject';
+import { getColorValueById } from '../colors';
 
 export class Puzzle extends BaseObject {
   public static puzzleDimRatio: number = 1.241;
@@ -9,6 +10,8 @@ export class Puzzle extends BaseObject {
   private pointsReward: number;
   private pieceReward: Piece;
   public isBlack: boolean;
+
+  public piecesUsed: Piece[] = [];
 
   private padding: number = 8;
   private pieceRewardSize: number = 25;
@@ -19,8 +22,6 @@ export class Puzzle extends BaseObject {
     this.pointsReward = pointsReward;
     this.pieceReward = pieceReward;
     this.isBlack = isBlack;
-
-    this.blockSize = 17;
   }
 
   public getObjectDimensions() {
@@ -75,9 +76,9 @@ export class Puzzle extends BaseObject {
           const cellY = cy + row * this.blockSize * scaleY + this.pieceRewardSize * scaleY;
           // Cell background
           this.p.strokeWeight(this.blockSize * scaleX / 10);
-          if (this.grid[row][col] === 1) {
+          if (this.grid[row][col] !== 0) {
             this.p.stroke(100);
-            this.p.fill(230);
+            this.p.fill(getColorValueById(this.grid[row][col]));
             this.p.rect(cellX, cellY, this.blockSize * scaleX, this.blockSize * scaleY, 2);
           } else {
             this.p.noStroke();
@@ -91,9 +92,17 @@ export class Puzzle extends BaseObject {
     });
   }
 
-  public tryPlacePiece(piece: Piece): boolean {
-    const px = Math.round((piece.x - this.x) / this.blockSize);
-    const py = Math.round((piece.y - this.y) / this.blockSize);
+  public tryPlacePiece(piece: Piece, boundDisplay: { maxX: number; maxY: number }): boolean {
+    const { objectWidth: puzzleWidth, objectHeight: puzzleHeight } = this.getObjectDimensions();
+
+    const scaleX = boundDisplay.maxX / puzzleWidth;
+    const scaleY = boundDisplay.maxY / puzzleHeight;
+
+    const offsetX = this.padding/2;
+    const offsetY = this.pieceRewardSize * scaleY;
+
+    const px = Math.round((piece.mouseX - offsetX - this.x) / (this.blockSize * scaleX));
+    const py = Math.round((piece.mouseY - offsetY - this.y) / (this.blockSize * scaleY));
 
     for (const [dx, dy] of piece.getShape()) {
       const gx = px + dx;
@@ -101,7 +110,7 @@ export class Puzzle extends BaseObject {
       if (
         gy < 0 || gy >= this.grid.length ||
         gx < 0 || gx >= this.grid[0].length ||
-        this.grid[gy][gx] !== 1
+        (this.grid[gy][gx] === 0 && piece.colorOption.id !== 0)
       ) {
         return false;
       }
@@ -113,7 +122,7 @@ export class Puzzle extends BaseObject {
 
     // Mark filled
     for (const [dx, dy] of piece.getShape()) {
-      this.grid[py + dy][px + dx] = 2; // mark as filled
+      this.grid[py + dy][px + dx] = piece.colorOption.id; // mark as filled
     }
 
     return true;
