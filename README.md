@@ -34,9 +34,8 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 <br>
 
 ## Bugs
-- Piece dropping not perfect!!!
 - Piece doest have the same size than the puzzle of the inventory!!
-- Hard to place the piece correctly
+- Piece & puzzle border overlap not properly
 
 ## Technical considerations
 - Improve the piece manipulation
@@ -64,14 +63,14 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 | **Category** | **Purpose** | **User action** | **External consequences** | **Advancement** |
 |:---:|:---:|:---|:---|:---:|
 | Piece | Organize the inventory | Drag and drop from and to the piece inventory | - Update the piece inventory | ✅ |
-| Piece | Complete a puzzle | Drag and drop from the piece inventory to the puzzle inventory | - Update the puzzle completed display<br>- Remove the piece moved from the piece inventory | ⏳ |
+| Piece | Complete a puzzle | Drag and drop from the piece inventory to the puzzle inventory | - Update the puzzle completed display<br>- Remove the piece moved from the piece inventory | ✅ |
 | Piece | Get a tier 1 piece | Take a tier 1 piece from the piece stacks to the piece inventory | - Update the piece stacks<br>- Update the piece inventory | ⏳ |
 | Piece | Upgrade a piece | Upgrade a piece from the inventory | - Update the piece inventory<br>- Update the piece stacks | ❌ |
 | Piece | Rotate a piece | Rotate a piece from the inventory | - Update the piece inventory | ❌ |
 | Piece | Realize a master move | Complete all the puzzles from the puzzle inventory with the pieces from the inventory | - Update the puzzles completed<br>- Remove the pieces moved from the piece inventory | ❌ |
 | Puzzle | Organize the inventory | Drag and drop from and to the puzzle inventory | - Update the puzzle inventory | ✅ |
 | Puzzle | Get a puzzle | Drag and drop from the puzzle grid to the puzzle inventory | - Update the puzzle grid<br>- Update the puzzle stack<br>- Update the puzzle inventory<br>- Check game over | ⏳ |
-| **Puzzle completion** | A puzzle has been fully completed (=achieved) | One of the previous piece actions | - Update the piece stacks (piece received)<br>- Update the score (if real time score system)<br>- Update the puzzle inventory<br>- Update the puzzle achieved stack - Update the lock stacks<br>- Update the opponent piece inventory | ❌ |
+| **Puzzle completion** | A puzzle has been fully completed (=achieved) | One of the previous piece actions | - Update the piece stacks (piece received)<br>- Update the score (if real time score system)<br>- Update the puzzle inventory<br>- Update the puzzle achieved stack - Update the lock stacks<br>- Update the opponent piece inventory | ⏳ |
 | Anything | Action helper update | After any user action | - Update the action helper | ❌ |
 
 <br>
