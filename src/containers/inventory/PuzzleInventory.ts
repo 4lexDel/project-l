@@ -6,6 +6,8 @@ import type { HorizontalAlign, VerticalAlign } from "./../BaseContainer";
 import type { Piece } from "../../objects/Piece";
 
 export class PuzzleInventory extends BaseInventory<Puzzle> {
+    public onPuzzleCompleted?: (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => void;
+
     constructor(p: p5, puzzles: Puzzle[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, readonly: boolean = true, showBorder: boolean = true, allowInternalMovement: boolean = true, counterMode: CounterMode = "HIDDEN") {
         super(p, puzzles, slotsPerRow, slotsPerCol, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent, readonly, Puzzle.puzzleDimRatio, showBorder, allowInternalMovement, counterMode);
 
@@ -25,16 +27,19 @@ export class PuzzleInventory extends BaseInventory<Puzzle> {
                     maxY: (this.slotHeight - this.slotPadding)
                 }
             )) {
-                // Place placed!
-                console.log("Piece placed!");
-
-                // Clear it from the inventory
-                const currentIndex = origin.items.indexOf(piece);
-                origin.items[currentIndex] = undefined;
+                // Clear it from the origin inventory
+                origin.removeItem(piece);
                 
                 // Hide the piece and store it in the puzzle instance
                 puzzle.piecesUsed.push(piece);
-                piece.clearEvents();
+
+                //Check puzzle completion
+                if (puzzle.isCompleted()) {                    
+                    origin.addItems(...puzzle.piecesUsed, puzzle.pieceReward.clone());
+                    origin.initItemSetup();
+
+                    this.onPuzzleCompleted && this.onPuzzleCompleted(this, puzzle);
+                }
 
                 return;
             }

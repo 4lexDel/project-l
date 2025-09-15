@@ -8,7 +8,7 @@ export class Puzzle extends BaseObject {
 
   private grid: number[][];
   private pointsReward: number;
-  private pieceReward: Piece;
+  public pieceReward: Piece;
   public isBlack: boolean;
 
   public piecesUsed: Piece[] = [];
@@ -110,7 +110,7 @@ export class Puzzle extends BaseObject {
       if (
         gy < 0 || gy >= this.grid.length ||
         gx < 0 || gx >= this.grid[0].length ||
-        (this.grid[gy][gx] === 0 && piece.colorOption.id !== 0)
+        this.grid[gy][gx] !== 1
       ) {
         return false;
       }
@@ -126,5 +126,16 @@ export class Puzzle extends BaseObject {
     }
 
     return true;
+  }
+
+  public isCompleted() {
+      for (let row = 0; row < this.grid.length; row++) {
+        for (let col = 0; col < this.grid[row].length; col++) {
+          // Some case empty
+          if (this.grid[row][col] === 1) return false;
+        }
+      }
+
+      return true;
   }
 }

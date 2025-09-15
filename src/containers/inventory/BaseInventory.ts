@@ -116,6 +116,33 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         };
     }
 
+    public addItems(...newItems: T[]) {
+        // TODO: how to handle the limit available
+        for (let i = 0; i < this.items.length; i++) {
+            if (!this.items[i]) {
+                const newItem = newItems.pop();
+                if (!newItem) return;
+    
+                // Fill the holes
+                this.items[i] = newItem;
+            }
+        }
+
+        // Pieces remaining?
+        if (newItems.length > 0) {
+            this.items.push(...newItems);
+        }
+    }
+
+    public removeItem(item: T) {
+        const currentIndex = this.items.indexOf(item);
+        // Make the slot empty
+        this.items[currentIndex] = undefined;
+
+        // Remove the events attach to the slot area
+        item.clearEvents();
+    }
+
     public pickUpItem(origin: BaseInventory<T>, item: T, mouseX: number, mouseY: number) {
         const ix = Math.floor((mouseX - this.x - this.offsetX + this.slotWidth / 2) / this.slotWidth);
         const iy = Math.floor((mouseY - this.y - this.offsetY + this.slotHeight / 2) / this.slotHeight);
@@ -132,10 +159,8 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
 
         item.quantity -= 1;
         // Remove it from the first inventory
-        const currentIndex = origin.items.indexOf(item);
         if (item.quantity <= 0) {
-            origin.items[currentIndex] = undefined;
-            item.clearEvents();
+            origin.removeItem(item);
         }
 
         const itemCloned = item.clone();

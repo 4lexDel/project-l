@@ -1,10 +1,10 @@
 import p5 from "p5";
 import { Game } from "./containers/Game";
-import { Score } from "./tools/Score";
+// import { Score } from "./tools/Score";
 import { initColors } from "./colors";
 
 let game: Game;
-let score: Score;
+// let score: Score;
 
 const sketch = (p: p5) => {
   p.setup = () => {
@@ -17,7 +17,7 @@ const sketch = (p: p5) => {
     initColors(p);
 
     game = new Game(p);
-    score = new Score(p, 10, 30);
+    // score = new Score(p, 10, 30);
   };
 
   p.draw = () => {
@@ -25,7 +25,7 @@ const sketch = (p: p5) => {
     p.background(0);
 
     game.draw();
-    score.draw();
+    // score.draw();
   };
 
   p.windowResized = () => {    
