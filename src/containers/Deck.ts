@@ -6,6 +6,7 @@ import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
 import { PieceInventory } from "./inventory/PieceInventory";
 import { PuzzleInventory } from "./inventory/PuzzleInventory";
 import type { BaseInventory } from "./inventory/BaseInventory";
+import type { Puzzle } from "../objects/Puzzle";
 
 export class Deck extends BaseContainer {
     private puzzleInventoryAchieved: PuzzleInventory;
@@ -36,6 +37,12 @@ export class Deck extends BaseContainer {
     public initCallbacks() {
         this.pieceInventory.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => {
             this.onPieceDropped && this.onPieceDropped(origin, piece, mouseX, mouseY);
+        }
+
+        this.puzzleInventory.onPuzzleCompleted = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {
+            origin.removeItem(puzzle);
+            this.puzzleInventoryAchieved.addItems(puzzle);
+            puzzle.clean();
         }
     }
 

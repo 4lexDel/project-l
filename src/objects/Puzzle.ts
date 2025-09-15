@@ -138,4 +138,17 @@ export class Puzzle extends BaseObject {
 
       return true;
   }
+
+  public clean() {
+    // Clear pieces used
+    this.piecesUsed = [];
+
+    // Clear grid
+    for (let row = 0; row < this.grid.length; row++) {
+        for (let col = 0; col < this.grid[row].length; col++) {
+          // Some case empty
+          if (this.grid[row][col] !== 0) this.grid[row][col] = 1;
+        }
+      }
+  }
 }

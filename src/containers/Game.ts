@@ -39,19 +39,19 @@ export class Game {
 
     private initCallbacks() {
         // Get puzzle
-        this.board.onPuzzleDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle, mouseX: number, mouseY: number) => {            
-            this.deck.puzzleInventory.pickUpItem(origin, puzzle, mouseX, mouseY);
+        this.board.onPuzzleDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {            
+            this.deck.puzzleInventory.pickUpItem(origin, puzzle);
             this.board.refreshPuzzleDistribution();
         }
 
         // Get piece
-        this.board.onPieceDropped = (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => {
-            this.deck.pieceInventory.pickUpItem(origin, piece, mouseX, mouseY);
+        this.board.onPieceDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
+            this.deck.pieceInventory.pickUpItem(origin, piece);
         }
 
         // Use piece
-        this.deck.onPieceDropped = (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => {
-            this.deck.puzzleInventory.usePiece(origin, piece, mouseX, mouseY);
+        this.deck.onPieceDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
+            this.deck.puzzleInventory.usePiece(origin, piece);
         }
     }
 

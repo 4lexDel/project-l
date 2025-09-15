@@ -36,7 +36,6 @@ export class PuzzleInventory extends BaseInventory<Puzzle> {
                 //Check puzzle completion
                 if (puzzle.isCompleted()) {                    
                     origin.addItems(...puzzle.piecesUsed, puzzle.pieceReward.clone());
-                    origin.initItemSetup();
 
                     this.onPuzzleCompleted && this.onPuzzleCompleted(this, puzzle);
                 }

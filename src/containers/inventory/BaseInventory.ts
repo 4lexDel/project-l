@@ -121,7 +121,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         for (let i = 0; i < this.items.length; i++) {
             if (!this.items[i]) {
                 const newItem = newItems.pop();
-                if (!newItem) return;
+                if (!newItem) break;
     
                 // Fill the holes
                 this.items[i] = newItem;
@@ -130,8 +130,10 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
 
         // Pieces remaining?
         if (newItems.length > 0) {
-            this.items.push(...newItems);
+            this.items.unshift(...newItems);
         }
+
+        this.initItemSetup();
     }
 
     public removeItem(item: T) {
@@ -143,9 +145,9 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         item.clearEvents();
     }
 
-    public pickUpItem(origin: BaseInventory<T>, item: T, mouseX: number, mouseY: number) {
-        const ix = Math.floor((mouseX - this.x - this.offsetX + this.slotWidth / 2) / this.slotWidth);
-        const iy = Math.floor((mouseY - this.y - this.offsetY + this.slotHeight / 2) / this.slotHeight);
+    public pickUpItem(origin: BaseInventory<T>, item: T) {
+        const ix = Math.floor((item.mouseX + this.slotWidth / 2 - this.x - this.offsetX) / this.slotWidth);
+        const iy = Math.floor((item.mouseY + this.slotWidth / 2 - this.y - this.offsetY) / this.slotHeight);
 
         if (
             ix < 0 || ix >= this.slotsPerRow ||
