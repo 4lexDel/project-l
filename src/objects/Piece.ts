@@ -1,6 +1,7 @@
 import p5 from 'p5';
 import { BaseObject } from './BaseObject';
 import type { ColorOption } from '../colors';
+import { RegisterDraw } from '../tools/DrawDecorator';
 
 export class Piece extends BaseObject {
   // Usefull for the piece proportion calculation
@@ -46,6 +47,7 @@ export class Piece extends BaseObject {
     return { objectWidth, objectHeight };
   }
 
+  @RegisterDraw(2)
   public draw(boundDisplay?: { maxX: number; maxY: number }) {
     let scaleX = 1, scaleY = 1;
     let offsetX = 0, offsetY = 0;

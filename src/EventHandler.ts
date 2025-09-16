@@ -4,9 +4,11 @@ export class EventHandler {
     private static eventHandler: EventHandler;
     private p!: p5;
 
-    private mousePressedCallbacks: Map<symbol, () => void> = new Map();
-    private mouseDraggedCallbacks: Map<symbol, () => void> = new Map();
-    private mouseReleasedCallbacks: Map<symbol, () => void> = new Map();
+    private mousePressedCallbacks: Map<symbol, { priority: number, action: () => void}> = new Map();
+    private mouseDraggedCallbacks: Map<symbol, { priority: number, action: () => void}> = new Map();
+    private mouseReleasedCallbacks: Map<symbol, { priority: number, action: () => void}> = new Map();
+
+    private priorityLimiter: number = 0;
 
     constructor(p: p5) {
         // First init
@@ -25,16 +27,16 @@ export class EventHandler {
         return EventHandler.eventHandler;
     }
 
-    public addEventMousePressed(symbol: symbol, callback: () => void) {
-        this.mousePressedCallbacks.set(symbol, callback);
+    public addEventMousePressed(symbol: symbol, callback: () => void, priority: number = 0) {
+        this.mousePressedCallbacks.set(symbol, { priority, action: callback});
     }
 
-    public addEventMouseDragged(symbol: symbol, callback: () => void) {
-        this.mouseDraggedCallbacks.set(symbol, callback);
+    public addEventMouseDragged(symbol: symbol, callback: () => void, priority: number = 0) {
+        this.mouseDraggedCallbacks.set(symbol, { priority, action: callback});
     }
 
-    public addEventMouseReleased(symbol: symbol, callback: () => void) {
-        this.mouseReleasedCallbacks.set(symbol, callback);
+    public addEventMouseReleased(symbol: symbol, callback: () => void, priority: number = 0) {
+        this.mouseReleasedCallbacks.set(symbol, { priority, action: callback});
     }
 
     public removeEventMousePressed(symbol: symbol) {
@@ -49,15 +51,24 @@ export class EventHandler {
         this.mouseDraggedCallbacks.delete(symbol);
     }
 
+    public setPriorityLimiter(priority: number) {
+        this.priorityLimiter = priority;
+
+        // Refresh event condition
+        this.initEvents();
+    }
+
     private initEvents() {
         this.p.mousePressed = () => {
-            this.mousePressedCallbacks.forEach(callback => callback());
+            this.mousePressedCallbacks.forEach(callback => callback.priority >= this.priorityLimiter && callback.action());
         };
         this.p.mouseDragged = () => {
-            this.mouseDraggedCallbacks.forEach(callback => callback());
+            this.mouseDraggedCallbacks.forEach(callback => callback.priority >= this.priorityLimiter && callback.action());
         };
         this.p.mouseReleased = () => {
-            this.mouseReleasedCallbacks.forEach(callback => callback());
+            this.mouseReleasedCallbacks.forEach(callback => callback.priority >= this.priorityLimiter && callback.action());
         };
     }
 }
+
+// TODO: add a level priority to prevent any event from a modal

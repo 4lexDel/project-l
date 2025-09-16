@@ -2,6 +2,7 @@ import p5 from "p5";
 import { BaseContainer } from "../BaseContainer";
 import type { HorizontalAlign, VerticalAlign } from "../BaseContainer";
 import type { BaseObject } from "../../objects/BaseObject";
+import { RegisterDraw } from "../../tools/DrawDecorator";
 
 export type CounterMode = "HIDDEN" | "ITEMS_QUANTITY" | "ITEMS_LENGTH"
 
@@ -25,7 +26,8 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
 
     protected counterMode: CounterMode;
 
-    public onItemDropped?: (origin: BaseInventory<T>, item: T, mouseX: number, mouseY: number) => void;
+    public onItemDropped?: (origin: BaseInventory<T>, item: T) => void;
+    protected onItemTriggered?: (origin: BaseInventory<T>, item: T) => void;
 
     constructor(p: p5, items: T[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, readonly: boolean = true, slotRatio: number = 1, showBorder: boolean = true, allowInternalMovement: boolean = true, counterMode: CounterMode = "HIDDEN") {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
@@ -85,7 +87,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
                 iy < 0 || iy >= this.slotsPerCol
             ) {                
                 // External movement handled
-                this.onItemDropped && this.onItemDropped(this, item, mouseX, mouseY);
+                this.onItemDropped && this.onItemDropped(this, item);
                 return;
             }
 
@@ -94,8 +96,9 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
             const targetIndex = iy * this.slotsPerRow + ix;
             const currentIndex = this.items.indexOf(item);
 
-            // INTERNAL PIECE ACTION ??
-            if (targetIndex === currentIndex) return;
+            if (targetIndex === currentIndex) {
+                this.onItemTriggered && this.onItemTriggered(this, item);
+            }
 
             const targetItem = this.items[targetIndex];
             this.items[targetIndex] = item;
@@ -224,6 +227,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         }
     }
 
+    @RegisterDraw(1)
     private drawCounter(x: number, y: number, value: number) {
         const size = Math.min(this.slotWidth, this.slotHeight)/4;
 
