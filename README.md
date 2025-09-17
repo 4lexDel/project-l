@@ -47,6 +47,8 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 - Manage the piece stack (storage vs display)
 - Keep a unique size for the item dragged?
 
+- Rotation => manage the symetry!!!
+
 <br>
 
 ## Features

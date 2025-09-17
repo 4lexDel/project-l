@@ -23,9 +23,19 @@ export class Piece extends BaseObject {
     this.pieceRatio = Math.max(shapeDims.pieceShapeWidth, shapeDims.pieceShapeHeight) / Piece.maxPieceShapeDim;
   }
 
-  public rotate() {
-    this.shape = this.shape.map(([x, y]) => [y, -x]);
-  }
+  public rotate(clockwise: boolean = true) {
+    // Step 1: rotate
+    const rotated = this.shape.map(([x, y]) => {
+      return clockwise ? [-y, x] : [y, -x];
+    });
+  
+    // Step 2: find minimum x and y
+    const minX = Math.min(...rotated.map(([x]) => x));
+    const minY = Math.min(...rotated.map(([_, y]) => y));
+  
+    // Step 3: shift so at least one [0,0] exists
+    this.shape = rotated.map(([x, y]) => [x - minX, y - minY]);
+  }  
 
   public getShape() {
     return this.shape;

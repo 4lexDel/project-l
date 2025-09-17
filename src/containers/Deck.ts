@@ -17,7 +17,7 @@ export class Deck extends BaseContainer {
 
     public pieces: Piece[];
 
-    public onPieceDropped?: (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => void;
+    public onPieceDropped?: (origin: BaseInventory<Piece>, piece: Piece) => void;
 
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
@@ -35,8 +35,8 @@ export class Deck extends BaseContainer {
     }
 
     public initCallbacks() {
-        this.pieceInventory.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => {
-            this.onPieceDropped && this.onPieceDropped(origin, piece, mouseX, mouseY);
+        this.pieceInventory.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
+            this.onPieceDropped && this.onPieceDropped(origin, piece);
         }
 
         this.puzzleInventory.onPuzzleCompleted = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {
