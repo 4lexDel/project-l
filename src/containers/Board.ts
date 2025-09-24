@@ -8,7 +8,7 @@ import { Piece } from "../objects/Piece";
 import { PieceInventory } from "./inventory/PieceInventory";
 import { PieceFactory } from "../objects/PieceFactory";
 import { Lock } from "../objects/Lock";
-import { BaseInventory } from "./inventory/BaseInventory";
+import { BaseInventory, InventoryOption } from "./inventory/BaseInventory";
 
 export class Board extends BaseContainer {
     private stackPuzzles: Puzzle[];
@@ -23,8 +23,8 @@ export class Board extends BaseContainer {
     private pieceStacks: PieceInventory;
     private puzzleStack: PuzzleInventory;
 
-    public onPuzzleDropped?: (origin: BaseInventory<Puzzle>, puzzle: Puzzle, mouseX: number, mouseY: number) => void;
-    public onPieceDropped?: (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => void;
+    public onPuzzleDropped?: (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => void;
+    public onPieceDropped?: (origin: BaseInventory<Piece>, piece: Piece) => void;
 
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
@@ -46,11 +46,31 @@ export class Board extends BaseContainer {
         this.leftContainer = new BaseContainer(p, 0.75, 0.95, "LEFT", "TOP", this);
         this.rightContainer = new BaseContainer(p, 0.25, 0.95, "RIGHT", "CENTER", this);
 
-        this.locksGrid = new PieceInventory(p, this.locks, 3, 1, 1, 0.2, "CENTER", "TOP", this.leftContainer, true, false);
-        this.puzzleGrid = new PuzzleInventory(p, [], 3, 3, 1, 0.8, "CENTER", "BOTTOM", this.leftContainer, false, false, false);
+        const lockInventoryOptions = new InventoryOption();
+        lockInventoryOptions.readonly = true;
+        lockInventoryOptions.showBorder = false;
+        lockInventoryOptions.allowInternalMovement = false;
+        this.locksGrid = new PieceInventory(p, this.locks, 3, 1, 1, 0.2, "CENTER", "TOP", this.leftContainer, lockInventoryOptions);
 
-        this.puzzleStack = new PuzzleInventory(p, this.stackPuzzles, 1, 1, 1, 0.3, "CENTER", "TOP", this.rightContainer, true, false, false, "ITEMS_LENGTH");
-        this.pieceStacks = new PieceInventory(p, this.stackPieces, 3, 3, 1, 0.65, "CENTER", "BOTTOM", this.rightContainer, false, false, false, "ITEMS_QUANTITY");
+        const puzzleGridOptions = new InventoryOption();
+        puzzleGridOptions.readonly = false;
+        puzzleGridOptions.showBorder = false;
+        puzzleGridOptions.allowInternalMovement = false;
+        this.puzzleGrid = new PuzzleInventory(p, [], 3, 3, 1, 0.8, "CENTER", "BOTTOM", this.leftContainer, puzzleGridOptions);
+
+        const puzzleStackInventoryOptions = new InventoryOption();
+        puzzleStackInventoryOptions.readonly = true;
+        puzzleStackInventoryOptions.showBorder = false;
+        puzzleStackInventoryOptions.allowInternalMovement = false;
+        puzzleStackInventoryOptions.counterMode = "ITEMS_LENGTH";
+        this.puzzleStack = new PuzzleInventory(p, this.stackPuzzles, 1, 1, 1, 0.3, "CENTER", "TOP", this.rightContainer, puzzleStackInventoryOptions);
+
+        const pieceStackInventoryOptions = new InventoryOption();
+        pieceStackInventoryOptions.readonly = false;
+        pieceStackInventoryOptions.showBorder = false;
+        pieceStackInventoryOptions.allowInternalMovement = false;
+        pieceStackInventoryOptions.counterMode = "ITEMS_QUANTITY";
+        this.pieceStacks = new PieceInventory(p, this.stackPieces, 3, 3, 1, 0.65, "CENTER", "BOTTOM", this.rightContainer, pieceStackInventoryOptions);
 
         this.initCallbacks();
         this.refreshPuzzleDistribution();
@@ -59,12 +79,12 @@ export class Board extends BaseContainer {
 
     private initCallbacks() {
         // Inspire from the component programming style
-        this.puzzleGrid.onItemDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle, mouseX: number, mouseY: number) => {
-            this.onPuzzleDropped && this.onPuzzleDropped(origin, puzzle, mouseX, mouseY);
+        this.puzzleGrid.onItemDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {
+            this.onPuzzleDropped?.(origin, puzzle);
         }
 
-        this.pieceStacks.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece, mouseX: number, mouseY: number) => {
-            this.onPieceDropped && this.onPieceDropped(origin, piece, mouseX, mouseY);
+        this.pieceStacks.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
+            this.onPieceDropped?.(origin, piece);
         }
     }
 

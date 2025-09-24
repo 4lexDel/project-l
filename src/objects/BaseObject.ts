@@ -13,6 +13,9 @@ export class BaseObject {
     public mouseX: number = -1;
     public mouseY: number = -1;
 
+    private mouseOriginX: number = -1;
+    private mouseOriginY: number = -1;
+
     public quantity: number;
 
     // Collider for the piece (override the shape & blocksize)
@@ -20,7 +23,8 @@ export class BaseObject {
 
     protected identifier!: symbol;
 
-    public onObjectRelease?: (x: number, y: number) => void;
+    public onObjectReleased?: (x: number, y: number) => void;
+    public onObjectTriggered?: () => void;
 
     constructor(p: p5, x: number, y: number, quantity: number = 1) {
         this.p = p;
@@ -49,6 +53,9 @@ export class BaseObject {
         eventHandler.addEventMousePressed(this.identifier, () => {
             if (!this.isMouseInside(this.p.mouseX, this.p.mouseY)) return;
             this.isHeld = true;
+            this.mouseOriginX = this.p.mouseX;
+            this.mouseOriginY = this.p.mouseY;
+            this.onObjectTriggered?.();
             this.attachPieceToMouseCoords();
         });
 
@@ -60,8 +67,15 @@ export class BaseObject {
         eventHandler.addEventMouseReleased(this.identifier, () => {
             if (!this.isHeld) return;
 
-            this.onObjectRelease?.(this.mouseX, this.mouseY);
+            this.onObjectReleased?.(this.mouseX, this.mouseY);
             this.isHeld = false;
+
+            const d = Math.sqrt(Math.pow(this.p.mouseX - this.mouseOriginX, 2) + Math.pow(this.p.mouseY - this.mouseOriginY, 2));
+            if (d < 5) this.onObjectTriggered?.();
+
+            this.mouseOriginX = -1;
+            this.mouseOriginY = -1;
+
             this.mouseX = -1;
             this.mouseY = -1;
         });

@@ -45,9 +45,11 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 - Create a Z-INDEX system
 - Manage the piece quantity (stacks)
 - Manage the piece stack (storage vs display)
-- Keep a unique size for the item dragged?
+- Keep a unique size for the item dragged?              !!!
 
 - Rotation => manage the symetry!!!
+
+- The rendering systems is limited for the nested drawing
 
 <br>
 

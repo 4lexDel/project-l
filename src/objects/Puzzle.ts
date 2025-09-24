@@ -2,7 +2,6 @@ import p5 from 'p5';
 import { Piece } from './Piece';
 import { BaseObject } from './BaseObject';
 import { getColorValueById } from '../colors';
-import { RegisterDraw } from '../tools/DrawDecorator';
 
 export class Puzzle extends BaseObject {
   public static puzzleDimRatio: number = 1.241;
@@ -31,7 +30,6 @@ export class Puzzle extends BaseObject {
     return { objectWidth: cols * this.blockSize + this.padding, objectHeight: rows * this.blockSize + this.padding + this.pieceRewardSize };
   }
 
-  @RegisterDraw(3)
   public draw(boundDisplay?: { maxX: number; maxY: number }) {
     let scaleX = 1, scaleY = 1;
 

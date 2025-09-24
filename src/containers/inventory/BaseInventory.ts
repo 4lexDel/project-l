@@ -4,7 +4,15 @@ import type { HorizontalAlign, VerticalAlign } from "../BaseContainer";
 import type { BaseObject } from "../../objects/BaseObject";
 import { RegisterDraw } from "../../tools/DrawDecorator";
 
-export type CounterMode = "HIDDEN" | "ITEMS_QUANTITY" | "ITEMS_LENGTH"
+export type CounterMode = "HIDDEN" | "ITEMS_QUANTITY" | "ITEMS_LENGTH";
+
+export class InventoryOption {
+    public readonly: boolean = true;
+    public slotRatio: number = 1;
+    public showBorder: boolean = true;
+    public allowInternalMovement: boolean = true;
+    public counterMode: CounterMode = "HIDDEN";
+}
 
 export class BaseInventory<T extends BaseObject> extends BaseContainer {
     public items: (T | null | undefined)[];
@@ -18,27 +26,22 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
     protected offsetX: number = 0;
     protected offsetY: number = 0;
 
-    protected slotRatio: number;
-
-    protected readonly: boolean = false;
-    protected showBorder: boolean = true;
-    public allowInternalMovement: boolean;
-
-    protected counterMode: CounterMode;
+    public inventoryOptions: InventoryOption;
 
     public onItemDropped?: (origin: BaseInventory<T>, item: T) => void;
-    protected onItemTriggered?: (origin: BaseInventory<T>, item: T) => void;
 
-    constructor(p: p5, items: T[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, readonly: boolean = true, slotRatio: number = 1, showBorder: boolean = true, allowInternalMovement: boolean = true, counterMode: CounterMode = "HIDDEN") {
+    constructor(p: p5, items: T[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, inventoryOptions?: InventoryOption) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
         this.items = items;
         this.slotsPerRow = slotsPerRow;
         this.slotsPerCol = slotsPerCol;
-        this.slotRatio = slotRatio;
-        this.readonly = readonly;
-        this.showBorder = showBorder;
-        this.allowInternalMovement = allowInternalMovement;
-        this.counterMode = counterMode;
+        this.inventoryOptions = inventoryOptions || new InventoryOption();
+    }
+
+    public setSlotsDim(slotsPerRow: number, slotsPerCol: number) {
+        this.slotsPerRow = slotsPerRow;
+        this.slotsPerCol = slotsPerCol;
+        this.resize();
     }
 
     public resize() {
@@ -46,9 +49,9 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
 
         this.slotWidth = Math.min(
             this.dx / this.slotsPerRow,
-            (this.dy / this.slotsPerCol) / this.slotRatio
+            (this.dy / this.slotsPerCol) / this.inventoryOptions.slotRatio
         );
-        this.slotHeight = this.slotWidth * this.slotRatio;
+        this.slotHeight = this.slotWidth * this.inventoryOptions.slotRatio;
 
         this.offsetX = (this.dx - this.slotWidth * this.slotsPerRow) / 2;
         this.offsetY = (this.dy - this.slotHeight * this.slotsPerCol) / 2;
@@ -67,7 +70,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
                 item.x = slotX + this.slotPadding / 2;
                 item.y = slotY + this.slotPadding / 2;
 
-                if (this.readonly) continue;
+                if (this.inventoryOptions.readonly) continue;
 
                 item.setCollider(slotX, slotY, this.slotWidth, this.slotHeight);
 
@@ -78,7 +81,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
 
     private initItemMovement(item: T) {
         item.initEvents();
-        item.onObjectRelease = (mouseX: number, mouseY: number) => {
+        item.onObjectReleased = (mouseX: number, mouseY: number) => {
             const ix = Math.floor((mouseX - this.x - this.offsetX + this.slotWidth / 2) / this.slotWidth);
             const iy = Math.floor((mouseY - this.y - this.offsetY + this.slotHeight / 2) / this.slotHeight);
 
@@ -87,18 +90,14 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
                 iy < 0 || iy >= this.slotsPerCol
             ) {                
                 // External movement handled
-                this.onItemDropped && this.onItemDropped(this, item);
+                this.onItemDropped?.(this, item);
                 return;
             }
 
-            if (!this.allowInternalMovement) return;
+            if (!this.inventoryOptions.allowInternalMovement) return;
 
             const targetIndex = iy * this.slotsPerRow + ix;
             const currentIndex = this.items.indexOf(item);
-
-            if (targetIndex === currentIndex) {
-                this.onItemTriggered && this.onItemTriggered(this, item);
-            }
 
             const targetItem = this.items[targetIndex];
             this.items[targetIndex] = item;
@@ -169,6 +168,8 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         }
 
         const itemCloned = item.clone();
+        // We take only one piece from the stack
+        itemCloned.quantity = 1;
 
         // Add the piece to the list
         this.items[targetIndex] = itemCloned;
@@ -202,7 +203,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         }
     }
 
-    protected drawItems() {
+    protected drawItems() {        
         // Draw non-held items first
         for (let row = 0; row < this.slotsPerCol; row++) {
             for (let col = 0; col < this.slotsPerRow; col++) {
@@ -214,7 +215,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
                         maxX: (this.slotWidth - this.slotPadding),
                         maxY: (this.slotHeight - this.slotPadding)
                     });
-                    this.counterMode !== "HIDDEN" && this.drawCounter(item.x, item.y, item.quantity - (item.isHeld ? 1 : 0));
+                    this.inventoryOptions.counterMode !== "HIDDEN" && this.drawCounter(item.x, item.y, item.quantity - (item.isHeld ? 1 : 0));
                 }
             }
         }
@@ -238,11 +239,11 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         this.p.strokeWeight(size/10);
         this.p.textSize(size/1.5);
         this.p.textAlign(this.p.CENTER, this.p.CENTER);
-        this.p.text(this.counterMode === "ITEMS_QUANTITY" ? value : this.items.length, x, y);
+        this.p.text(this.inventoryOptions.counterMode === "ITEMS_QUANTITY" ? value : this.items.length, x, y);
     }
 
     public draw(): void {
-        this.showBorder && this.drawSlots();
+        this.inventoryOptions.showBorder && this.drawSlots();
         this.drawItems();
     }
 }

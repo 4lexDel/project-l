@@ -26,6 +26,26 @@ export class BaseContainer extends BaseObject {
         this.parentContainer = parentContainer;
     }
 
+    public setWidthRatio(widthRatio: number) {
+        this.widthRatio = widthRatio;
+        this.resize();
+    }
+
+    public setHeightRatio(heightRatio: number) {
+        this.heightRatio = heightRatio;
+        this.resize();
+    }
+
+    public setHorizontalAlign(horizontalAlign: HorizontalAlign) {
+        this.horizontalAlign = horizontalAlign;
+        this.resize();
+    }
+
+    public setVerticalAlign(verticalAlign: VerticalAlign) {
+        this.verticalAlign = verticalAlign;
+        this.resize();
+    }
+
     public resize() {
         const parentX = this.parentContainer?.x ?? 0; 
         const parentY = this.parentContainer?.y ?? 0; 
