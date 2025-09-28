@@ -19,7 +19,7 @@ export class PieceInventory extends BaseInventory<Piece> {
     public initItemSetup(): void {
         super.initItemSetup();
 
-        this.items.forEach((piece: Piece | null | undefined) => {
+        this.inventoryOptions.allowInternalMovement && this.items.forEach((piece: Piece | null | undefined) => {
             if (piece) piece.onObjectTriggered = () => {
                 this.modalOption.open(piece.x + this.slotWidth/2 - this.slotPadding/2, piece.y - this.slotPadding/2, this.slotWidth * 3 , this.slotHeight);
                 this.modalOption.onMirrorClicked = () => { piece.mirror(); };

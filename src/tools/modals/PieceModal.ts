@@ -83,7 +83,7 @@ export class PieceModal extends BaseModal {
         this.p.strokeWeight(this.p.width / 800);
 
         this.p.stroke(0);
-        this.p.fill(150);
+        this.p.fill(25, 150, 25);
         this.p.triangle(
             cx + BaseModal.padding, cy + BaseModal.padding,
             cx + this.width / 6 - BaseModal.padding/2, cy + this.height / 2,
@@ -114,7 +114,7 @@ export class PieceModal extends BaseModal {
         this.p.strokeWeight(this.p.width / 800);
 
         // Arc
-        this.p.stroke(0);
+        this.p.stroke(10, 0, 0);
         this.p.noFill();
         this.p.arc(
             cx + 3 * this.width / 6, cy + this.height / 2,
@@ -136,7 +136,7 @@ export class PieceModal extends BaseModal {
             m = Math.hypot(tx, ty); tx /= m; ty /= m;     // tangent unit
         let px = -ty, py = tx, s = 10;               // perpendicular + size
 
-        this.p.fill(150);
+        this.p.fill(250, 50, 50);
         this.p.triangle(
             ex + tx * s, ey + ty * s,
             ex - tx * s * 0.5 + px * s * 0.5, ey - ty * s * 0.5 + py * s * 0.5,
@@ -157,7 +157,7 @@ export class PieceModal extends BaseModal {
 
         // Star
         this.p.stroke(0);
-        this.p.fill(150);
+        this.p.fill(255, 223, 0); // yellow teint
         let cx0 = cx + 5 * this.width / 6, cy0 = cy + this.height / 2;
         let rOuter = (this.height - BaseModal.padding * 2) / 2, rInner = rOuter / 2.5;
         this.p.beginShape();
