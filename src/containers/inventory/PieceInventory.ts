@@ -21,9 +21,13 @@ export class PieceInventory extends BaseInventory<Piece> {
 
         this.items.forEach((piece: Piece | null | undefined) => {
             if (piece) piece.onObjectTriggered = () => {
-                this.modalOption.open(piece.x + this.slotWidth/2 - this.slotPadding/2, piece.y - this.slotPadding/2, this.slotWidth *2 , this.slotHeight);
+                this.modalOption.open(piece.x + this.slotWidth/2 - this.slotPadding/2, piece.y - this.slotPadding/2, this.slotWidth * 3 , this.slotHeight);
                 this.modalOption.onMirrorClicked = () => { piece.mirror(); };
                 this.modalOption.onRotateClicked = () => { piece.rotate(); };
+                this.modalOption.onUpgradeClicked = () => {
+                    console.log("Upgrade clicked");
+                    // piece.upgrade();                     TODO...
+                };
             }
         });
     }
