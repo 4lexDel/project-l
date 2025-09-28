@@ -2,11 +2,12 @@ import p5 from 'p5';
 import { EventHandler } from '../EventHandler';
 
 export class BaseObject {
+    // Commun for all instances
+    public static blockSize: number = 25;
+
     public p: p5;
     public x: number;
     public y: number;
-
-    public blockSize: number;
 
     public isHeld: boolean = false;
 
@@ -31,8 +32,6 @@ export class BaseObject {
         this.x = x;
         this.y = y;
         this.quantity = quantity;
-
-        this.blockSize = this.p.windowWidth / 60;
 
         this.createNewIdentifier();
     }

@@ -5,6 +5,10 @@ import { getColorValueById } from '../colors';
 
 export class Puzzle extends BaseObject {
   public static puzzleDimRatio: number = 1.241;
+  public static padding: number = 8;
+  public static pieceRewardSize: number = 25;
+  public static nbCol: number = 5;
+  public static nbRow: number = 5;
 
   private grid: number[][];
   private pointsReward: number;
@@ -12,9 +16,6 @@ export class Puzzle extends BaseObject {
   public isBlack: boolean;
 
   public piecesUsed: Piece[] = [];
-
-  private padding: number = 8;
-  private pieceRewardSize: number = 25;
 
   constructor(p: p5, x: number, y: number, grid: number[][], pointsReward: number, pieceReward: Piece, isBlack: boolean) {
     super(p, x, y);
@@ -24,13 +25,15 @@ export class Puzzle extends BaseObject {
     this.isBlack = isBlack;
   }
 
-  public getObjectDimensions() {
-    const rows = this.grid.length;
-    const cols = this.grid[0].length;
-    return { objectWidth: cols * this.blockSize + this.padding, objectHeight: rows * this.blockSize + this.padding + this.pieceRewardSize };
+  public static setGridCellSize(newSize: number) {
+    Puzzle.blockSize = newSize;
   }
 
-  public draw(boundDisplay?: { maxX: number; maxY: number }) {
+  public getObjectDimensions() {
+    return { objectWidth: Puzzle.nbCol * Puzzle.blockSize + Puzzle.padding, objectHeight: Puzzle.nbRow * Puzzle.blockSize + Puzzle.padding + Puzzle.pieceRewardSize };
+  }
+
+  public draw(boundDisplay?: { maxX: number; maxY: number }) {    
     let scaleX = 1, scaleY = 1;
 
     const { objectWidth: puzzleWidth, objectHeight: puzzleHeight } = this.getObjectDimensions();
@@ -62,30 +65,30 @@ export class Puzzle extends BaseObject {
       this.p.fill(200);
       this.p.textSize(puzzleWidth * scaleX / 8);
       this.p.textAlign(this.p.LEFT, this.p.TOP);
-      this.p.text(`${this.pointsReward != 0 ? this.pointsReward : ''}`, cx + this.padding * scaleX, cy + this.padding * scaleX);
+      this.p.text(`${this.pointsReward != 0 ? this.pointsReward : ''}`, cx + Puzzle.padding * scaleX, cy + Puzzle.padding * scaleX);
 
       // Draw piece reward (top right)
-      this.pieceReward.x = cx + puzzleWidth * scaleX - this.pieceRewardSize * scaleX - this.padding/2;
+      this.pieceReward.x = cx + puzzleWidth * scaleX - Puzzle.pieceRewardSize * scaleX - Puzzle.padding/2;
       this.pieceReward.y = cy;
-      this.pieceReward.draw({ maxX: this.pieceRewardSize * scaleX, maxY: this.pieceRewardSize * scaleY });
+      this.pieceReward.draw({ maxX: Puzzle.pieceRewardSize * scaleX, maxY: Puzzle.pieceRewardSize * scaleY });
 
       // Draw grid (centered)
-      for (let row = 0; row < this.grid.length; row++) {
-        for (let col = 0; col < this.grid[row].length; col++) {
-          const cellX = cx + col * this.blockSize * scaleX + this.padding/2;
-          const cellY = cy + row * this.blockSize * scaleY + this.pieceRewardSize * scaleY;
+      for (let row = 0; row < Puzzle.nbRow; row++) {
+        for (let col = 0; col < Puzzle.nbCol; col++) {
+          const cellX = cx + col * Puzzle.blockSize * scaleX + Puzzle.padding/2;
+          const cellY = cy + row * Puzzle.blockSize * scaleY + Puzzle.pieceRewardSize * scaleY;
           // Cell background
-          this.p.strokeWeight(this.blockSize * scaleX / 10);
+          this.p.strokeWeight(Puzzle.blockSize * scaleX / 10);
           if (this.grid[row][col] !== 0) {
             this.p.stroke(100);
             this.p.fill(getColorValueById(this.grid[row][col]));
-            this.p.rect(cellX, cellY, this.blockSize * scaleX, this.blockSize * scaleY, 2);
+            this.p.rect(cellX, cellY, Puzzle.blockSize * scaleX, Puzzle.blockSize * scaleY, 2);
           } else {
             this.p.noStroke();
             
             // draw a small ellipse at the middle
             this.p.fill(150);
-            this.p.ellipse(cellX + (this.blockSize * scaleX / 2), cellY + (this.blockSize * scaleY / 2), 2, 2);
+            this.p.ellipse(cellX + (Puzzle.blockSize * scaleX / 2), cellY + (Puzzle.blockSize * scaleY / 2), 2, 2);
           }
         }
       }
@@ -98,18 +101,18 @@ export class Puzzle extends BaseObject {
     const scaleX = boundDisplay.maxX / puzzleWidth;
     const scaleY = boundDisplay.maxY / puzzleHeight;
 
-    const offsetX = this.padding/2;
-    const offsetY = this.pieceRewardSize * scaleY;
+    const offsetX = Puzzle.padding/2;
+    const offsetY = Puzzle.pieceRewardSize * scaleY;
 
-    const px = Math.round((piece.mouseX - offsetX - this.x) / (this.blockSize * scaleX));
-    const py = Math.round((piece.mouseY - offsetY - this.y) / (this.blockSize * scaleY));
+    const px = Math.round((piece.mouseX - offsetX - this.x) / (Puzzle.blockSize * scaleX));
+    const py = Math.round((piece.mouseY - offsetY - this.y) / (Puzzle.blockSize * scaleY));
 
     for (const [dx, dy] of piece.getShape()) {
       const gx = px + dx;
       const gy = py + dy;
       if (
-        gy < 0 || gy >= this.grid.length ||
-        gx < 0 || gx >= this.grid[0].length ||
+        gy < 0 || gy >= Puzzle.nbRow ||
+        gx < 0 || gx >= Puzzle.nbCol ||
         this.grid[gy][gx] !== 1
       ) {
         return false;
@@ -117,8 +120,8 @@ export class Puzzle extends BaseObject {
     }
 
     // Snap
-    piece.x = this.x + px * this.blockSize;
-    piece.y = this.y + py * this.blockSize;
+    piece.x = this.x + px * Puzzle.blockSize;
+    piece.y = this.y + py * Puzzle.blockSize;
 
     // Mark filled
     for (const [dx, dy] of piece.getShape()) {
@@ -129,8 +132,8 @@ export class Puzzle extends BaseObject {
   }
 
   public isCompleted() {
-      for (let row = 0; row < this.grid.length; row++) {
-        for (let col = 0; col < this.grid[row].length; col++) {
+      for (let row = 0; row < Puzzle.nbRow; row++) {
+        for (let col = 0; col < Puzzle.nbCol; col++) {
           // Some case empty
           if (this.grid[row][col] === 1) return false;
         }
@@ -144,8 +147,8 @@ export class Puzzle extends BaseObject {
     this.piecesUsed = [];
 
     // Clear grid
-    for (let row = 0; row < this.grid.length; row++) {
-        for (let col = 0; col < this.grid[row].length; col++) {
+    for (let row = 0; row < Puzzle.nbRow; row++) {
+        for (let col = 0; col < Puzzle.nbCol; col++) {
           // Some case empty
           if (this.grid[row][col] !== 0) this.grid[row][col] = 1;
         }

@@ -52,8 +52,8 @@ export class Piece extends BaseObject {
   // Override BaseObject
   public getObjectDimensions() {
     const { pieceShapeWidth, pieceShapeHeight } = this.getPieceShapeDimensions();
-    const objectWidth = pieceShapeWidth * this.blockSize;
-    const objectHeight = pieceShapeHeight * this.blockSize;
+    const objectWidth = pieceShapeWidth * Piece.blockSize;
+    const objectHeight = pieceShapeHeight * Piece.blockSize;
     return { objectWidth, objectHeight };
   }
 
@@ -62,10 +62,10 @@ export class Piece extends BaseObject {
     let scaleX = 1, scaleY = 1;
     let offsetX = 0, offsetY = 0;
 
-    let pieceRatio = 1;
+    let currentPieceRatio = 1;    
 
     if (boundDisplay) {
-      pieceRatio = this.pieceRatio;
+      currentPieceRatio = this.pieceRatio;
       const { objectWidth, objectHeight } = this.getObjectDimensions();
       const scale = Math.min(boundDisplay.maxX / objectWidth, boundDisplay.maxY / objectHeight);
       scaleX = scale;
@@ -77,7 +77,7 @@ export class Piece extends BaseObject {
 
       offsetX = (boundDisplay.maxX - scaledWidth) / 2;
       offsetY = (boundDisplay.maxY - scaledHeight) / 2;
-    }
+    }    
 
     // Use two coords if there are more than 1 item
     const coords = [
@@ -91,12 +91,12 @@ export class Piece extends BaseObject {
 
     coords.forEach(({cx, cy}) => {
       this.p.fill(this.colorOption.value);
-      this.p.strokeWeight(this.blockSize * scaleX * pieceRatio/10);
+      this.p.strokeWeight(Piece.blockSize * scaleX * currentPieceRatio/10);
       this.p.stroke(150);
       for (let [dx, dy] of this.shape) {
-        const x = cx + dx * this.blockSize * scaleX * pieceRatio + offsetX;
-        const y = cy + dy * this.blockSize * scaleY * pieceRatio + offsetY;
-        this.p.rect(x, y, this.blockSize * scaleX * pieceRatio, this.blockSize * scaleY * pieceRatio);
+        const x = cx + dx * Piece.blockSize * scaleX * currentPieceRatio + offsetX;
+        const y = cy + dy * Piece.blockSize * scaleY * currentPieceRatio + offsetY;
+        this.p.rect(x, y, Piece.blockSize * scaleX * currentPieceRatio, Piece.blockSize * scaleY * currentPieceRatio);
       }
     });
   }

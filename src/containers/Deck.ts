@@ -6,7 +6,8 @@ import type { HorizontalAlign, VerticalAlign } from "./BaseContainer";
 import { PieceInventory } from "./inventory/PieceInventory";
 import { PuzzleInventory } from "./inventory/PuzzleInventory";
 import { InventoryOption, type BaseInventory } from "./inventory/BaseInventory";
-import type { Puzzle } from "../objects/Puzzle";
+import { Puzzle } from "../objects/Puzzle";
+import { BaseObject } from "../objects/BaseObject";
 
 export class Deck extends BaseContainer {
     private puzzleInventoryAchieved: PuzzleInventory;
@@ -55,6 +56,15 @@ export class Deck extends BaseContainer {
             this.puzzleInventoryAchieved.addItems(puzzle);
             puzzle.clean();
         }
+
+        // To make the pieces fit the slot when resizing
+        this.puzzleInventory.onContainerResized = () => {            
+            const { slotWidth } = this.puzzleInventory.getSlotSize();
+            const width = slotWidth - this.puzzleInventory.getSlotPadding();
+            const ratio = width / (Puzzle.nbCol * Puzzle.blockSize + Puzzle.padding);
+        
+            BaseObject.blockSize = Puzzle.blockSize * ratio;
+        };
     }
 
     public resize() {

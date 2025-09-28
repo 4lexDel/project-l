@@ -16,6 +16,8 @@ export class BaseContainer extends BaseObject {
 
     private parentContainer?: BaseContainer;
 
+    public onContainerResized?: () => void;
+
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, -1, -1);
         this.widthRatio = widthRatio;
@@ -77,7 +79,7 @@ export class BaseContainer extends BaseObject {
             case "BOTTOM":
                 this.y = parentY + parentHeight * (1 - this.heightRatio);
                 break;
-        }     
+        }
     }
 
     public draw() {

@@ -17,6 +17,7 @@ export class PuzzleInventory extends BaseInventory<Puzzle> {
 
     public resize(): void {
         super.resize();
+        this.onContainerResized?.();
     }
 
     public usePiece(origin: BaseInventory<Piece>, piece: Piece) {

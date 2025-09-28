@@ -38,6 +38,14 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         this.inventoryOptions = inventoryOptions || new InventoryOption();
     }
 
+    public getSlotSize() {
+        return { slotWidth: this.slotWidth, slotHeight: this.slotHeight };
+    }
+
+    public getSlotPadding() {
+        return this.slotPadding;
+    }
+
     public setSlotsDim(slotsPerRow: number, slotsPerCol: number) {
         this.slotsPerRow = slotsPerRow;
         this.slotsPerCol = slotsPerCol;
@@ -195,7 +203,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         for (let row = 0; row < this.slotsPerCol; row++) {
             for (let col = 0; col < this.slotsPerRow; col++) {
                 const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
-                this.p.fill(20);
+                this.p.fill(30);
                 this.p.strokeWeight(2);
                 this.p.stroke(50);
                 this.p.rect(slotX, slotY, this.slotWidth, this.slotHeight);
