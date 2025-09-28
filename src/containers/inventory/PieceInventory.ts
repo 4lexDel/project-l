@@ -11,14 +11,17 @@ export class PieceInventory extends BaseInventory<Piece> {
     constructor(p: p5, pieces: Piece[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, inventoryOptions?: InventoryOption) {
         super(p, pieces, slotsPerRow, slotsPerCol, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent, inventoryOptions);
 
-        this.modalOption = new Modal(p, "CENTER", "TOP")
+        this.modalOption = new Modal(p, "CENTER", "TOP");
 
         this.resize();
+    }
+
+    public initItemSetup(): void {
+        super.initItemSetup();
 
         this.items.forEach((piece: Piece | null | undefined) => {
             if (piece) piece.onObjectTriggered = () => {
                 this.modalOption.open(piece.x + this.slotWidth/2 - this.slotPadding/2, piece.y - this.slotPadding/2, this.slotWidth *2 , this.slotHeight);
-                piece.rotate();
             }
         });
     }

@@ -155,9 +155,9 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         item.clearEvents();
     }
 
-    public pickUpItem(origin: BaseInventory<T>, item: T) {
-        const ix = Math.floor((item.mouseX + this.slotWidth / 2 - this.x - this.offsetX) / this.slotWidth);
-        const iy = Math.floor((item.mouseY + this.slotWidth / 2 - this.y - this.offsetY) / this.slotHeight);
+    public pickUpItem(origin: BaseInventory<T>, itemPicked: T) {
+        const ix = Math.floor((itemPicked.mouseX + this.slotWidth / 2 - this.x - this.offsetX) / this.slotWidth);
+        const iy = Math.floor((itemPicked.mouseY + this.slotWidth / 2 - this.y - this.offsetY) / this.slotHeight);
 
         if (
             ix < 0 || ix >= this.slotsPerRow ||
@@ -169,28 +169,20 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         // Can't overwrite a piece
         if (this.items[targetIndex]) return;
 
-        item.quantity -= 1;
+        itemPicked.quantity -= 1;
         // Remove it from the first inventory
-        if (item.quantity <= 0) {
-            origin.removeItem(item);
+        if (itemPicked.quantity <= 0) {
+            origin.removeItem(itemPicked);
         }
 
-        const itemCloned = item.clone();
+        const itemCloned = itemPicked.clone();
         // We take only one piece from the stack
         itemCloned.quantity = 1;
 
         // Add the piece to the list
         this.items[targetIndex] = itemCloned;
 
-        const pos = this.getSlotPosition(
-          Math.floor(targetIndex / this.slotsPerRow),
-          targetIndex % this.slotsPerRow
-        );
-        itemCloned.x = pos.x + this.slotPadding / 2;
-        itemCloned.y = pos.y + this.slotPadding / 2;
-        itemCloned.setCollider(pos.x, pos.y, this.slotWidth, this.slotHeight);
-
-        this.initItemMovement(itemCloned);
+        this.initItemSetup();
     }
 
     protected getSlotPosition(row: number, col: number) {
