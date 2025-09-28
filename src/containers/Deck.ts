@@ -71,7 +71,6 @@ export class Deck extends BaseContainer {
         super.resize();
 
         if (this.p.windowWidth < this.widthLimit && this.deckAlign !== "VERTICAL") {
-            console.log("Switch to vertical deck");
             
             this.deckAlign = "VERTICAL";
             this.puzzleInventory.setWidthRatio(1);
@@ -86,7 +85,6 @@ export class Deck extends BaseContainer {
             this.pieceInventory.setSlotsDim(15, 2);
         }
         else if (this.p.windowWidth >= this.widthLimit && this.deckAlign !== "HORIZONTAL") {
-            console.log("Switch to horizontal deck");
             this.deckAlign = "HORIZONTAL";
             
             this.puzzleInventory.setWidthRatio(0.5);

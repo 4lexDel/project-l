@@ -1,25 +1,26 @@
 import p5 from "p5";
-import type { HorizontalAlign, VerticalAlign } from "../containers/BaseContainer";
-import { EventHandler } from "../EventHandler";
-import { RegisterDraw } from "./DrawDecorator";
+import type { HorizontalAlign, VerticalAlign } from "../../containers/BaseContainer";
+import { EventHandler } from "../../EventHandler";
 
-export class Modal {
-    private p: p5;
+export class BaseModal {
+    protected static padding: number = 10;
 
-    private x!: number;
-    private y!: number;
+    protected p: p5;
 
-    private identifier: symbol;
+    protected x!: number;
+    protected y!: number;
 
-    private width!: number;
-    private height!: number;
+    protected identifier: symbol;
 
-    private isVisible: boolean = false;
+    protected width!: number;
+    protected height!: number;
 
-    private horizontalAlign: HorizontalAlign = "LEFT";
-    private verticalAlign: VerticalAlign = "TOP";
+    protected isVisible: boolean = false;
 
-    private eventHandler: EventHandler;
+    protected horizontalAlign: HorizontalAlign = "LEFT";
+    protected verticalAlign: VerticalAlign = "TOP";
+
+    protected eventHandler: EventHandler;
 
     constructor(p: p5, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP") {
         this.p = p;
@@ -34,11 +35,11 @@ export class Modal {
         this.initEvents();
     }
 
-    private clearEvents() {
+    protected clearEvents() {
         this.eventHandler.removeEventMousePressed(this.identifier);
     }
 
-    private initEvents() {
+    protected initEvents() {
         this.clearEvents();
 
         this.eventHandler.addEventMousePressed(this.identifier, () => {
@@ -71,7 +72,7 @@ export class Modal {
         this.clearEvents();
     }
 
-    private getCoordsOrigin() {
+    protected getCoordsOrigin() {
         let x = this.x;
         let y = this.y;
 
@@ -84,13 +85,12 @@ export class Modal {
         return { x, y }
     }
 
-    @RegisterDraw(0)
     public draw() {
         if (this.isVisible) {
             
             this.p.strokeWeight(2);
             this.p.stroke(200);
-            this.p.fill(50);
+            this.p.fill(80);
 
             let coords = this.getCoordsOrigin();
 

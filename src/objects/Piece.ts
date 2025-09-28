@@ -35,7 +35,19 @@ export class Piece extends BaseObject {
   
     // Step 3: shift so at least one [0,0] exists
     this.shape = rotated.map(([x, y]) => [x - minX, y - minY]);
-  }  
+  }
+
+  public mirror() {
+    // Step 1: mirror
+    const mirrored = this.shape.map(([x, y]) => [-x, y]);
+
+    // Step 2: find minimum x and y
+    const minX = Math.min(...mirrored.map(([x]) => x));
+    const minY = Math.min(...mirrored.map(([_, y]) => y));
+
+    // Step 3: shift so at least one [0,0] exists
+    this.shape = mirrored.map(([x, y]) => [x - minX, y - minY]);
+  }
 
   public getShape() {
     return this.shape;

@@ -7,6 +7,7 @@ export class EventHandler {
     private mousePressedCallbacks: Map<symbol, { priority: number, action: () => void}> = new Map();
     private mouseDraggedCallbacks: Map<symbol, { priority: number, action: () => void}> = new Map();
     private mouseReleasedCallbacks: Map<symbol, { priority: number, action: () => void}> = new Map();
+    private mouseMovedCallbacks: Map<symbol, { priority: number, action: () => void}> = new Map();
 
     private priorityLimiter: number = 0;
 
@@ -39,6 +40,10 @@ export class EventHandler {
         this.mouseReleasedCallbacks.set(symbol, { priority, action: callback});
     }
 
+    public addEventMouseMoved(symbol: symbol, callback: () => void, priority: number = 0) {
+        this.mouseMovedCallbacks.set(symbol, { priority, action: callback});
+    }
+
     public removeEventMousePressed(symbol: symbol) {
         this.mousePressedCallbacks.delete(symbol);
     }
@@ -49,6 +54,10 @@ export class EventHandler {
 
     public removeEventMouseDragged(symbol: symbol) {
         this.mouseDraggedCallbacks.delete(symbol);
+    }
+
+    public removeEventMouseMoved(symbol: symbol) {
+        this.mouseMovedCallbacks.delete(symbol);
     }
 
     public setPriorityLimiter(priority: number) {
@@ -67,6 +76,9 @@ export class EventHandler {
         };
         this.p.mouseReleased = () => {
             this.mouseReleasedCallbacks.forEach(callback => callback.priority >= this.priorityLimiter && callback.action());
+        };
+        this.p.mouseMoved = () => {
+            this.mouseMovedCallbacks.forEach(callback => callback.priority >= this.priorityLimiter && callback.action());
         };
     }
 }

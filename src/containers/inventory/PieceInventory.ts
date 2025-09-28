@@ -3,15 +3,15 @@ import { Piece } from "../../objects/Piece";
 import { BaseContainer } from "./../BaseContainer";
 import type { HorizontalAlign, VerticalAlign } from "./../BaseContainer";
 import { BaseInventory, InventoryOption } from "./BaseInventory";
-import { Modal } from "../../tools/Modal";
+import { PieceModal } from "../../tools/modals/PieceModal";
 
 export class PieceInventory extends BaseInventory<Piece> {
-    private modalOption: Modal;
+    private modalOption: PieceModal;
 
     constructor(p: p5, pieces: Piece[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, inventoryOptions?: InventoryOption) {
         super(p, pieces, slotsPerRow, slotsPerCol, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent, inventoryOptions);
 
-        this.modalOption = new Modal(p, "CENTER", "TOP");
+        this.modalOption = new PieceModal(p, "CENTER", "TOP");
 
         this.resize();
     }
@@ -22,6 +22,8 @@ export class PieceInventory extends BaseInventory<Piece> {
         this.items.forEach((piece: Piece | null | undefined) => {
             if (piece) piece.onObjectTriggered = () => {
                 this.modalOption.open(piece.x + this.slotWidth/2 - this.slotPadding/2, piece.y - this.slotPadding/2, this.slotWidth *2 , this.slotHeight);
+                this.modalOption.onMirrorClicked = () => { piece.mirror(); };
+                this.modalOption.onRotateClicked = () => { piece.rotate(); };
             }
         });
     }
