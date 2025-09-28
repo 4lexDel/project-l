@@ -41,7 +41,7 @@ export class Board extends BaseContainer {
         ];
 
         this.stackPieces = PieceFactory.createAllPieces(p);
-        [1, 2, 10, 10, 10, 10, 10, 10, 10].forEach((quantity: number, i) => this.stackPieces[i%this.stackPieces.length].quantity = quantity);
+        [10, 10, 10, 10, 10, 10, 10, 10, 10].forEach((quantity: number, i) => this.stackPieces[i%this.stackPieces.length].quantity = quantity);
 
         this.leftContainer = new BaseContainer(p, 0.75, 0.95, "LEFT", "TOP", this);
         this.rightContainer = new BaseContainer(p, 0.25, 0.95, "RIGHT", "CENTER", this);
@@ -71,6 +71,7 @@ export class Board extends BaseContainer {
         pieceStackInventoryOptions.allowInternalMovement = false;
         pieceStackInventoryOptions.counterMode = "ITEMS_QUANTITY";
         this.pieceStacks = new PieceInventory(p, this.stackPieces, 3, 3, 1, 0.65, "CENTER", "BOTTOM", this.rightContainer, pieceStackInventoryOptions);
+        this.pieceStacks.setDefaultLockPolicy();
 
         this.initCallbacks();
         this.refreshPuzzleDistribution();

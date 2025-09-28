@@ -235,7 +235,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         this.p.stroke(80);
         this.p.fill(255, 0, 0);
         this.p.ellipse(x, y, size, size);
-        this.p.fill(255);
+        this.p.fill(220);
         this.p.strokeWeight(size/10);
         this.p.textSize(size/1.5);
         this.p.textAlign(this.p.CENTER, this.p.CENTER);

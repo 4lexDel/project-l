@@ -24,6 +24,8 @@ export class BaseObject {
 
     protected identifier!: symbol;
 
+    public locked: boolean = false;
+
     public onObjectReleased?: (x: number, y: number) => void;
     public onObjectTriggered?: () => void;
 
@@ -50,7 +52,7 @@ export class BaseObject {
         this.clearEvents();
 
         eventHandler.addEventMousePressed(this.identifier, () => {
-            if (!this.isMouseInside(this.p.mouseX, this.p.mouseY)) return;
+            if (!this.isMouseInside(this.p.mouseX, this.p.mouseY) || this.locked) return;
             this.isHeld = true;
             this.mouseOriginX = this.p.mouseX;
             this.mouseOriginY = this.p.mouseY;

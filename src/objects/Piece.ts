@@ -1,6 +1,6 @@
 import p5 from 'p5';
 import { BaseObject } from './BaseObject';
-import type { ColorOption } from '../colors';
+import { getColorValueById, type ColorOption } from '../colors';
 import { RegisterDraw } from '../tools/DrawDecorator';
 
 export class Piece extends BaseObject {
@@ -9,9 +9,10 @@ export class Piece extends BaseObject {
 
   private shape: number[][];
   public colorOption: ColorOption;
-  private tier: number;
-
+  
   private pieceRatio: number = 1;
+  
+  public tier: number;
 
   constructor(p: p5, shape: number[][], colorOption: ColorOption, tier: number, quantity = 1) {
     super(p, -1, -1, quantity);
@@ -102,7 +103,7 @@ export class Piece extends BaseObject {
     ];
 
     coords.forEach(({cx, cy}) => {
-      this.p.fill(this.colorOption.value);
+      this.p.fill(this.locked ? getColorValueById(11) : this.colorOption.value);
       this.p.strokeWeight(Piece.blockSize * scaleX * currentPieceRatio/10);
       this.p.stroke(150);
       for (let [dx, dy] of this.shape) {

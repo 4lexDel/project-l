@@ -56,6 +56,8 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 - Add a resize option
 - Check game over
 
+- Manage the skip upgrade (if a stack is empty)
+
 <br>
 
 ## User actions

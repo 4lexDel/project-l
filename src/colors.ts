@@ -13,6 +13,7 @@ export let COLORS: {
     cyan: ColorOption;
     clay: ColorOption;
     pink: ColorOption;
+    grey: ColorOption;
 };
 
 // Call this once in setup()
@@ -27,7 +28,8 @@ export function initColors(p: p5) {
         red : { id: 7, value: p.color(0, 255, 255) },
         cyan : { id: 8, value: p.color(255, 90, 0) },
         clay : { id: 9, value: p.color(255, 170, 0) },
-        pink : { id: 10, value: p.color(220, 80, 150) }
+        pink : { id: 10, value: p.color(220, 80, 150) },
+        grey : { id: 11, value: p.color(80) },
     }
 }
 

@@ -16,6 +16,26 @@ export class PieceInventory extends BaseInventory<Piece> {
         this.resize();
     }
 
+    public setDefaultLockPolicy() {
+        this.items.forEach((piece: Piece | null | undefined) => {
+            if (piece && piece.tier === 1) piece.locked = false;
+            else if (piece) piece.locked = true;
+        });
+    }
+
+    public setUpgradeLockPolicyByTier(tier: number) {
+        this.items.forEach((piece: Piece | null | undefined) => {
+            if (piece && (piece.tier === tier || piece.tier === tier + 1)) piece.locked = false;
+            else if (piece) piece.locked = true;
+        });
+    }
+
+    public clearPiecesLock() {
+        this.items.forEach((piece: Piece | null | undefined) => {
+            if (piece) piece.locked = false;
+        });
+    }
+
     public initItemSetup(): void {
         super.initItemSetup();
 
