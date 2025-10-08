@@ -29,6 +29,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
     public inventoryOptions: InventoryOption;
 
     public onItemDropped?: (origin: BaseInventory<T>, item: T) => void;
+    public onItemSelected?: (origin: BaseInventory<T>, item: T) => void;
 
     constructor(p: p5, items: T[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, inventoryOptions?: InventoryOption) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
@@ -78,17 +79,24 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
                 item.x = slotX + this.slotPadding / 2;
                 item.y = slotY + this.slotPadding / 2;
 
-                if (this.inventoryOptions.readonly) continue;
-
                 item.setCollider(slotX, slotY, this.slotWidth, this.slotHeight);
-
-                this.initItemMovement(item);
+                this.initItemEvents(item);
             }
         }
     }
 
-    private initItemMovement(item: T) {
-        item.initEvents();
+    private initItemEvents(item: T) {
+        if (this.inventoryOptions.readonly) {
+            item.initEvents(true);
+        }
+        else {
+            item.initEvents(false);
+            this.handleItemReleased(item);
+        }
+        this.handleItemTriggered(item);
+    }
+
+    private handleItemReleased(item: T) {
         item.onObjectReleased = (mouseX: number, mouseY: number) => {
             const ix = Math.floor((mouseX - this.x - this.offsetX) / this.slotWidth);
             const iy = Math.floor((mouseY - this.y - this.offsetY) / this.slotHeight);
@@ -123,6 +131,12 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
                 p.setCollider(pos.x, pos.y, this.slotWidth, this.slotHeight);
                 p.initEvents();
             });
+        };
+    }
+
+    private handleItemTriggered(item: T) {
+        item.onObjectTriggered = () => {
+            this.onItemSelected?.(this, item);
         };
     }
 

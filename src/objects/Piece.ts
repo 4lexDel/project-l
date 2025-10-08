@@ -24,6 +24,16 @@ export class Piece extends BaseObject {
     this.pieceRatio = Math.max(shapeDims.pieceShapeWidth, shapeDims.pieceShapeHeight) / Piece.maxPieceShapeDim;
   }
 
+  public setShape(newShape: number[][]) {
+    this.shape = newShape;
+    const shapeDims = this.getPieceShapeDimensions();
+    this.pieceRatio = Math.max(shapeDims.pieceShapeWidth, shapeDims.pieceShapeHeight) / Piece.maxPieceShapeDim;
+  }
+
+  public setColorOption(newColorOption: ColorOption) {
+    this.colorOption = newColorOption;
+  }
+
   public rotate(clockwise: boolean = true) {
     // Step 1: rotate
     const rotated = this.shape.map(([x, y]) => {

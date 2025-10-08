@@ -7,6 +7,7 @@ import { ActionHelper } from "./ActionHelper";
 import { Puzzle } from "../objects/Puzzle.ts";
 import { BaseInventory } from "./inventory/BaseInventory.ts";
 import { Piece } from "../objects/Piece.ts";
+import type { PieceInventory } from "./inventory/PieceInventory.ts";
 
 export class Game {
     private topContainer: BaseContainer;
@@ -47,6 +48,20 @@ export class Game {
         // Get piece
         this.board.onPieceDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
             this.deck.pieceInventory.pickUpItem(origin, piece);
+        }
+
+        // Upgrade piece request
+        this.deck.onPieceUpgradeRequested = (_: PieceInventory, pieceToUpgrade: Piece) => {
+            const pieceStacks = this.board.getPieceStacks();
+            pieceStacks.setUpgradeLockPolicyByTier(pieceToUpgrade.tier);
+            // Select target piece
+            this.board.onPieceSelected = (origin: BaseInventory<Piece>, pieceTarget: Piece) => {
+                this.deck.upgradePiece(pieceToUpgrade, pieceTarget, origin as PieceInventory);
+                pieceStacks.setDefaultLockPolicy();
+
+                // Important: remove callback to avoid multiple upgrade
+                this.board.onPieceSelected = undefined;
+            }
         }
 
         // Use piece

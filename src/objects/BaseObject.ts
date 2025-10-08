@@ -46,19 +46,23 @@ export class BaseObject {
         eventHandler.removeEventMouseReleased(this.identifier);
     }
 
-    public initEvents() {
+    public initEvents(mousePressedOnly: boolean = false) {
         const eventHandler = EventHandler.getInstance(this.p);
 
         this.clearEvents();
 
         eventHandler.addEventMousePressed(this.identifier, () => {
             if (!this.isMouseInside(this.p.mouseX, this.p.mouseY) || this.locked) return;
+            this.onObjectTriggered?.();
+            if (mousePressedOnly) return;
+            
             this.isHeld = true;
             this.mouseOriginX = this.p.mouseX;
             this.mouseOriginY = this.p.mouseY;
-            this.onObjectTriggered?.();
             this.attachPieceToMouseCoords();
         });
+
+        if (mousePressedOnly) return;
 
         eventHandler.addEventMouseDragged(this.identifier, () => {
             if (!this.isHeld) return;

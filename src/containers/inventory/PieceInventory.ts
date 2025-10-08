@@ -8,6 +8,8 @@ import { PieceModal } from "../../tools/modals/PieceModal";
 export class PieceInventory extends BaseInventory<Piece> {
     private modalOption: PieceModal;
 
+    public onPieceUpgradeRequested?: (origin: PieceInventory, piece: Piece) => void;
+
     constructor(p: p5, pieces: Piece[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, inventoryOptions?: InventoryOption) {
         super(p, pieces, slotsPerRow, slotsPerCol, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent, inventoryOptions);
 
@@ -17,6 +19,7 @@ export class PieceInventory extends BaseInventory<Piece> {
     }
 
     public setDefaultLockPolicy() {
+        this.inventoryOptions.readonly = false;
         this.items.forEach((piece: Piece | null | undefined) => {
             if (piece && piece.tier === 1) piece.locked = false;
             else if (piece) piece.locked = true;
@@ -24,13 +27,15 @@ export class PieceInventory extends BaseInventory<Piece> {
     }
 
     public setUpgradeLockPolicyByTier(tier: number) {
+        this.inventoryOptions.readonly = true;
         this.items.forEach((piece: Piece | null | undefined) => {
-            if (piece && (piece.tier === tier || piece.tier === tier + 1)) piece.locked = false;
+            if (piece && (piece.tier <= tier + 1)) piece.locked = false;
             else if (piece) piece.locked = true;
         });
     }
 
     public clearPiecesLock() {
+        this.inventoryOptions.readonly = false;
         this.items.forEach((piece: Piece | null | undefined) => {
             if (piece) piece.locked = false;
         });
@@ -45,8 +50,7 @@ export class PieceInventory extends BaseInventory<Piece> {
                 this.modalOption.onMirrorClicked = () => { piece.mirror(); };
                 this.modalOption.onRotateClicked = () => { piece.rotate(); };
                 this.modalOption.onUpgradeClicked = () => {
-                    console.log("Upgrade clicked");
-                    // piece.upgrade();                     TODO...
+                    this.onPieceUpgradeRequested?.(this, piece);
                 };
             }
         });

@@ -19,6 +19,7 @@ export class Deck extends BaseContainer {
     public pieces: Piece[];
 
     public onPieceDropped?: (origin: BaseInventory<Piece>, piece: Piece) => void;
+    public onPieceUpgradeRequested?: (origin: PieceInventory, piece: Piece) => void;
 
     private deckAlign: "VERTICAL" | "HORIZONTAL" = "HORIZONTAL";
     private widthLimit: number = 800;
@@ -65,6 +66,23 @@ export class Deck extends BaseContainer {
         
             BaseObject.blockSize = Puzzle.blockSize * ratio;
         };
+
+        this.pieceInventory.onPieceUpgradeRequested = (origin: PieceInventory, piece: Piece) => {
+            this.onPieceUpgradeRequested?.(origin, piece);
+        };
+    }
+
+    public upgradePiece(pieceToUpgrade: Piece, pieceTarget: Piece, pieceStacks: PieceInventory) {
+        pieceTarget.quantity -= 1;
+        // Remove it from the first inventory
+        if (pieceTarget.quantity <= 0) {
+            pieceStacks.removeItem(pieceTarget);
+        }
+
+        pieceToUpgrade.tier = pieceTarget.tier;
+        pieceToUpgrade.setShape(pieceTarget.getShape());
+        pieceToUpgrade.colorOption = pieceTarget.colorOption;
+        pieceToUpgrade.quantity = 1;
     }
 
     public resize() {

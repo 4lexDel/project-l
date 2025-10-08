@@ -25,6 +25,7 @@ export class Board extends BaseContainer {
 
     public onPuzzleDropped?: (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => void;
     public onPieceDropped?: (origin: BaseInventory<Piece>, piece: Piece) => void;
+    public onPieceSelected?: (origin: BaseInventory<Piece>, piece: Piece) => void;
 
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
@@ -78,6 +79,10 @@ export class Board extends BaseContainer {
         this.resize();
     }
 
+    public getPieceStacks() {
+        return this.pieceStacks;
+    }
+
     private initCallbacks() {
         // Inspire from the component programming style
         this.puzzleGrid.onItemDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {
@@ -86,6 +91,10 @@ export class Board extends BaseContainer {
 
         this.pieceStacks.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
             this.onPieceDropped?.(origin, piece);
+        }
+
+        this.pieceStacks.onItemSelected = (origin: BaseInventory<Piece>, piece: Piece) => {
+            this.onPieceSelected?.(origin, piece);
         }
     }
 
