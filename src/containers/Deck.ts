@@ -8,6 +8,7 @@ import { PuzzleInventory } from "./inventory/PuzzleInventory";
 import { InventoryOption, type BaseInventory } from "./inventory/BaseInventory";
 import { Puzzle } from "../objects/Puzzle";
 import { BaseObject } from "../objects/BaseObject";
+import { TextNotification } from "../tools/Notification";
 
 export class Deck extends BaseContainer {
     private puzzleInventoryAchieved: PuzzleInventory;
@@ -24,8 +25,12 @@ export class Deck extends BaseContainer {
     private deckAlign: "VERTICAL" | "HORIZONTAL" = "HORIZONTAL";
     private widthLimit: number = 800;
 
+    private textNotification: TextNotification;
+
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
+
+        this.textNotification = new TextNotification(p);
 
         // Left
         this.puzzleInventoryAchieved  = new PuzzleInventory(p, [], 1, 1, 0.1, 1, "LEFT", "CENTER", this);
@@ -53,6 +58,7 @@ export class Deck extends BaseContainer {
         }
 
         this.puzzleInventory.onPuzzleCompleted = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {
+            this.textNotification.show("Puzzle completed!", this.p.color(50, 200, 50), 1000);
             origin.removeItem(puzzle);
             this.puzzleInventoryAchieved.addItems(puzzle);
             puzzle.clean();
@@ -121,6 +127,7 @@ export class Deck extends BaseContainer {
         this.puzzleInventoryAchieved.resize();
         this.pieceInventory.resize();
         this.puzzleInventory.resize();
+        this.textNotification.resize();
     }
 
     public draw(): void {
@@ -132,5 +139,8 @@ export class Deck extends BaseContainer {
         this.puzzleInventory.draw();
         // Pieces
         this.pieceInventory.draw();
+
+        // Notification
+        this.textNotification.draw();
     }
 }

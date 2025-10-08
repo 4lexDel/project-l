@@ -7,7 +7,8 @@ import { ActionHelper } from "./ActionHelper";
 import { Puzzle } from "../objects/Puzzle.ts";
 import { BaseInventory } from "./inventory/BaseInventory.ts";
 import { Piece } from "../objects/Piece.ts";
-import type { PieceInventory } from "./inventory/PieceInventory.ts";
+import { PieceInventory } from "./inventory/PieceInventory.ts";
+import { TextNotification } from "../tools/Notification.ts";
 
 export class Game {
     private topContainer: BaseContainer;
@@ -18,8 +19,11 @@ export class Game {
     private actionHelper: ActionHelper;
     private deck: Deck;
 
+    private textNotification: TextNotification;
 
-    constructor(p: p5) {        
+    constructor(p: p5) {
+        this.textNotification = new TextNotification(p);
+
         // Top
         this.topContainer = new BaseContainer(p, 1, 0.75, "CENTER", "TOP");
         this.opponent = new Opponent(p, 1, 0.2, "CENTER", "TOP", this.topContainer);
@@ -36,6 +40,10 @@ export class Game {
         this.resize();
 
         this.initCallbacks();
+
+        this.textNotification.show("Welcome to Project L!").then(() => {
+            this.textNotification.show("Player turn", p.color(255, 0, 50), 1000);
+        });
     }
 
     private initCallbacks() {
@@ -78,6 +86,7 @@ export class Game {
         this.deck.resize();
         this.board.resize();
         this.actionHelper.resize();
+        this.textNotification.resize();
     }
 
     public draw(): void {
@@ -88,5 +97,6 @@ export class Game {
         this.deck.draw();
         this.board.draw();
         this.actionHelper.draw();
+        this.textNotification.draw();
     }
 }
