@@ -66,6 +66,11 @@ export class BaseObject {
 
         eventHandler.addEventMouseDragged(this.identifier, () => {
             if (!this.isHeld) return;
+            if (this.locked) {
+                this.isHeld = false;
+                return;
+            }
+
             this.attachPieceToMouseCoords();
         });
 
