@@ -90,8 +90,8 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
     private initItemMovement(item: T) {
         item.initEvents();
         item.onObjectReleased = (mouseX: number, mouseY: number) => {
-            const ix = Math.floor((mouseX - this.x - this.offsetX + this.slotWidth / 2) / this.slotWidth);
-            const iy = Math.floor((mouseY - this.y - this.offsetY + this.slotHeight / 2) / this.slotHeight);
+            const ix = Math.floor((mouseX - this.x - this.offsetX) / this.slotWidth);
+            const iy = Math.floor((mouseY - this.y - this.offsetY) / this.slotHeight);
 
             if (
                 ix < 0 || ix >= this.slotsPerRow ||
@@ -156,8 +156,8 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
     }
 
     public pickUpItem(origin: BaseInventory<T>, itemPicked: T) {
-        const ix = Math.floor((itemPicked.mouseX + this.slotWidth / 2 - this.x - this.offsetX) / this.slotWidth);
-        const iy = Math.floor((itemPicked.mouseY + this.slotWidth / 2 - this.y - this.offsetY) / this.slotHeight);
+        const ix = Math.floor((itemPicked.mouseX - this.x - this.offsetX) / this.slotWidth);
+        const iy = Math.floor((itemPicked.mouseY - this.y - this.offsetY) / this.slotHeight);
 
         if (
             ix < 0 || ix >= this.slotsPerRow ||

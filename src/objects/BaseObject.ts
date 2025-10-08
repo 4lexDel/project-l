@@ -68,6 +68,7 @@ export class BaseObject {
         eventHandler.addEventMouseReleased(this.identifier, () => {
             if (!this.isHeld) return;
 
+            this.attachPieceToMouseCoords();
             this.onObjectReleased?.(this.mouseX, this.mouseY);
             this.isHeld = false;
 
@@ -92,10 +93,8 @@ export class BaseObject {
     }
 
     public attachPieceToMouseCoords() {
-        const { objectWidth, objectHeight } = this.getObjectDimensions();
-
-        this.mouseX = this.p.mouseX - objectWidth / 2;
-        this.mouseY = this.p.mouseY - objectHeight / 2;
+        this.mouseX = this.p.mouseX;
+        this.mouseY = this.p.mouseY;
     }
 
     public isMouseInside(mx: number, my: number): boolean {

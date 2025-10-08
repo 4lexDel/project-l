@@ -90,7 +90,7 @@ export class BaseModal {
             
             this.p.strokeWeight(2);
             this.p.stroke(200);
-            this.p.fill(80);
+            this.p.fill(120);
 
             let coords = this.getCoordsOrigin();
 

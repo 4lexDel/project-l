@@ -35,7 +35,7 @@ export class Puzzle extends BaseObject {
 
   public draw(boundDisplay?: { maxX: number; maxY: number }) {    
     let scaleX = 1, scaleY = 1;
-
+    
     const { objectWidth: puzzleWidth, objectHeight: puzzleHeight } = this.getObjectDimensions();
 
     if (boundDisplay) {
@@ -46,7 +46,7 @@ export class Puzzle extends BaseObject {
     // Use two coords if there are more than 1 item
     const coords = [
       ...(!boundDisplay && this.isHeld && this.mouseX !== -1 && this.mouseY !== -1
-        ? [{ cx: this.mouseX, cy: this.mouseY }]
+        ? [{ cx: this.mouseX - puzzleWidth/2, cy: this.mouseY - puzzleHeight/2 }]
         : []),
       ...(boundDisplay && (this.quantity > 1 || !this.isHeld)
         ? [{ cx: this.x, cy: this.y }]
@@ -97,6 +97,7 @@ export class Puzzle extends BaseObject {
 
   public tryPlacePiece(piece: Piece, boundDisplay: { maxX: number; maxY: number }): boolean {
     const { objectWidth: puzzleWidth, objectHeight: puzzleHeight } = this.getObjectDimensions();
+    const { objectWidth: pieceWidth, objectHeight: pieceHeight } = piece.getObjectDimensions();
 
     const scaleX = boundDisplay.maxX / puzzleWidth;
     const scaleY = boundDisplay.maxY / puzzleHeight;
@@ -104,8 +105,8 @@ export class Puzzle extends BaseObject {
     const offsetX = Puzzle.padding/2;
     const offsetY = Puzzle.pieceRewardSize * scaleY;
 
-    const px = Math.round((piece.mouseX - offsetX - this.x) / (Puzzle.blockSize * scaleX));
-    const py = Math.round((piece.mouseY - offsetY - this.y) / (Puzzle.blockSize * scaleY));
+    const px = Math.round((piece.mouseX - pieceWidth/2 - offsetX - this.x) / (Puzzle.blockSize * scaleX));
+    const py = Math.round((piece.mouseY - pieceHeight/2 - offsetY - this.y) / (Puzzle.blockSize * scaleY));
 
     for (const [dx, dy] of piece.getShape()) {
       const gx = px + dx;

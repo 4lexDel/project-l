@@ -77,9 +77,9 @@ export class Piece extends BaseObject {
 
     let currentPieceRatio = 1;    
 
+    const { objectWidth, objectHeight } = this.getObjectDimensions();
     if (boundDisplay) {
       currentPieceRatio = this.pieceRatio;
-      const { objectWidth, objectHeight } = this.getObjectDimensions();
       const scale = Math.min(boundDisplay.maxX / objectWidth, boundDisplay.maxY / objectHeight);
       scaleX = scale;
       scaleY = scale;
@@ -95,13 +95,13 @@ export class Piece extends BaseObject {
     // Use two coords if there are more than 1 item
     const coords = [
       ...(!boundDisplay && this.isHeld && this.mouseX !== -1 && this.mouseY !== -1
-        ? [{ cx: this.mouseX, cy: this.mouseY }]
+        ? [{ cx: this.mouseX - objectWidth/2, cy: this.mouseY - objectHeight/2 }]
         : []),
       ...(boundDisplay && (this.quantity > 1 || !this.isHeld)
         ? [{ cx: this.x, cy: this.y }]
         : []),
     ];
-
+    
     coords.forEach(({cx, cy}) => {
       this.p.fill(this.locked ? getColorValueById(11) : this.colorOption.value);
       this.p.strokeWeight(Piece.blockSize * scaleX * currentPieceRatio/10);
@@ -112,5 +112,13 @@ export class Piece extends BaseObject {
         this.p.rect(x, y, Piece.blockSize * scaleX * currentPieceRatio, Piece.blockSize * scaleY * currentPieceRatio);
       }
     });
+    // DEBUG
+    // if(this.collider) {
+    //   this.p.noFill();
+    //   this.p.stroke(255, 0, 0);
+    //   this.p.strokeWeight(1);
+    //   this.p.rect(this.collider.x, this.collider.y, this.collider.width, this.collider.height);
+    // }
   }
 }
+
