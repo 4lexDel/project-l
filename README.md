@@ -43,9 +43,7 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 - Handle the little gap between the layouts
 - The rendering systems is limited for the nested drawing !!
 
-- Upgrade process:  
-    1. Click on the upgrade button (from the modal)  
-    2. Choose the piece on the piece stacks (the one colored, by default color them in grey)
+- Create a status manager to keep the actions separate
 
 <br>
 
@@ -66,8 +64,8 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 |:---:|:---:|:---|:---|:---:|
 | Piece | Organize the inventory | Drag and drop from and to the piece inventory | - Update the piece inventory | ✅ |
 | Piece | Complete a puzzle | Drag and drop from the piece inventory to the puzzle inventory | - Update the puzzle completed display<br>- Remove the piece moved from the piece inventory | ✅ |
-| Piece | Get a tier 1 piece | Take a tier 1 piece from the piece stacks to the piece inventory | - Update the piece stacks<br>- Update the piece inventory | ⏳ |
-| Piece | Upgrade a piece | Upgrade a piece from the inventory | - Update the piece inventory<br>- Update the piece stacks | ⏳ |
+| Piece | Get a tier 1 piece | Take a tier 1 piece from the piece stacks to the piece inventory | - Update the piece stacks<br>- Update the piece inventory | ✅ |
+| Piece | Upgrade a piece | Upgrade a piece from the inventory | - Update the piece inventory<br>- Update the piece stacks | ✅ |
 | Piece | Rotate a piece | Rotate a piece from the inventory | - Update the piece inventory | ✅ |
 | Piece | Realize a master move | Complete all the puzzles from the puzzle inventory with the pieces from the inventory | - Update the puzzles completed<br>- Remove the pieces moved from the piece inventory | ❌ |
 | Puzzle | Organize the inventory | Drag and drop from and to the puzzle inventory | - Update the puzzle inventory | ✅ |
