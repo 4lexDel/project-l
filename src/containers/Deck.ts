@@ -103,6 +103,8 @@ export class Deck extends BaseContainer {
         pieceToUpgrade.setShape(pieceTarget.getShape());
         pieceToUpgrade.colorOption = pieceTarget.colorOption;
         pieceToUpgrade.quantity = 1;
+
+        this.textNotification.show("Piece upgraded!", this.p.color(200, 80, 250), 1000);
     }
 
     public resize() {

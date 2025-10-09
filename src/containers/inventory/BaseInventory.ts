@@ -3,6 +3,9 @@ import { BaseContainer } from "../BaseContainer";
 import type { HorizontalAlign, VerticalAlign } from "../BaseContainer";
 import type { BaseObject } from "../../objects/BaseObject";
 import { RegisterDraw } from "../../tools/DrawDecorator";
+import { TextNotification } from "../../tools/Notification";
+import { Piece } from "../../objects/Piece";
+import { Puzzle } from "../../objects/Puzzle";
 
 export type CounterMode = "HIDDEN" | "ITEMS_QUANTITY" | "ITEMS_LENGTH";
 
@@ -31,12 +34,18 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
     public onItemDropped?: (origin: BaseInventory<T>, item: T) => void;
     public onItemSelected?: (origin: BaseInventory<T>, item: T) => void;
 
+    private textNotification: TextNotification;
+
     constructor(p: p5, items: T[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, inventoryOptions?: InventoryOption) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
         this.items = items;
         this.slotsPerRow = slotsPerRow;
         this.slotsPerCol = slotsPerCol;
         this.inventoryOptions = inventoryOptions || new InventoryOption();
+
+        this.textNotification = new TextNotification(p);
+
+        this.resize();
     }
 
     public getSlotSize() {
@@ -64,6 +73,8 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
 
         this.offsetX = (this.dx - this.slotWidth * this.slotsPerRow) / 2;
         this.offsetY = (this.dy - this.slotHeight * this.slotsPerCol) / 2;
+
+        this.textNotification.resize();
 
         this.initItemSetup();
     }
@@ -198,6 +209,9 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         // Add the piece to the list
         this.items[targetIndex] = itemCloned;
 
+        if (itemPicked instanceof Piece) this.textNotification.show(`Piece taken!`, this.p.color(200, 80, 250), 1000);
+        else if (itemPicked instanceof Puzzle) this.textNotification.show(`Puzzle taken!`, this.p.color(200, 80, 250), 1000);
+
         this.initItemSetup();
     }
 
@@ -261,5 +275,6 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
     public draw(): void {
         this.inventoryOptions.showBorder && this.drawSlots();
         this.drawItems();
+        this.textNotification.draw();
     }
 }

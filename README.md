@@ -33,28 +33,21 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 
 <br>
 
-## Bugs
-- Piece doest have the same size than the puzzle of the inventory!!
-- Piece & puzzle border overlap not properly
-
 ## Technical considerations
-- Improve the piece internal movement
 - Limit the draw repetition to improve the performance
 - Handle the little gap between the layouts
 - The rendering systems is limited for the nested drawing !!
 
+===========================>> Code the action helper first to get an action manager clean from that
 - Create a status manager to keep the actions separate
+- Cancel an action if the user click outside the scope (create a generic function for that purpose)
 
 <br>
 
 ## Features
 - Add some annotations to make it more readable
 - Start the game process
-- Remove 4 tier 1 pieces
-- Add a resize option
 - Check game over
-
-- Manage the skip upgrade (if a stack is empty)
 
 <br>
 
