@@ -29,8 +29,18 @@ export class PieceInventory extends BaseInventory<Piece> {
     public setUpgradeLockPolicyFromPiece(pieceRef: Piece) {
         this.inventoryOptions.readonly = true;
         this.items.forEach((piece: Piece | null | undefined) => {
-            if (piece && piece.tier <= pieceRef.tier + 1 && piece.name !== pieceRef.name) piece.locked = false;
-            else if (piece) piece.locked = true;
+            if (piece) {
+                // Skip n tier if tier +1, tier +2, ..., tier +n is missing
+                let tierToCheck = pieceRef.tier + 1;
+                while (tierToCheck < piece.tier) {
+                    const found = this.items.find((p: Piece | null | undefined) => p && p.tier === tierToCheck && p.name !== pieceRef.name);
+                    if (found) break;
+                    tierToCheck++;
+                }
+
+                if (tierToCheck >= piece.tier && piece.name !== pieceRef.name) piece.locked = false;
+                else piece.locked = true;
+            }
         });
     }
 
