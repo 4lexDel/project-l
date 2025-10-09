@@ -61,11 +61,12 @@ export class Game {
         // Upgrade piece request
         this.deck.onPieceUpgradeRequested = (_: PieceInventory, pieceToUpgrade: Piece) => {
             const pieceStacks = this.board.getPieceStacks();
-            pieceStacks.setUpgradeLockPolicyByTier(pieceToUpgrade.tier);
+            pieceStacks.setUpgradeLockPolicyFromPiece(pieceToUpgrade);
             // Select target piece
             this.board.onPieceSelected = (origin: BaseInventory<Piece>, pieceTarget: Piece) => {
                 this.deck.upgradePiece(pieceToUpgrade, pieceTarget, origin as PieceInventory);
                 pieceStacks.setDefaultLockPolicy();
+                pieceStacks.initItemSetup();
 
                 // Important: remove callback to avoid multiple upgrade
                 this.board.onPieceSelected = undefined;

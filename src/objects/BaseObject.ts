@@ -38,7 +38,15 @@ export class BaseObject {
         this.createNewIdentifier();
     }
 
-    public clearEvents() {        
+    public setIsHeld(isHeld: boolean) {
+        this.isHeld = isHeld;
+        if (!isHeld) {
+            this.mouseX = -1;
+            this.mouseY = -1;
+        }
+    }
+
+    public clearEvents() {
         const eventHandler = EventHandler.getInstance(this.p);
 
         eventHandler.removeEventMousePressed(this.identifier);
@@ -55,7 +63,7 @@ export class BaseObject {
             if (!this.isMouseInside(this.p.mouseX, this.p.mouseY) || this.locked) return;
             this.onObjectTriggered?.();
             if (mousePressedOnly) return;
-            
+
             this.isHeld = true;
             this.mouseOriginX = this.p.mouseX;
             this.mouseOriginY = this.p.mouseY;
@@ -67,7 +75,7 @@ export class BaseObject {
         eventHandler.addEventMouseDragged(this.identifier, () => {
             if (!this.isHeld) return;
             if (this.locked) {
-                this.isHeld = false;
+                this.setIsHeld(false);
                 return;
             }
 
@@ -76,6 +84,11 @@ export class BaseObject {
 
         eventHandler.addEventMouseReleased(this.identifier, () => {
             if (!this.isHeld) return;
+
+            if (this.locked) {
+                this.setIsHeld(false);
+                return;
+            }
 
             this.attachPieceToMouseCoords();
             this.onObjectReleased?.(this.mouseX, this.mouseY);

@@ -45,7 +45,7 @@ export class Puzzle extends BaseObject {
 
     // Use two coords if there are more than 1 item
     const coords = [
-      ...(!boundDisplay && this.isHeld && this.mouseX !== -1 && this.mouseY !== -1
+      ...(!boundDisplay && this.isHeld
         ? [{ cx: this.mouseX - puzzleWidth/2, cy: this.mouseY - puzzleHeight/2 }]
         : []),
       ...(boundDisplay && (this.quantity > 1 || !this.isHeld)

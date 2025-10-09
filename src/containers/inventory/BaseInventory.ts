@@ -76,6 +76,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
                 if (!item) continue;
 
                 const { x: slotX, y: slotY } = this.getSlotPosition(row, col);
+                item.isHeld = false;
                 item.x = slotX + this.slotPadding / 2;
                 item.y = slotY + this.slotPadding / 2;
 
@@ -145,6 +146,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         for (let i = 0; i < this.items.length; i++) {
             if (!this.items[i]) {
                 const newItem = newItems.pop();
+                newItem?.setIsHeld(false);
                 if (!newItem) break;
     
                 // Fill the holes

@@ -7,6 +7,8 @@ export class Piece extends BaseObject {
   // Usefull for the piece proportion calculation
   private static maxPieceShapeDim: number = 4;
 
+  public name;
+
   private shape: number[][];
   public colorOption: ColorOption;
   
@@ -14,8 +16,9 @@ export class Piece extends BaseObject {
   
   public tier: number;
 
-  constructor(p: p5, shape: number[][], colorOption: ColorOption, tier: number, quantity = 1) {
+  constructor(p: p5, name: string, shape: number[][], colorOption: ColorOption, tier: number, quantity = 1) {
     super(p, -1, -1, quantity);
+    this.name = name;
     this.shape = shape;
     this.colorOption = colorOption;
     this.tier = tier;
@@ -104,7 +107,7 @@ export class Piece extends BaseObject {
 
     // Use two coords if there are more than 1 item
     const coords = [
-      ...(!boundDisplay && this.isHeld && this.mouseX !== -1 && this.mouseY !== -1
+      ...(!boundDisplay && this.isHeld
         ? [{ cx: this.mouseX - objectWidth/2, cy: this.mouseY - objectHeight/2 }]
         : []),
       ...(boundDisplay && (this.quantity > 1 || !this.isHeld)

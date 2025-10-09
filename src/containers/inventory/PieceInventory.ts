@@ -26,10 +26,10 @@ export class PieceInventory extends BaseInventory<Piece> {
         });
     }
 
-    public setUpgradeLockPolicyByTier(tier: number) {
+    public setUpgradeLockPolicyFromPiece(pieceRef: Piece) {
         this.inventoryOptions.readonly = true;
         this.items.forEach((piece: Piece | null | undefined) => {
-            if (piece && (piece.tier <= tier + 1)) piece.locked = false;
+            if (piece && piece.tier <= pieceRef.tier + 1 && piece.name !== pieceRef.name) piece.locked = false;
             else if (piece) piece.locked = true;
         });
     }

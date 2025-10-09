@@ -85,6 +85,20 @@ export class Deck extends BaseContainer {
             pieceStacks.removeItem(pieceTarget);
         }
 
+        // Add 1 to the stack (prevent losing pieces)
+        let pieceFound = false;
+        pieceStacks.items.forEach((piece: Piece | null | undefined) => {
+            if (piece && piece.name === pieceToUpgrade.name) {
+                piece.quantity += 1;
+                pieceFound = true;
+            }
+        });
+        if (!pieceFound) {
+            const newPiece = PieceFactory.createPieceFromName(this.p, pieceToUpgrade.name);
+            if (newPiece) pieceStacks.addItems(newPiece);
+        }
+
+        pieceToUpgrade.name = pieceTarget.name;
         pieceToUpgrade.tier = pieceTarget.tier;
         pieceToUpgrade.setShape(pieceTarget.getShape());
         pieceToUpgrade.colorOption = pieceTarget.colorOption;

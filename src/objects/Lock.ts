@@ -1,5 +1,6 @@
 import p5 from "p5";
 import { Piece } from "./Piece";
+import { COLORS } from "../colors";
 
 export class Lock extends Piece {
     private padding: number = 10;
@@ -8,7 +9,7 @@ export class Lock extends Piece {
     private lockSize: number = 10;
 
     constructor(p: p5, quantity: number) {
-        super(p, [], p.color(255, 210, 100), 1, quantity);
+        super(p, "1block", [], COLORS.yellow, 1, quantity);
         this.quantity = quantity;
     }
 
