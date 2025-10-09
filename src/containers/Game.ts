@@ -11,6 +11,8 @@ import { PieceInventory } from "./inventory/PieceInventory.ts";
 import { TextNotification } from "../tools/TextNotification.ts";
 
 export class Game {
+    private p: p5;
+
     private topContainer: BaseContainer;
     private middleContainer: BaseContainer;
     private bottomContainer: BaseContainer;
@@ -22,6 +24,8 @@ export class Game {
     private textNotification: TextNotification;
 
     constructor(p: p5) {
+        this.p = p;
+
         this.textNotification = new TextNotification(p);
 
         // Top
@@ -49,21 +53,34 @@ export class Game {
     private initCallbacks() {
         const pieceStacks = this.board.getPieceStacks();
 
-        // Get puzzle
+        // ACTION: Get puzzle
         this.board.onPuzzleDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {            
-            this.deck.puzzleInventory.pickUpItem(origin, puzzle);
-            this.board.refreshPuzzleDistribution();
+            const success = this.deck.puzzleInventory.pickUpItem(origin, puzzle);
+            
+            if (success) {
+                this.board.refreshPuzzleDistribution();
+
+                // Consume action
+                this.actionHelper.decreaseMoveAvailable();
+            }
 
             // Reset piece stacks lock policy
             pieceStacks.setDefaultLockPolicy();
+
+            this.textNotification.show(`Puzzle taken!`, this.p.color(200, 80, 250), 1000);
         }
 
-        // Get piece
+        // ACTION: Get piece
         this.board.onPieceDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
-            this.deck.pieceInventory.pickUpItem(origin, piece);
+            const success = this.deck.pieceInventory.pickUpItem(origin, piece);
+
+            // Consume action
+            success && this.actionHelper.decreaseMoveAvailable();
+
+            this.textNotification.show(`Piece taken!`, this.p.color(200, 80, 250), 1000);
         }
 
-        // Upgrade piece request: Nested callback to select the target piece
+        // ACTION: Upgrade piece request: Nested callback to select the target piece
         this.deck.onPieceUpgradeRequested = (_: PieceInventory, pieceToUpgrade: Piece) => {
             pieceStacks.setUpgradeLockPolicyFromPiece(pieceToUpgrade);
             // Select target piece
@@ -74,7 +91,20 @@ export class Game {
 
                 // Important: remove callback to avoid multiple upgrade
                 this.board.onPieceSelected = undefined;
+
+                // Consume action
+                this.actionHelper.decreaseMoveAvailable();
+
+                this.textNotification.show("Piece upgraded!", this.p.color(200, 80, 250), 1000);
             }
+        }
+
+        // ACTION: piece used for a puzzle completion
+        this.deck.onPuzzleUpdated = () => {
+            // Consume action
+            this.actionHelper.decreaseMoveAvailable();
+
+            this.textNotification.show(`Piece used!`, this.p.color(200, 80, 250), 1000);
         }
 
         // Use piece inventory => reset piece stacks lock policy (used to cancel upgrade mode)

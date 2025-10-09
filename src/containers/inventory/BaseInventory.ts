@@ -3,9 +3,6 @@ import { BaseContainer } from "../BaseContainer";
 import type { HorizontalAlign, VerticalAlign } from "../BaseContainer";
 import type { BaseObject } from "../../objects/BaseObject";
 import { RegisterDraw } from "../../tools/DrawDecorator";
-import { TextNotification } from "../../tools/TextNotification";
-import { Piece } from "../../objects/Piece";
-import { Puzzle } from "../../objects/Puzzle";
 
 export type CounterMode = "HIDDEN" | "ITEMS_QUANTITY" | "ITEMS_LENGTH";
 
@@ -35,16 +32,12 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
     public onItemSelected?: (origin: BaseInventory<T>, item: T) => void;
     public onInventoryUsed?: (origin: BaseInventory<T>) => void;
 
-    private textNotification: TextNotification;
-
     constructor(p: p5, items: T[], slotsPerRow: number, slotsPerCol: number, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parent?: BaseContainer, inventoryOptions?: InventoryOption) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parent);
         this.items = items;
         this.slotsPerRow = slotsPerRow;
         this.slotsPerCol = slotsPerCol;
         this.inventoryOptions = inventoryOptions || new InventoryOption();
-
-        this.textNotification = new TextNotification(p);
 
         this.resize();
     }
@@ -74,8 +67,6 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
 
         this.offsetX = (this.dx - this.slotWidth * this.slotsPerRow) / 2;
         this.offsetY = (this.dy - this.slotHeight * this.slotsPerCol) / 2;
-
-        this.textNotification.resize();
 
         this.initItemSetup();
     }
@@ -186,19 +177,19 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         item.clearEvents();
     }
 
-    public pickUpItem(origin: BaseInventory<T>, itemPicked: T) {
+    public pickUpItem(origin: BaseInventory<T>, itemPicked: T): boolean {
         const ix = Math.floor((itemPicked.mouseX - this.x - this.offsetX) / this.slotWidth);
         const iy = Math.floor((itemPicked.mouseY - this.y - this.offsetY) / this.slotHeight);
 
         if (
             ix < 0 || ix >= this.slotsPerRow ||
             iy < 0 || iy >= this.slotsPerCol
-        ) return;
+        ) return false;
 
         const targetIndex = iy * this.slotsPerRow + ix;
         
         // Can't overwrite a piece
-        if (this.items[targetIndex]) return;
+        if (this.items[targetIndex]) return false;
 
         itemPicked.quantity -= 1;
         // Remove it from the first inventory
@@ -213,10 +204,8 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         // Add the piece to the list
         this.items[targetIndex] = itemCloned;
 
-        if (itemPicked instanceof Piece) this.textNotification.show(`Piece taken!`, this.p.color(200, 80, 250), 1000);
-        else if (itemPicked instanceof Puzzle) this.textNotification.show(`Puzzle taken!`, this.p.color(200, 80, 250), 1000);
-
         this.initItemSetup();
+        return true;
     }
 
     protected getSlotPosition(row: number, col: number) {
@@ -279,6 +268,5 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
     public draw(): void {
         this.inventoryOptions.showBorder && this.drawSlots();
         this.drawItems();
-        this.textNotification.draw();
     }
 }

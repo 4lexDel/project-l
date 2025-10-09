@@ -20,7 +20,9 @@ export class PuzzleInventory extends BaseInventory<Puzzle> {
         this.onContainerResized?.();
     }
 
-    public usePiece(origin: BaseInventory<Piece>, piece: Piece) {
+    public usePiece(origin: BaseInventory<Piece>, piece: Piece): boolean {
+        let pieceUsed = false;
+
         this.items.forEach((puzzle: Puzzle | null | undefined) => {
             if (puzzle && puzzle.tryPlacePiece(
                 piece, 
@@ -42,9 +44,12 @@ export class PuzzleInventory extends BaseInventory<Puzzle> {
                     this.onPuzzleCompleted?.(this, puzzle);
                 }
 
+                pieceUsed = true;
                 return;
             }
         });
+
+        return pieceUsed;
     }
 
     public draw(): void {

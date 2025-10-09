@@ -65,7 +65,7 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 | Puzzle | Organize the inventory | Drag and drop from and to the puzzle inventory | - Update the puzzle inventory | ✅ |
 | Puzzle | Get a puzzle | Drag and drop from the puzzle grid to the puzzle inventory | - Update the puzzle grid<br>- Update the puzzle stack<br>- Update the puzzle inventory<br>- Check game over | ✅ |
 | **Puzzle completion** | A puzzle has been fully completed (=achieved) | One of the previous piece actions | - Update the piece stacks (piece received)<br>- Update the score (if real time score system)<br>- Update the puzzle inventory<br>- Update the puzzle achieved stack - Update the lock stacks<br>- Update the opponent piece inventory | ✅ |
-| Anything | Action helper update | After any user action | - Update the action helper | ❌ |
+| Anything | Action helper update | After any user action | - Update the action helper | ⏳ |
 
 <br>
 

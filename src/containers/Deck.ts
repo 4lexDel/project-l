@@ -20,6 +20,7 @@ export class Deck extends BaseContainer {
     public pieces: Piece[];
 
     public onPieceUpgradeRequested?: (origin: PieceInventory, piece: Piece) => void;
+    public onPuzzleUpdated?: () => void;
 
     private deckAlign: "VERTICAL" | "HORIZONTAL" = "HORIZONTAL";
     private widthLimit: number = 800;
@@ -53,11 +54,14 @@ export class Deck extends BaseContainer {
 
     public initCallbacks() {
         this.pieceInventory.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
-            this.puzzleInventory.usePiece(origin, piece);
+            const success = this.puzzleInventory.usePiece(origin, piece);
+            success && this.onPuzzleUpdated?.();
         }
 
         this.puzzleInventory.onPuzzleCompleted = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {
-            this.textNotification.show("Puzzle completed!", this.p.color(50, 200, 50), 1000);
+            setTimeout(() => {
+                this.textNotification.show("Puzzle completed!", this.p.color(50, 200, 50), 1000);
+            }, 1000);
             origin.removeItem(puzzle);
             this.puzzleInventoryAchieved.addItems(puzzle);
             puzzle.clean();
@@ -102,8 +106,6 @@ export class Deck extends BaseContainer {
         pieceToUpgrade.setShape(pieceTarget.getShape());
         pieceToUpgrade.colorOption = pieceTarget.colorOption;
         pieceToUpgrade.quantity = 1;
-
-        this.textNotification.show("Piece upgraded!", this.p.color(200, 80, 250), 1000);
     }
 
     public resize() {
