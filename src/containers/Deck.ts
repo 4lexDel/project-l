@@ -8,7 +8,7 @@ import { PuzzleInventory } from "./inventory/PuzzleInventory";
 import { InventoryOption, type BaseInventory } from "./inventory/BaseInventory";
 import { Puzzle } from "../objects/Puzzle";
 import { BaseObject } from "../objects/BaseObject";
-import { TextNotification } from "../tools/Notification";
+import { TextNotification } from "../tools/TextNotification";
 
 export class Deck extends BaseContainer {
     private puzzleInventoryAchieved: PuzzleInventory;

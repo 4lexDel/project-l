@@ -20,6 +20,8 @@ export class PieceModal extends BaseModal {
         super.initEvents();
 
         this.eventHandler.addEventMouseReleased(this.identifier, () => {
+            if (!this.isVisible) return;
+            
             let coords = this.getCoordsOrigin();
 
             if (

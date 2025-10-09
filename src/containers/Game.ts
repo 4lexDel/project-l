@@ -8,7 +8,7 @@ import { Puzzle } from "../objects/Puzzle.ts";
 import { BaseInventory } from "./inventory/BaseInventory.ts";
 import { Piece } from "../objects/Piece.ts";
 import { PieceInventory } from "./inventory/PieceInventory.ts";
-import { TextNotification } from "../tools/Notification.ts";
+import { TextNotification } from "../tools/TextNotification.ts";
 
 export class Game {
     private topContainer: BaseContainer;

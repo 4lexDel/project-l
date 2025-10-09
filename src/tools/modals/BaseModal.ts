@@ -43,6 +43,8 @@ export class BaseModal {
         this.clearEvents();
 
         this.eventHandler.addEventMousePressed(this.identifier, () => {
+            if (!this.isVisible) return;
+
             let coords = this.getCoordsOrigin();
 
             if (

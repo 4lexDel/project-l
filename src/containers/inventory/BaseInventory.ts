@@ -3,7 +3,7 @@ import { BaseContainer } from "../BaseContainer";
 import type { HorizontalAlign, VerticalAlign } from "../BaseContainer";
 import type { BaseObject } from "../../objects/BaseObject";
 import { RegisterDraw } from "../../tools/DrawDecorator";
-import { TextNotification } from "../../tools/Notification";
+import { TextNotification } from "../../tools/TextNotification";
 import { Piece } from "../../objects/Piece";
 import { Puzzle } from "../../objects/Puzzle";
 
