@@ -19,7 +19,6 @@ export class Deck extends BaseContainer {
 
     public pieces: Piece[];
 
-    public onPieceDropped?: (origin: BaseInventory<Piece>, piece: Piece) => void;
     public onPieceUpgradeRequested?: (origin: PieceInventory, piece: Piece) => void;
 
     private deckAlign: "VERTICAL" | "HORIZONTAL" = "HORIZONTAL";
@@ -54,7 +53,7 @@ export class Deck extends BaseContainer {
 
     public initCallbacks() {
         this.pieceInventory.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
-            this.onPieceDropped?.(origin, piece);
+            this.puzzleInventory.usePiece(origin, piece);
         }
 
         this.puzzleInventory.onPuzzleCompleted = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {

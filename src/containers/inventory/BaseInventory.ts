@@ -33,6 +33,7 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
 
     public onItemDropped?: (origin: BaseInventory<T>, item: T) => void;
     public onItemSelected?: (origin: BaseInventory<T>, item: T) => void;
+    public onInventoryUsed?: (origin: BaseInventory<T>) => void;
 
     private textNotification: TextNotification;
 
@@ -110,6 +111,9 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
 
     private handleItemReleased(item: T) {
         item.onObjectReleased = (mouseX: number, mouseY: number) => {
+            // Inventory used
+            this.onInventoryUsed?.(this);
+
             const ix = Math.floor((mouseX - this.x - this.offsetX) / this.slotWidth);
             const iy = Math.floor((mouseY - this.y - this.offsetY) / this.slotHeight);
 

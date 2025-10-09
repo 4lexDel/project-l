@@ -47,10 +47,15 @@ export class Game {
     }
 
     private initCallbacks() {
+        const pieceStacks = this.board.getPieceStacks();
+
         // Get puzzle
         this.board.onPuzzleDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {            
             this.deck.puzzleInventory.pickUpItem(origin, puzzle);
             this.board.refreshPuzzleDistribution();
+
+            // Reset piece stacks lock policy
+            pieceStacks.setDefaultLockPolicy();
         }
 
         // Get piece
@@ -58,9 +63,8 @@ export class Game {
             this.deck.pieceInventory.pickUpItem(origin, piece);
         }
 
-        // Upgrade piece request
+        // Upgrade piece request: Nested callback to select the target piece
         this.deck.onPieceUpgradeRequested = (_: PieceInventory, pieceToUpgrade: Piece) => {
-            const pieceStacks = this.board.getPieceStacks();
             pieceStacks.setUpgradeLockPolicyFromPiece(pieceToUpgrade);
             // Select target piece
             this.board.onPieceSelected = (origin: BaseInventory<Piece>, pieceTarget: Piece) => {
@@ -73,9 +77,11 @@ export class Game {
             }
         }
 
-        // Use piece
-        this.deck.onPieceDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
-            this.deck.puzzleInventory.usePiece(origin, piece);
+        // Use piece inventory => reset piece stacks lock policy (used to cancel upgrade mode)
+        this.deck.pieceInventory.onInventoryUsed = (_: BaseInventory<Piece>) => {
+            pieceStacks.setDefaultLockPolicy();
+            // Important: remove callback to avoid multiple upgrade
+            this.board.onPieceSelected = undefined;
         }
     }
 

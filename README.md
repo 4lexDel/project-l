@@ -37,6 +37,7 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 - Limit the draw repetition to improve the performance
 - Handle the little gap between the layouts
 - The rendering systems is limited for the nested drawing !!
+- Manage the responsive of the action helper (switch to horizontal)
 
 ===========================>> Code the action helper first to get an action manager clean from that
 - Create a status manager to keep the actions separate
