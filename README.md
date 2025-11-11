@@ -34,7 +34,6 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 <br>
 
 ## Technical considerations
-- Limit the draw repetition to improve the performance
 - Handle the little gap between the layouts
 - The rendering systems is limited for the nested drawing !!
 - Manage the responsive of the action helper (switch to horizontal)
@@ -46,8 +45,7 @@ For the rules translation take that [link](https://biblio.brossard.ca/jeux_socie
 <br>
 
 ## Features
-- Add some annotations to make it more readable
-- Start the game process
+- Manage the master move
 - Manage the end game:
     * Detect last turn (empty stack) => then last turn and extra turn
     * Apply the extra turn rule (can complete the puzzles with all our pieces (once)) then get minus points (numper pieces used + puzzle not completed)
@@ -101,3 +99,6 @@ BaseObject
         ├── PieceInventory  
         └── PuzzleInventory  
 ```
+
+## Class diagram (UML)
+Coming soon...
