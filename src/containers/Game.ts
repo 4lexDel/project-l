@@ -18,8 +18,10 @@ export class Game {
     private bottomContainer: BaseContainer;
     private opponent: Opponent;
     private board: Board;
-    private actionHelper: ActionHelper;
     private deck: Deck;
+
+    private actionHelper: ActionHelper;
+    private whoTurn: { current: "player" | "opponent" } = { current: "player" };
 
     private textNotification: TextNotification;
 
@@ -39,7 +41,7 @@ export class Game {
         
         // Bottom
         this.bottomContainer = new BaseContainer(p, 1, 0.25, "CENTER", "BOTTOM");
-        this.deck = new Deck(p, 1, 1, "CENTER", "BOTTOM", this.bottomContainer);
+        this.deck = new Deck(p, 1, 1, "CENTER", "BOTTOM", this.bottomContainer, this.whoTurn);
 
         this.resize();
 
@@ -53,8 +55,14 @@ export class Game {
     private initCallbacks() {
         const pieceStacks = this.board.getPieceStacks();
 
+        // Player & opponent turn management
+        this.actionHelper.onPlayerSwitch = (whoTurn: "player" | "opponent") => {
+            this.whoTurn.current = whoTurn;
+        };
+
         // ACTION: Get puzzle
-        this.board.onPuzzleDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {            
+        this.board.onPuzzleDropped = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {
+            if (this.whoTurn.current !== "player") return;            
             const success = this.deck.puzzleInventory.pickUpItem(origin, puzzle);
             
             if (success) {
@@ -62,16 +70,16 @@ export class Game {
 
                 // Consume action
                 this.actionHelper.decreaseMoveAvailable();
+                this.textNotification.show(`Puzzle taken!`, this.p.color(200, 80, 250), 1000);
             }
 
             // Reset piece stacks lock policy
             pieceStacks.setDefaultLockPolicy();
-
-            this.textNotification.show(`Puzzle taken!`, this.p.color(200, 80, 250), 1000);
         }
 
         // ACTION: Get piece
         this.board.onPieceDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
+            if (this.whoTurn.current !== "player") return;
             const success = this.deck.pieceInventory.pickUpItem(origin, piece);
 
             // Consume action
@@ -82,6 +90,7 @@ export class Game {
 
         // ACTION: Upgrade piece request: Nested callback to select the target piece
         this.deck.onPieceUpgradeRequested = (_: PieceInventory, pieceToUpgrade: Piece) => {
+            if (this.whoTurn.current !== "player") return;
             pieceStacks.setUpgradeLockPolicyFromPiece(pieceToUpgrade);
             // Select target piece
             this.board.onPieceSelected = (origin: BaseInventory<Piece>, pieceTarget: Piece) => {

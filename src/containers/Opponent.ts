@@ -16,8 +16,6 @@ export class Opponent extends BaseContainer {
         this.pieces = [
             PieceFactory.create1block(p),
             PieceFactory.create1block(p),
-            PieceFactory.create1block(p),
-            PieceFactory.create1block(p),
             PieceFactory.create1block(p)
         ];
         this.pieceInventory = new PieceInventory(

@@ -27,7 +27,9 @@ export class Deck extends BaseContainer {
 
     private textNotification: TextNotification;
 
-    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
+    private whoTurn: { current: "player" | "opponent" } | null;
+
+    constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer, whoTurn: { current: "player" | "opponent" } | null = null) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
 
         this.textNotification = new TextNotification(p);
@@ -44,6 +46,8 @@ export class Deck extends BaseContainer {
 
         const puzzleInventoryOptions = new InventoryOption();
         puzzleInventoryOptions.readonly = false;
+
+        this.whoTurn = whoTurn;
         
         this.pieceInventory = new PieceInventory(p, this.pieces, 10, 3, 0.5, 1, "LEFT", "CENTER", this.rightContainer, pieceInventoryOptions);
         this.puzzleInventory = new PuzzleInventory(p, [], 4, 1, 0.5, 1, "RIGHT", "CENTER", this.rightContainer, puzzleInventoryOptions);
@@ -54,6 +58,7 @@ export class Deck extends BaseContainer {
 
     public initCallbacks() {
         this.pieceInventory.onItemDropped = (origin: BaseInventory<Piece>, piece: Piece) => {
+            if (this.whoTurn?.current !== "player") return;
             const success = this.puzzleInventory.usePiece(origin, piece);
             success && this.onPuzzleUpdated?.();
         }

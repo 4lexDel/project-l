@@ -28,6 +28,8 @@ export class ActionHelper extends BaseContainer {
 
     private textNotification: TextNotification;
 
+    public onPlayerSwitch?: (whoTurn: "player" | "opponent") => void;
+
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
 
@@ -39,15 +41,17 @@ export class ActionHelper extends BaseContainer {
     public decreaseMoveAvailable() {
         this.nbMoveAvailable--;
         if (this.nbMoveAvailable <= 0) {
+            this.nbMoveAvailable = 0;
+            // Switch turn to opponent
+            this.onPlayerSwitch?.("opponent");
             setTimeout(() => {
                 this.textNotification.show("Opponent turn", this.p.color(50, 50, 255), 1000).then(() => {
-                    this.nbMoveAvailable = this.nbMoveAvailableMax;
-
                     // TODO: opponent move right here ! <<<<<<<<<<<<<<<<<<<<
-
-                    setTimeout(() => {
-                        this.textNotification.show("Player turn", this.p.color(255, 0, 50), 1000);
-                    }, 1000);
+                    
+                    // setTimeout(() => {
+                    //     this.textNotification.show("Player turn", this.p.color(255, 0, 50), 1000);
+                    //     this.nbMoveAvailable = this.nbMoveAvailableMax;
+                    // }, 1000);
                 });
             }, 2000);
         }
