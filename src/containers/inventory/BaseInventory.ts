@@ -168,6 +168,13 @@ export class BaseInventory<T extends BaseObject> extends BaseContainer {
         this.initItemSetup();
     }
 
+    public clearInventory() {
+        this.items.forEach((item) => {
+            item?.clearEvents();
+        });
+        this.items = [];
+    }
+
     public removeItem(item: T) {
         const currentIndex = this.items.indexOf(item);
         // Make the slot empty

@@ -33,6 +33,10 @@ export class Puzzle extends BaseObject {
     return { objectWidth: Puzzle.nbCol * Puzzle.blockSize + Puzzle.padding, objectHeight: Puzzle.nbRow * Puzzle.blockSize + Puzzle.padding + Puzzle.pieceRewardSize };
   }
 
+  public getPointsReward() {
+    return this.pointsReward;
+  }
+
   public draw(boundDisplay?: { maxX: number; maxY: number }) {    
     let scaleX = 1, scaleY = 1;
     

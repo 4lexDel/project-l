@@ -42,7 +42,7 @@ export class Board extends BaseContainer {
         ];
 
         this.stackPieces = PieceFactory.createAllPieces(p);
-        [10, 10, 10, 10, 10, 10, 10, 10, 10].forEach((quantity: number, i) => this.stackPieces[i%this.stackPieces.length].quantity = quantity);
+        [6, 9, 10, 10, 10, 10, 10, 10, 10].forEach((quantity: number, i) => this.stackPieces[i%this.stackPieces.length].quantity = quantity);
 
         this.leftContainer = new BaseContainer(p, 0.75, 0.95, "LEFT", "TOP", this);
         this.rightContainer = new BaseContainer(p, 0.25, 0.95, "RIGHT", "CENTER", this);
@@ -79,8 +79,33 @@ export class Board extends BaseContainer {
         this.resize();
     }
 
+    public getLocks() {
+        return this.locks;
+    }
+
     public getPieceStacks() {
         return this.pieceStacks;
+    }
+
+    public getPuzzleGrid() {
+        return this.puzzleGrid;
+    }
+
+    public removeOneLockFromEachColumn() {
+        this.locks.forEach((lock) => {
+            lock.quantity = Math.max(0, lock.quantity - 1);
+        });
+    }
+
+    public updateLocksColumnUsed(index: number, quantityAdded: number) {
+        if (index < 0 || index >= this.locks.length) return;
+        this.locks[index].quantity += quantityAdded;
+
+        [(index+2)%this.locks.length, (index+1)%this.locks.length].forEach((adjIndex) => {
+            if (this.locks[adjIndex].quantity <= 0) return;
+            this.locks[adjIndex].quantity = this.locks[adjIndex].quantity - 1;
+            this.locks[index].quantity += 1;
+        });
     }
 
     private initCallbacks() {
@@ -98,13 +123,22 @@ export class Board extends BaseContainer {
         }
     }
 
-    public refreshPuzzleDistribution() {
-        // Purpose keep 9 puzzles on puzzleGrid, take them from the puzzleStack
-        const nbPuzzleToTake = 9 - this.puzzleGrid.items.filter((i) => i).length;
-        
-        const newPuzzleForTheGrid = this.puzzleStack.items.splice(0, nbPuzzleToTake);
-        this.puzzleGrid.items.unshift(...newPuzzleForTheGrid);
-        this.puzzleGrid.items = this.puzzleGrid.items.filter((i) => i);
+    public refreshPuzzleDistribution(mode: "shift" | "replace" = "shift") {
+        if (mode === "shift") {
+            // Purpose keep 9 puzzles on puzzleGrid, take them from the puzzleStack
+            const nbPuzzleToTake = 9 - this.puzzleGrid.items.filter((i) => i).length;
+            
+            const newPuzzleForTheGrid = this.puzzleStack.items.splice(0, nbPuzzleToTake);
+            this.puzzleGrid.items.unshift(...newPuzzleForTheGrid);
+            this.puzzleGrid.items = this.puzzleGrid.items.filter((i) => i);
+        } else if (mode === "replace") {
+            for (let i = 0; i < this.puzzleGrid.items.length; i++) {
+                if (this.puzzleGrid.items[i] === undefined) {
+                    const newPuzzle = this.puzzleStack.items.shift();
+                    this.puzzleGrid.items[i] = newPuzzle;
+                }
+            }
+        }
 
         // Refresh piece positions
         this.puzzleGrid.initItemSetup();

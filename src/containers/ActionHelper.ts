@@ -45,16 +45,18 @@ export class ActionHelper extends BaseContainer {
             // Switch turn to opponent
             this.onPlayerSwitch?.("opponent");
             setTimeout(() => {
-                this.textNotification.show("Opponent turn", this.p.color(50, 50, 255), 1000).then(() => {
-                    // TODO: opponent move right here ! <<<<<<<<<<<<<<<<<<<<
-                    
-                    // setTimeout(() => {
-                    //     this.textNotification.show("Player turn", this.p.color(255, 0, 50), 1000);
-                    //     this.nbMoveAvailable = this.nbMoveAvailableMax;
-                    // }, 1000);
-                });
-            }, 2000);
+                this.textNotification.show("Opponent turn", this.p.color(50, 50, 255), 1000);
+            }, 1000);
         }
+    }
+
+    public switchToPlayerTurn() {
+        this.nbMoveAvailable = this.nbMoveAvailableMax;
+        this.masterActionUsed = false;
+        this.onPlayerSwitch?.("player");
+        setTimeout(() => {
+            this.textNotification.show("Player turn", this.p.color(255, 0, 50), 1000);
+        }, 1000);
     }
 
     public resize() {

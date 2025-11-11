@@ -10,7 +10,7 @@ import { Puzzle } from "../objects/Puzzle";
 import { BaseObject } from "../objects/BaseObject";
 import { TextNotification } from "../tools/TextNotification";
 
-export class Deck extends BaseContainer {
+export class Player extends BaseContainer {
     private puzzleInventoryAchieved: PuzzleInventory;
 
     private rightContainer: BaseContainer;
