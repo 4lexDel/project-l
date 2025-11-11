@@ -15,7 +15,7 @@ export class Opponent extends BaseContainer {
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
 
-        this.puzzleInventory = new PuzzleInventory(p, [], 1, 1, 0.2, 1, "LEFT", "CENTER", this);
+        this.puzzleInventory = new PuzzleInventory(p, [], 1, 1, 0.4, 1, "LEFT", "CENTER", this);
 
         const pieces = [
             PieceFactory.create1block(p),
@@ -25,9 +25,9 @@ export class Opponent extends BaseContainer {
         this.pieceInventory = new PieceInventory(
             p, 
             pieces, 
-            20,
-            1,
-            0.8,
+            6,
+            2,
+            0.6,
             1,
             "RIGHT",
             "CENTER",
@@ -35,6 +35,10 @@ export class Opponent extends BaseContainer {
         );
 
         this.resize();
+    }
+
+    public getPieceInventory() {
+        return this.pieceInventory;
     }
 
     public async playMove(board: Board) {

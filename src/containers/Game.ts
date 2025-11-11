@@ -9,6 +9,7 @@ import { BaseInventory } from "./inventory/BaseInventory.ts";
 import { Piece } from "../objects/Piece.ts";
 import { PieceInventory } from "./inventory/PieceInventory.ts";
 import { TextNotification } from "../tools/TextNotification.ts";
+import { PieceFactory } from "../objects/PieceFactory.ts";
 
 export class Game {
     private p: p5;
@@ -70,6 +71,15 @@ export class Game {
             const success = this.player.puzzleInventory.pickUpItem(origin, puzzle);
             
             if (success) {
+                // Update Locks (board and opponent)
+                const columnUsed = origin.items.indexOf(undefined) % 3;
+                if (columnUsed === -1) return;
+
+                if (this.board.getLocks()[columnUsed].quantity > 0) {
+                    this.board.getLocks()[columnUsed].quantity -= 1;
+                    this.opponent.getPieceInventory().addItems(PieceFactory.create1block(this.p));
+                }
+                
                 this.board.refreshPuzzleDistribution();
 
                 // Consume action
