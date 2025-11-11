@@ -8,7 +8,6 @@ import { PuzzleInventory } from "./inventory/PuzzleInventory";
 import { InventoryOption, type BaseInventory } from "./inventory/BaseInventory";
 import { Puzzle } from "../objects/Puzzle";
 import { BaseObject } from "../objects/BaseObject";
-import { TextNotification } from "../tools/TextNotification";
 
 export class Player extends BaseContainer {
     private puzzleInventoryAchieved: PuzzleInventory;
@@ -21,18 +20,15 @@ export class Player extends BaseContainer {
 
     public onPieceUpgradeRequested?: (origin: PieceInventory, piece: Piece) => void;
     public onPuzzleUpdated?: () => void;
+    public onPuzzleCompleted?: (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => void;
 
     private deckAlign: "VERTICAL" | "HORIZONTAL" = "HORIZONTAL";
     private widthLimit: number = 800;
-
-    private textNotification: TextNotification;
 
     private whoTurn: { current: "player" | "opponent" } | null;
 
     constructor(p: p5, widthRatio: number, heightRatio: number, horizontalAlign: HorizontalAlign = "LEFT", verticalAlign: VerticalAlign = "TOP", parentContainer?: BaseContainer, whoTurn: { current: "player" | "opponent" } | null = null) {
         super(p, widthRatio, heightRatio, horizontalAlign, verticalAlign, parentContainer);
-
-        this.textNotification = new TextNotification(p);
 
         // Left
         this.puzzleInventoryAchieved  = new PuzzleInventory(p, [], 1, 1, 0.1, 1, "LEFT", "CENTER", this);
@@ -64,12 +60,12 @@ export class Player extends BaseContainer {
         }
 
         this.puzzleInventory.onPuzzleCompleted = (origin: BaseInventory<Puzzle>, puzzle: Puzzle) => {
-            setTimeout(() => {
-                this.textNotification.show("Puzzle completed!", this.p.color(50, 200, 50), 1000);
-            }, 1000);
+            // Move the puzzle to the achieved inventory
             origin.removeItem(puzzle);
             this.puzzleInventoryAchieved.addItems(puzzle);
             puzzle.clean();
+
+            this.onPuzzleCompleted?.(origin, puzzle);
         }
 
         // To make the pieces fit the slot when resizing
@@ -149,7 +145,6 @@ export class Player extends BaseContainer {
         this.puzzleInventoryAchieved.resize();
         this.pieceInventory.resize();
         this.puzzleInventory.resize();
-        this.textNotification.resize();
     }
 
     public draw(): void {
@@ -161,8 +156,5 @@ export class Player extends BaseContainer {
         this.puzzleInventory.draw();
         // Pieces
         this.pieceInventory.draw();
-
-        // Notification
-        this.textNotification.draw();
     }
 }

@@ -129,6 +129,22 @@ export class Game {
             this.textNotification.show(`Piece used!`, this.p.color(200, 80, 250), 1000);
         }
 
+        // Manage the puzzle completion
+        this.player.onPuzzleCompleted = (_: BaseInventory<Puzzle>, puzzle: Puzzle) => {
+            setTimeout(() => {
+                this.textNotification.show("Puzzle completed!", this.p.color(50, 200, 50), 1000);
+            }, 1000);
+
+            pieceStacks.items.forEach(item => {
+                if (item && item.name === puzzle.pieceReward.name && item.quantity > 0) {
+                    item.quantity -= 1;
+                    if (item.quantity <= 0) pieceStacks.removeItem(item);
+                    
+                    this.player.pieceInventory.addItems(puzzle.pieceReward.clone());
+                }
+            });
+        }
+
         // Use piece inventory => reset piece stacks lock policy (used to cancel upgrade mode)
         this.player.pieceInventory.onInventoryUsed = (_: BaseInventory<Piece>) => {
             pieceStacks.setDefaultLockPolicy();
